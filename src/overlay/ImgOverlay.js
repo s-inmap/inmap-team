@@ -3,7 +3,8 @@ import {
 } from './base/Parameter';
 import ImgConfig from './../config/ImgConfig';
 import {
-    isString
+    isString,
+    isArray
 } from './../common/util';
 import State from './../config/OnState';
 /*
@@ -20,55 +21,53 @@ export class ImgOverlay extends Parameter {
     }
     setOptionStyle(ops) {
         this._setStyle(this.baseConfig, ops);
+        this.refresh();
     }
     setState(val) {
         this.state = val;
-        this.eventConfig.onState(this.state);
+        this.event.onState(this.state);
     }
-    translation(distanceX, distanceY) {
-        for (let i = 0; i < this.workerData.length; i++) {
-            let pixel = this.workerData[i].pixel;
-            pixel.x = pixel.x + distanceX;
-            pixel.y = pixel.y + distanceY;
-        }
-
-        this.refresh();
+    TInit() {
 
     }
     drawMap() {
-
         this.setState(State.computeBefore);
-        this.postMessage('HeatOverlay.pointsToPixels', this.getTransformData(), (pixels, margin) => {
+
+        this.postMessage('HeatOverlay.pointsToPixels', this.points, (pixels) => {
             if (this.eventType == 'onmoving') {
                 return;
             }
             this.setState(State.conputeAfter);
-
+            this.setState(State.drawBefore);
             this.setWorkerData(pixels);
-            this.translation(margin.left - this.margin.left, margin.top - this.margin.top);
-            margin = null;
-            pixels = null;
+            this.refresh();
+            this.setState(State.drawAfter);
 
         });
     }
-
+    setPoints(points) {
+        if (!isArray(points)) {
+            throw new TypeError('inMap :data must be a Array');
+        }
+        this.cancerSelectd();
+        this.points = points;
+        this.drawMap();
+    }
+    cancerSelectd() {
+        this.selectItem = [];
+    }
     _isMouseOver(x, y, imgX, imgY, imgW, imgH) {
         return !(x < imgX || x > imgX + imgW || y < imgY || y > imgY + imgH);
     }
     getTarget(x, y) {
-        let pixels = this.workerData;
-
+        let pixels = this.workerData,
+            ctx = this.ctx;
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.pixel;
             let style = this.setDrawStyle(item);
-            let img;
-            if (isString(img)) {
-                img = this.cacheImg[style.icon];
-            } else {
-                img = style.icon;
-            }
-
+            ctx.beginPath();
+            let img = this.cacheImg[style.icon];
             //img  Not Loaded return 
             if (!img) break;
             if (style.width && style.height) {
@@ -104,6 +103,7 @@ export class ImgOverlay extends Parameter {
     findIndexSelectItem(item) {
         let index = -1;
         if (item) {
+
             index = this.selectItem.findIndex(function (val) {
                 return val && val.lat == item.lat && val.lng == item.lng;
             });
@@ -112,14 +112,13 @@ export class ImgOverlay extends Parameter {
         return index;
     }
     refresh() {
-        this.setState(State.drawBefore);
         this.clearCanvas();
+        this.canvasResize();
         this._loopDraw(this.ctx, this.workerData);
-        this.setState(State.drawAfter);
-
     }
     loadImg(img, fun) {
         let me = this;
+
         if (isString(img)) {
             let image = me.cacheImg[img];
             if (!image) {
@@ -174,12 +173,12 @@ export class ImgOverlay extends Parameter {
      * @param {*} item 
      */
     setDrawStyle(item) {
-        let normal = this.styleConfig.normal; //正常样式
+        let normal = this.style.normal; //正常样式
         let result = {};
         Object.assign(result, normal);
         //区间样式
 
-        let splitList = this.styleConfig.splitList;
+        let splitList = this.style.splitList;
         for (let i = 0; i < splitList.length; i++) {
             let condition = splitList[i];
             if (condition.end == null) {

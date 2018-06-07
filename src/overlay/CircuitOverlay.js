@@ -4,8 +4,7 @@
 
 import {
     merge,
-    isArray,
-    clearPushArray
+    isArray
 } from './../common/util';
 import {
     CanvasOverlay
@@ -17,37 +16,22 @@ export class CircuitOverlay extends CanvasOverlay {
     constructor(ops) {
         super(ops);
         this.points = [];
-        this.styleConfig = {};
+        this.style = {};
         this._setStyle(CircuitConfig, ops);
         this._isCoordinates = false;
         this.state = null;
-        this.workerData = [];
     }
     _setStyle(config, ops) {
         let option = merge(config, ops);
         this.points = ops.data ? option.data : this.points;
-        this.styleConfig = option.style;
-        this.eventConfig = option.event;
+        this.style = option.style;
+        this.event = option.event;
         this.tMapStyle(option.skin);
     }
     setState(val) {
         this.state = val;
-        this.eventConfig.onState(this.state);
+        this.event.onState(this.state);
     }
-    translation(distanceX, distanceY) {
-        for (let i = 0; i < this.workerData.length; i++) {
-            let pixels = this.workerData[i].pixels;
-            for (let j = 0; j < pixels.length; j++) {
-                let pixel = pixels[j];
-                pixel[0] = pixel[0] + distanceX;
-                pixel[1] = pixel[1] + distanceY;
-            }
-        }
-        this.setState(State.drawBefore);
-        this.drawLine(this.workerData);
-        this.setState(State.drawAfter);
-    }
-
     resize() {
         this.drawMap();
     }
@@ -55,9 +39,6 @@ export class CircuitOverlay extends CanvasOverlay {
         this._setStyle(CircuitConfig, ops);
         this.coordinates(this.points);
         this.drawMap();
-    }
-    setData(points) {
-        this.setPoints(points);
     }
     setPoints(points) {
         if (!isArray(points)) {
@@ -83,20 +64,21 @@ export class CircuitOverlay extends CanvasOverlay {
             this.coordinates(this.points);
         }
         this.setState(State.computeBefore);
-        this.postMessage('CircuitOverlay.calculatePixel', params, (pixels, margin) => {
+        this.postMessage('CircuitOverlay.calculatePixel', params, (pixels) => {
             if (this.eventType == 'onmoving') {
                 return;
             }
             this.setState(State.conputeAfter);
+
             this.clearCanvas();
-            clearPushArray(this.workerData, pixels);
-            this.translation(margin.left - this.margin.left, margin.top - this.margin.top);
-            params = null;
-            margin = null;
+            this.canvasResize();
+            this.setState(State.drawBefore);
+
+            this.drawLine(pixels);
+            this.setState(State.drawAfter);
+
         });
     }
-
-
     coordinates(data) {
         this._isCoordinates = true;
         let projection = this.map.getMapType().getProjection();
@@ -133,8 +115,8 @@ export class CircuitOverlay extends CanvasOverlay {
     }
 
     drawLine(data) {
-        this.clearCanvas();
-        let normal = this.styleConfig.normal;
+
+        let normal = this.style.normal;
         this.ctx.shadowBlur = 0;
         this.ctx.shadowOffsetX = 0;
         this.ctx.shadowOffsetY = 0;

@@ -13,14 +13,18 @@ export let HoneycombOverlay = {
             mapSize,
             mapCenter,
             nwMc,
+            map,
             zoom,
             type
         } = webObj.request.data;
-        let map = webObj.request.map;
+
         HoneycombOverlay._calculatePixel(map, points, mapSize, mapCenter, zoom);
         let gridsObj = HoneycombOverlay.honeycombGrid(points, map, nwMc, size, zoomUnit, mapSize, type);
-        webObj.request.data = gridsObj;
-        return webObj;
+
+        return {
+            data: gridsObj,
+            client: webObj
+        };
     },
     _calculatePixel: function (map, data, mapSize, mapCenter, zoom) {
 
@@ -39,24 +43,18 @@ export let HoneycombOverlay = {
                 data[j].px = (data[j].x - nwMc.x) / zoomUnit;
                 data[j].py = (nwMc.y - data[j].y) / zoomUnit;
             }
-            if (data[j].count == null) {
-                throw new TypeError('inMap.HoneycombOverlay: data is Invalid format ');
-            }
 
         }
         return data;
     },
     honeycombGrid: function (data, map, nwMc, size, zoomUnit, mapSize, type) {
-        if (data.length <= 0) {
-            return {
-                grids: []
-            };
-        }
-        
         let grids = {};
-        let gridStep = Math.round(size / zoomUnit);
+
+        let gridStep = size / zoomUnit;
+
         let depthX = gridStep;
         let depthY = gridStep * 3 / 4;
+
         let sizeY = 2 * size * 3 / 4;
         let startYMc = parseInt(nwMc.y / sizeY + 1, 10) * sizeY;
         let startY = (nwMc.y - startYMc) / zoomUnit;
@@ -67,12 +65,36 @@ export let HoneycombOverlay = {
 
         let endX = parseInt(mapSize.width + depthX, 10);
         let endY = parseInt(mapSize.height + depthY, 10);
-       
+        if (data.length > 0) {
+            let temp = data[0];
+            let minPointX = temp.px,
+                minPointY = temp.py,
+                maxPointX = temp.px,
+                maxPointY = temp.py;
+            for (let i = 0; i < data.length - 1; i++) {
+                let row = data[i];
+                if (minPointX > row.px) {
+                    minPointX = row.px;
+                }
+                if (minPointY > row.py) {
+                    minPointY = row.py;
+                }
+                if (maxPointX < row.px) {
+                    maxPointX = row.px;
+                }
+                if (maxPointY < row.py) {
+                    maxPointY = row.py;
+                }
+            }
+            startX = parseInt(minPointX - 11, 10);
+            startY = parseInt(minPointY - 11, 10);
+            endX = parseInt(maxPointX + 11, 10);
+            endY = parseInt(maxPointY + 11, 10);
+        }
         let pointX = startX;
         let pointY = startY;
 
         let odd = false;
-
         while (pointY < endY) {
             while (pointX < endX) {
                 let x = odd ? pointX - depthX / 2 : pointX;
@@ -80,9 +102,8 @@ export let HoneycombOverlay = {
                 grids[x + '|' + pointY] = grids[x + '|' + pointY] || {
                     x: x,
                     y: pointY,
-                    list: [],
                     count: 0,
-
+                    len: 0
                 };
 
                 pointX += depthX;
@@ -93,9 +114,10 @@ export let HoneycombOverlay = {
         }
 
         for (let i in data) {
-            let item = data[i];
-            let pX = item.px;
-            let pY = item.py;
+            let count = data[i].count;
+            let pX = data[i].px;
+            let pY = data[i].py;
+
             let fixYIndex = Math.round((pY - startY) / depthY);
             let fixY = fixYIndex * depthY + startY;
             let fixXIndex = Math.round((pX - startX) / depthX);
@@ -107,25 +129,24 @@ export let HoneycombOverlay = {
             if (fixX < startX || fixX > endX || fixY < startY || fixY > endY) {
                 continue;
             }
-            if (grids[fixX + '|' + fixY]) {
-                grids[fixX + '|' + fixY].list.push(item);
-                grids[fixX + '|' + fixY].count += item.count;
-            }
-        }
 
-        let result = [];
-        for (let key in grids) {
-            let item = grids[key];
-            if (type == 'avg' && item.count > 0) {
-                item.count = item.count / item.list.length;
-            }
-            if (item.count > 0) {
-                result.push(item);
+            if (grids[fixX + '|' + fixY]) {
+                grids[fixX + '|' + fixY].count += count;
+                grids[fixX + '|' + fixY].len += 1;
             }
         }
-        grids = null, data = null;
+        if (type == 'avg') {
+            for (let o in grids) {
+                let honey = grids[o];
+                let count = honey.count;
+                if (count > 0) {
+                    honey.count = count / honey.len;
+                }
+            }
+        }
+        
         return {
-            grids: result,
+            grids: grids,
         };
     }
 };

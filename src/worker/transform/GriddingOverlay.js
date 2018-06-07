@@ -12,20 +12,21 @@ export let GriddingOverlay = {
             mapSize,
             mapCenter,
             nwMc,
+            map,
             zoom,
-            type,
-
+            type
         } = webObj.request.data;
-        let map = webObj.request.map;
-
         GriddingOverlay._calculatePixel(map, points, mapSize, mapCenter, zoom);
-        let result = GriddingOverlay.recGrids(points, map, nwMc, size, zoomUnit, mapSize, type);
-        webObj.request.data = result;
+        let gridsObj = GriddingOverlay.recGrids(points, map, nwMc, size, zoomUnit, mapSize, type);
 
+        return {
+            data: gridsObj,
+            client: webObj
 
-        return webObj;
+        };
     },
     _calculatePixel(map, data, mapSize, mapCenter, zoom) {
+
         let zoomUnit = Math.pow(2, 18 - zoom);
         let mcCenter = geo.projection.lngLatToPoint(mapCenter);
         let nwMc = new Pixel(mcCenter.x - mapSize.width / 2 * zoomUnit, mcCenter.y + mapSize.height / 2 * zoomUnit); //左上角墨卡托坐标
@@ -40,24 +41,16 @@ export let GriddingOverlay = {
                 data[j].px = (data[j].x - nwMc.x) / zoomUnit;
                 data[j].py = (nwMc.y - data[j].y) / zoomUnit;
             }
-            if (data[j].count == null) {
-                throw new TypeError('inMap.GriddingOverlay: data is Invalid format ');
-            }
 
         }
         return data;
     },
 
     recGrids(data, map, nwMc, size, zoomUnit, mapSize, type) {
-        if (data.length <= 0) {
-            return {
-                grids: []
-            };
-        }
-
+     
         let grids = {};
-
         let gridStep = size / zoomUnit;
+
         let startXMc = parseInt(nwMc.x / size, 10) * size;
         let startX = (startXMc - nwMc.x) / zoomUnit;
         let endX = mapSize.width;
@@ -65,7 +58,32 @@ export let GriddingOverlay = {
         let startY = (nwMc.y - startYMc) / zoomUnit;
         let endY = mapSize.height;
 
-        
+        if (data.length > 0) {
+            let temp = data[0];
+            let minPointX = temp.px,
+                minPointY = temp.py,
+                maxPointX = temp.px,
+                maxPointY = temp.py;
+            for (let i = 0; i < data.length - 1; i++) {
+                let row = data[i];
+                if (minPointX > row.px) {
+                    minPointX = row.px;
+                }
+                if (minPointY > row.py) {
+                    minPointY = row.py;
+                }
+                if (maxPointX < row.px) {
+                    maxPointX = row.px;
+                }
+                if (maxPointY < row.py) {
+                    maxPointY = row.py;
+                }
+            }
+            startX = minPointX - 2;
+            startY = minPointY - 2;
+            endX = maxPointX + 2;
+            endY = maxPointY + 2;
+        }
         let stockXA = [];
         let stickXAIndex = 0;
         while (startX + stickXAIndex * gridStep < endX) {
@@ -85,19 +103,14 @@ export let GriddingOverlay = {
         for (let i = 0; i < stockXA.length; i++) {
             for (let j = 0; j < stockYA.length; j++) {
                 let name = stockXA[i] + '_' + stockYA[j];
-                grids[name] = {
-                    x: parseFloat(stockXA[i]),
-                    y: parseFloat(stockYA[j]),
-                    list: [],
-                    count: 0,
-                };
+                grids[name] = [];
             }
         }
 
         for (let i = 0; i < data.length; i++) {
             let x = data[i].px;
             let y = data[i].py;
-            let item = data[i];
+            let val = data[i].count;
 
             for (let j = 0; j < stockXA.length; j++) {
                 let dataX = Number(stockXA[j]);
@@ -105,31 +118,51 @@ export let GriddingOverlay = {
                     for (let k = 0; k < stockYA.length; k++) {
                         let dataY = Number(stockYA[k]);
                         if (y >= dataY && y < dataY + gridStep) {
-                            let grid = grids[stockXA[j] + '_' + stockYA[k]];
-                            grid.list.push(item);
-                            grid.count += item.count; //sum
+                            grids[stockXA[j] + '_' + stockYA[k]].push(val);
+
                         }
                     }
                 }
             }
         }
-
-        let result = [];
-        for (let key in grids) {
-            let item = grids[key];
-            if (type === 'avg' && item.list.length > 0) {
-                item.count = item.count / item.list.length;
-            }
-            if (item.count > 0) {
-                result.push(item);
-            }
-
-
+        if (type === 'avg') {
+            grids = GriddingOverlay.valueToAvg(grids);
+        } else {
+            grids = GriddingOverlay.valueToSum(grids);
         }
-        grids = null, stockXA = null, stockYA = null, data = null;
-
         return {
-            grids: result
+            grids: grids
         };
+    },
+    valueToAvg(grids) {
+        for (let o in grids) {
+            let arr = grids[o],
+                all = 0;
+            if (arr.length > 0) {
+                for (let i = 0; i < arr.length; i++) {
+                    all += arr[i];
+                }
+                grids[o] = all / arr.length;
+
+            } else {
+                grids[o] = 0;
+            }
+        }
+        return grids;
+    },
+    valueToSum(grids) {
+        for (let o in grids) {
+            let arr = grids[o],
+                all = 0;
+            if (arr.length > 0) {
+                for (let i = 0; i < arr.length; i++) {
+                    all += arr[i];
+                }
+                grids[o] = all;
+            } else {
+                grids[o] = 0;
+            }
+        }
+        return grids;
     }
 };

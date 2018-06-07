@@ -38,12 +38,12 @@ export default class FlashDotOverlay extends CanvasOverlay {
     constructor(ops) {
         super();
         this.data = [];
-        this.styleConfig = null;
+        this.style = null;
         this.markers = [];
         this.render = this.render.bind(this);
         this.setOptionStyle(ops);
     }
-    canvasInit() {
+    TInit() {
         this.addMarker();
         let now;
         let then = Date.now();
@@ -62,24 +62,15 @@ export default class FlashDotOverlay extends CanvasOverlay {
     }
     setOptionStyle(ops) {
         let option = merge(config, ops);
-        this.styleConfig = option.style.normal;
+        this.style = option.style.normal;
         this.data = ops.data ? option.data : this.data;
         this.tMapStyle(option.skin);
         this.map && this.addMarker();
     }
-    translation(distanceX, distanceY) {
-        
-        for (let i = 0; i < this.markers.length; i++) {
-            let pixel = this.markers[i].pixel;
-            pixel.x = pixel.x + distanceX;
-            pixel.y = pixel.y + distanceY;
-        }
-        
-    }
     addMarker() {
         this.markers = [];
         for (let i = 0; i < this.data.length; i++) {
-            let item = merge(this.styleConfig,this.data[i]);
+            let item = merge(this.style,this.data[i]);
             this.markers.push(new Marker(item, this.map));
         }
 

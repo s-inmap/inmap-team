@@ -1,7 +1,7 @@
 import {
     isString,
     merge,
-    isArray
+    isObject
 } from './../common/util';
 import {
     WhiteLover,
@@ -10,7 +10,6 @@ import {
 import {
     MapZoom
 } from './mapZoom';
-import Toolbar from './Toolbar';
 import inmapConfig from './../config/InmapConfig';
 import './map.less';
 
@@ -26,7 +25,7 @@ export class Map {
         let styleJson = null;
         if (isString(skin)) {
             styleJson = skin == 'Blueness' ? Blueness : WhiteLover;
-        } else if (isArray(skin)) {
+        } else if (isObject(skin)) {
             styleJson = skin;
         }
         skin && map && map.setMapStyle({
@@ -47,7 +46,16 @@ export class Map {
         //设置皮肤
         this.tMapStyle(bmap, this.option.skin);
 
-        bmap.inmapToolBar = new Toolbar(mapDom);
+
+        //设置 地图工具容器
+        let toolDom = this.crtateContainer(mapDom);
+        let _inmapOption = {};
+        Object.assign(_inmapOption, this.option, {
+            mapDom: mapDom,
+            toolDom: toolDom
+        });
+
+        bmap._inmapOption = _inmapOption;
         let center = this.option.center;
 
         bmap.centerAndZoom(new BMap.Point(center[0], center[1]), this.option.zoom.value);
@@ -55,10 +63,7 @@ export class Map {
         bmap.setMaxZoom(this.option.zoom.max);
         if (this.option.zoom.show) {
             //添加地图级别工具条
-            let mapZoom = new MapZoom(bmap, mapDom, this.option.zoom);
-            bmap.addEventListener('zoomend', () => {
-                mapZoom.setButtonState();
-            });
+            new MapZoom(bmap);
         }
 
         this.map = bmap;
@@ -66,19 +71,21 @@ export class Map {
     getMap() {
         return this.map;
     }
-    add(overlay) {
-        if (overlay.isDispose) {
-            throw new TypeError('inMap: overlay has been destroyed.');
-        } else {
-            this.map.addOverlay(overlay);
-        }
+    crtateContainer(mapDom) {
+        let parent = mapDom;
+        let div = document.createElement('div');
+        div.classList.add('inmap-container');
+        parent.appendChild(div);
+        return div;
 
+    }
+    add(overlay) {
+        this.map.addOverlay(overlay);
     }
     remove(overlay) {
         if (overlay.map) {
             overlay.dispose();
         }
-        overlay = null;
 
     }
 

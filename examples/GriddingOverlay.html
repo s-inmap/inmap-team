@@ -50,26 +50,11 @@
     })
 
     var overlay = new inMap.GriddingOverlay({
-        tooltip: {
-            show: true,
-            formatter: function (val) {
-                return val.count;
-            }
-
-        },
         style: {
-            type: "avg",
+            type: "sum",
             normal: {
                 size: 10,
-                unit: 'px', //单位像素
                 padding: 1
-            },
-            mouseOver: {
-                shadowColor: 'rgba(255, 250, 255, 1)',
-                shadowBlur: 20,
-            },
-            selected: {
-                backgroundColor: 'rgba(184,0,0,1)',
             },
             colors: [
                 "rgba(31,98,1,1)",
@@ -86,11 +71,7 @@
         event: {
             onState(state) {
                 console.log(state);
-            },
-            onMouseClick(data, event) {
-                console.log(data, event);
             }
-
         }
     });
     map.add(overlay)

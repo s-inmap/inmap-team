@@ -1,6 +1,6 @@
 export default {
     tooltip: {
-        show: true,
+        show: false,
         position: 'top',
         formatter: '{count}',
         offsets: {
@@ -13,7 +13,7 @@ export default {
         title: '图例'
     },
     style: {
-        type: 'sum', //sum avg
+        type: 'svg', //sum svg
         colors: ['rgba(31,98,1,1)',
             'rgba(95,154,4,1)',
             'rgba(139,227,7,1)',
@@ -23,6 +23,7 @@ export default {
             'rgba(148,1,2,1)',
             'rgba(92,1,0,1)'
         ],
+        splitList:[],
         normal: {
             backgroundColor: 'rgba(200, 200, 200, 0.5)',
             padding: 1,
@@ -36,19 +37,22 @@ export default {
             },
         },
         mouseOver: {
-            backgroundColor: 'rgba(200, 200, 200, 1)',
+
 
         },
         selected: {
-            backgroundColor: 'rgba(184,0,0,1)',
-            borderColor: 'rgba(255,255,255,1)'
-        },
+
+        }
 
     },
+    lock: false, //默认mouseMove加载缓存数据,true则时时请求
     data: [],
+
     event: {
         multiSelect: false,
-        onState() {
-        }
+        onState() {},
+        onMouseClick() {},
+        onMouseOver(){},
+        onMouseLeave(){}
     }
 };

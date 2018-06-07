@@ -26,17 +26,16 @@ import {
     MoveLineOverlay
 } from './overlay/MoveLineOverlay';
 import FlashDotOverlay from './overlay/FlashDotOverlay';
+import {RectOverlay} from './overlay/RectOverlay';
 import {
     Map
 } from './map/index';
 import * as utils from './common/util';
-import {workerMrg} from './common/workerMrg';
-
-let version = VERSION;
-console.log(`inMap v${version}`);
+import {
+    workerMrg
+} from './common/workerMrg';
 
 const inMap = {
-    version,
     utils,
     Map,
     DotOverlay,
@@ -45,13 +44,13 @@ const inMap = {
     HeatOverlay,
     CircuitOverlay,
     HoneycombOverlay,
+    workerMrg,
     ImgOverlay,
     MoveLineOverlay,
     FlashDotOverlay,
-    workerMrg
+    RectOverlay
 };
 export {
-    version,
     utils,
     Map,
     DotOverlay,
@@ -60,9 +59,10 @@ export {
     HeatOverlay,
     CircuitOverlay,
     HoneycombOverlay,
+    workerMrg,
     ImgOverlay,
     MoveLineOverlay,
     FlashDotOverlay,
-    workerMrg
+    RectOverlay
 };
 export default inMap;

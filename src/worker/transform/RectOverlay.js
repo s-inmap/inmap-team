@@ -39,27 +39,23 @@ import {
     }
 ]
   */
-export const HeatOverlay = {
-    pointsToPixels: function (webObj) {
-        
-        webObj.request.data.forEach((val) => {
-            val['pixel'] = pointToPixelWorker(val, webObj.request.map);
+export const RectOverlay = {
+    pointsToPixels: function(webObj) {
+        // console.time("转换坐标为像素");
+        webObj.request.data.points.forEach((val) => {
+            var ne_pixel = pointToPixelWorker({ lng: val.neY || 0, lat: val.neX || 0 }, webObj.request.map);
+            var sw_pixel = pointToPixelWorker({ lng: val.swY || 0, lat: val.swX || 0 }, webObj.request.map);
+            val['pixel'] = {
+                'neX': ne_pixel.x,
+                'neY': ne_pixel.y,
+                'swX': sw_pixel.x,
+                'swY': sw_pixel.y,
+            }
         });
+        // console.timeEnd("转换坐标为像素");
         return {
             data: webObj.request.data,
             client: webObj
         };
-    }
-};
-export const HeatTileOverlay = {
-    pointsToPixels: function (webObj) {
-        webObj.request.data.forEach((item) => {
-            item.pixelData = pointsToPixelsWoker(item.data, webObj.request.map);
-        });
-        return {
-            data: webObj.request.data,
-            client: webObj
-        };
-
     }
 };

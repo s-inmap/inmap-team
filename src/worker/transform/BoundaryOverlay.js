@@ -1,4 +1,9 @@
 import {
+    isArray
+} from './../../common/util';
+
+
+import {
     pointToPixelWorker
 } from '../../lib/pointToPixel';
 
@@ -8,27 +13,32 @@ import {
 import polylabel from './../../common/polylabel';
 export let BoundaryOverlay = {
     calculatePixel: function (webObj) {
-        let {
-            data,
-            labelShow,
-        } = webObj.request.data;
-        let map = webObj.request.map;
+        let data = webObj,
+            points = isArray(data) ? data : data.request.data,
+            map = data.request.map;
+        for (let j = 0; j < points.length; j++) {
 
-        for (let j = 0; j < data.length; j++) {
-            if (data[j].geo) {
+            if (points[j].geo) {
                 let tmp = [];
-                for (let i = 0; i < data[j].geo.length; i++) {
-                    let pixel = pointToPixelWorker(new Point(data[j].geo[i][0], data[j].geo[i][1]), map);
-                    tmp.push([pixel.x, pixel.y]);
+                for (let i = 0; i < points[j].geo.length; i++) {
+                    let pixel = pointToPixelWorker(new Point(points[j].geo[i][0], points[j].geo[i][1]), map);
+                    tmp.push([pixel.x, pixel.y, parseFloat(points[j].geo[i][2])]);
                 }
-                data[j].pixels = tmp;
-                if (labelShow) {
-                    let bestCell = polylabel([tmp]);
-                    data[j]['bestCell'] = bestCell;
+                points[j].pgeo = tmp;
+                let bestCell = polylabel([tmp]);
+                if (bestCell == null) {
+                    /*eslint-disable */
+                    console.error(`inMap : ${points[j].name}围栏数据有错误！`);
+                    /*eslint-enable */
                 }
+
+                points[j]['bestCell'] = bestCell;
+
             }
         }
-        webObj.request.data = data;
-        return webObj;
+        return {
+            data: points,
+            client: webObj
+        };
     }
 };

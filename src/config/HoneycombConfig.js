@@ -1,7 +1,7 @@
 export default {
     tooltip: {
         show: true,
-        customClass: 'inmap-tooltip-black', //是否自定义样式
+        position: 'top',
         formatter: '{count}',
         offsets: {
             top: 5,
@@ -26,7 +26,6 @@ export default {
             backgroundColor: 'rgba(200, 200, 200, 0.5)',
             padding: 1,
             size: 50,
-            unit: 'px',
             label: {
                 show: false, // 是否显示
                 font: '12px sans-serif',
@@ -36,17 +35,18 @@ export default {
             },
         },
         mouseOver: {
-           
+            backgroundColor: 'rgba(200, 200, 200, 1)',
+
         },
         selected: {
-           
+            backgroundColor: 'rgba(184,0,0,1)',
+            borderColor: 'rgba(255,255,255,1)'
         },
 
     },
     data: [],
     event: {
         multiSelect: false,
-        onMouseClick(){},
         onState() {}
     }
 };

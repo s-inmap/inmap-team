@@ -43,7 +43,7 @@
         zoom: {
             value: 5,
             show: true,
-            max: 6,
+            max: 18,
             min: 5
         },
     })
@@ -59,11 +59,11 @@
             }
         },
         legend: {
-            show: true,
+            show: false,
             title: "标题",
-            formatter: function (start, end, index,item) {
+            formatter: function (start, end, index) {
                 return start + "万~" + (end || "max") + "万";
-            },
+            }
         },
         style: {
             normal: {

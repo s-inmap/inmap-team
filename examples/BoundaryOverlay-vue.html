@@ -30,9 +30,9 @@
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
     <script src="./data/shenzhen.js"></script>
     <script src="../dist/inmap.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
     <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
-    <link href="https://cdn.bootcss.com/iview/2.12.0/styles/iview.css" rel="stylesheet">
-    <script src="https://cdn.bootcss.com/iview/2.12.0/iview.min.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
 </head>
 
 <body>
@@ -53,18 +53,9 @@
         },
         watch: {
             model: function (newVal, oldVal) {
+            
                 console.log(newVal);
-                var renderData = overlay.getData();
-                let selectList = []
-                renderData.forEach(function (val) {
-                    if (newVal == val.name) {
-                        selectList.push(val);
-                    }
-                });
-                overlay.setSelectedList(selectList);
-                // overlay.clearSelectedList();
-                // console.log(overlay.getSelectedList());
-                overlay.refresh();
+                overlay.setSelectd("name=='" + newVal + "'", true);
             }
         },
         mounted: function () {
@@ -72,7 +63,7 @@
                 this.boundarys.push({
                     value: element.name,
                     label: element.name,
-
+                   
                 })
             }, this);
         }
@@ -163,7 +154,7 @@
         }
     });
     inmap.add(overlay);
-    overlay.setData(data);
+    overlay.setPoints(data);
 </script>
 
 </html>

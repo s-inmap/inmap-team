@@ -16,12 +16,6 @@ export function typeOf(obj) {
     };
     return map[toString.call(obj)];
 }
-export function isNumber(num) {
-    return typeOf(num) == 'number';
-}
-export function isBoolean(obj) {
-    return typeOf(obj) == 'boolean';
-}
 /**
  * 是否是函数
  * @param {Mix}
@@ -184,16 +178,4 @@ export function merge() {
             }
         }
     });
-}
-export function clearPushArray(a, b) {
-    if (Array.isArray(b)) {
-        a.splice(0, a.length);
-        b.forEach(function (val) {
-            a.push(val);
-        });
-    } else if (b != null) {
-        a.splice(0, a.length, b);
-    } else {
-        a.splice(0, a.length);
-    }
 }

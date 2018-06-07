@@ -1,6 +1,7 @@
 export default {
     tooltip: {
         show: true,
+        position: 'top',
         customClass: 'inmap-tooltip-black', //是否自定义样式
         offsets: {
             top: 5,
@@ -16,6 +17,7 @@ export default {
             icon: null,
             width: 0,
             height: 0,
+
             offsets: {
                 top: 0,
                 left: 0

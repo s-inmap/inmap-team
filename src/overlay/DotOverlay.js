@@ -11,8 +11,9 @@ import {
     Parameter
 } from './base/Parameter';
 import {
+    isArray,
     isEmpty,
-    detectmob,
+    detectmob
 } from './../common/util';
 import BatchesData from './base/BatchesData';
 import DotConfig from './../config/DotConfig';
@@ -21,7 +22,7 @@ let isMobile = detectmob();
 export class DotOverlay extends Parameter {
     constructor(opts) {
         super(DotConfig, opts);
-
+        this.polyme = opts.type == 'polyme';
         this._loopDraw = this._loopDraw.bind(this);
         if (!isEmpty(this._option.draw)) {
             this.batchesData = new BatchesData(this._option.draw);
@@ -29,23 +30,15 @@ export class DotOverlay extends Parameter {
         this.mouseLayer = new CanvasOverlay();
         this.state = null;
     }
-    initLegend() {
-        if (this.styleConfig.colors.length > 0) {
-            this.compileSplitList(this.getData());
-        } else {
-            this.setlegend(this.legendConfig, this.styleConfig.splitList);
-        }
 
-    }
-    onOptionChange() {
-        this.map && this.initLegend();
-    }
-    onDataChange() {
-        this.map && this.initLegend();
-    }
-    parameterInit() {
+
+    TInit() {
         this.map.addOverlay(this.mouseLayer);
-        this.initLegend();
+        if (this.style.colors.length > 0) {
+            this.compileSplitList(this.points);
+        } else {
+            this.setlegend(this.legend, this.style.splitList);
+        }
     }
     setOptionStyle(ops) {
         this._setStyle(this.baseConfig, ops);
@@ -54,22 +47,15 @@ export class DotOverlay extends Parameter {
         } else {
             this.batchesData = null;
         }
+        this.TInit();
+        this.refresh();
     }
     setState(val) {
         this.state = val;
-        this.eventConfig.onState(this.state);
+        this.event.onState(this.state);
     }
     resize() {
         this.drawMap();
-    }
-    translation(distanceX, distanceY) {
-        this.batchesData && this.batchesData.clear();
-        for (let i = 0; i < this.workerData.length; i++) {
-            let pixel = this.workerData[i].pixel;
-            pixel.x = pixel.x + distanceX;
-            pixel.y = pixel.y + distanceY;
-        }
-        this.refresh();
     }
     drawMouseLayer() {
         let overArr = this.overItem ? [this.overItem] : [];
@@ -78,20 +64,25 @@ export class DotOverlay extends Parameter {
 
     }
     drawMap() {
-        this.batchesData && this.batchesData.clear();
 
+        this.batchesData && this.batchesData.clear();
+        let path = this.polyme ? 'PolymeOverlay.mergePoint' : 'HeatOverlay.pointsToPixels';
+        let data = this.polyme ? {
+            points: this.points,
+            mergeCount: this.style.normal.mergeCount,
+            size: this.style.normal.size
+        } : this.points;
         this.setState(State.computeBefore);
-        this.postMessage('HeatOverlay.pointsToPixels', this.getTransformData(), (pixels, margin) => {
+        this.postMessage(path, data, (pixels) => {
             if (this.eventType == 'onmoving') {
                 return;
             }
-
             this.setState(State.conputeAfter);
             this.setWorkerData(pixels);
             this.updateOverClickItem();
-            this.translation(margin.left - this.margin.left, margin.top - this.margin.top);
-            margin = null;
-            pixels = null;
+            this.setState(State.drawBefore);
+            this.refresh();
+            this.setState(State.drawAfter);
 
         });
     }
@@ -107,31 +98,26 @@ export class DotOverlay extends Parameter {
         }
     }
 
-    // cancerSelectd() {
-    //     this.selectItem = [];
-    // }
-    // setData(points) {
-    //     this.setPoints(points);
-    // }
-    // setPoints(points) {
-    //     if (!isArray(points)) {
-    //         throw new TypeError('inMap: data must be a Array');
-    //     }
-    //     this.points = points;
-    //     this.clearData();
-    //     this.cancerSelectd();
-
-    //     if (this.styleConfig.colors.length > 0) {
-    //         this.compileSplitList(this.getTransformData());
-    //     }
-    //     this.drawMap();
-    // }
+    cancerSelectd() {
+        this.selectItem = [];
+    }
+    setPoints(points) {
+        if (!isArray(points)) {
+            throw new TypeError('inMap: data must be a Array');
+        }
+        this.cancerSelectd();
+        this.points = points;
+        if (this.style.colors.length > 0) {
+            this.compileSplitList(this.points);
+        }
+        this.drawMap();
+    }
     /**
      * 颜色等分策略
      * @param {} data 
      */
     compileSplitList(data) {
-        let colors = this.styleConfig.colors;
+        let colors = this.style.colors;
         if (colors.length <= 0) return;
         data = data.sort((a, b) => {
             return parseFloat(a.count) - parseFloat(b.count);
@@ -170,31 +156,25 @@ export class DotOverlay extends Parameter {
 
         }
 
-        this.styleConfig.splitList = split;
-        this.setlegend(this.legendConfig, this.styleConfig.splitList);
+        this.style.splitList = split;
+        this.setlegend(this.legend, this.style.splitList);
     }
 
-    getTarget(mouseX, mouseY) {
+    getTarget(x, y) {
         let pixels = this.workerData,
             ctx = this.ctx;
-        let mapSize = this.map.getSize();
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
-            let style = this.setDrawStyle(item);
-            let {
-                x,
-                y,
-            } = item.pixel;
-            let r =style.size + this.styleConfig.normal.borderWidth;
-            if (x > -r && y > -r && x < mapSize.width + r && y < mapSize.height + r) {
-                ctx.beginPath();
-                ctx.arc(x, y, r, 0, 2 * Math.PI, true);
-                if (ctx.isPointInPath(mouseX * this.devicePixelRatio, mouseY * this.devicePixelRatio)) {
-                    return {
-                        index: i,
-                        item: item
-                    };
-                }
+            let pixel = item.pixel;
+            let style = this.polyme ? this.style.normal : this.setDrawStyle(item);
+            ctx.beginPath();
+            ctx.arc(pixel.x, pixel.y, style.size, 0, 2 * Math.PI, true);
+            ctx.lineWidth = style.borderWidth;
+            if (ctx.isPointInPath(x * this.devicePixelRatio, y * this.devicePixelRatio)) {
+                return {
+                    index: i,
+                    item: item
+                };
             }
         }
         return {
@@ -214,59 +194,47 @@ export class DotOverlay extends Parameter {
         return index;
     }
     refresh() {
-        this.setState(State.drawBefore);
         this.clearCanvas();
+        this.canvasResize();
         this.mouseLayer.canvasResize();
         if (this.batchesData) {
-            this.batchesData.clear();
             this.batchesData.action(this.workerData, this._loopDraw, this.ctx);
         } else {
             this._loopDraw(this.ctx, this.workerData);
         }
-        if (this.styleConfig.normal.label.show) {
+        if (this.style.normal.label.show) {
             this._drawLabel(this.ctx, this.workerData);
         }
         this.drawMouseLayer();
-        this.setState(State.drawAfter);
     }
     swopData(index, item) {
-        if (index > -1 && !this.styleConfig.normal.label.show) { //导致文字闪
+        if (index > -1 && !this.style.normal.label.show) { //导致文字闪
             this.workerData[index] = this.workerData[this.workerData.length - 1];
             this.workerData[this.workerData.length - 1] = item;
         }
     }
     _loopDraw(ctx, pixels) {
-        let mapSize = this.map.getSize();
+
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.pixel;
-            let {
-                x,
-                y
-            } = pixel;
-
-            let style = this.setDrawStyle(item);
-            let size = style.size;
-            if (this.styleConfig.normal.label.show) {
-                pixel['radius'] = size;
+            let style = this.polyme ? this.style.normal : this.setDrawStyle(item);
+            if (style.shadowBlur) {
+                ctx.shadowBlur = style.shadowBlur;
             }
-            if (x > -size && y > -size && x < mapSize.width + size && y < mapSize.height + size) {
-                if (style.shadowColor) {
-                    ctx.shadowColor = style.shadowColor || 'transparent';
-                    ctx.shadowBlur = style.shadowBlur || 10;
-                } else {
-                    ctx.shadowColor = 'transparent';
-                    ctx.shadowBlur = 0;
-                }
-                if (style.globalCompositeOperation) {
-                    ctx.globalCompositeOperation = style.globalCompositeOperation;
-                }
-                this._drawCircle(ctx, x, y, size, style.backgroundColor, style.borderWidth, style.borderColor);
+            if (style.shadowColor) {
+                ctx.shadowColor = style.shadowColor;
             }
+            if (style.globalCompositeOperation) {
+                ctx.globalCompositeOperation = style.globalCompositeOperation;
+            }
+            let size = this.polyme ? pixel.radius : style.size;
+            pixel['radius'] = size;
+            this._drawCircle(ctx, pixel.x, pixel.y, size, style.backgroundColor, style.borderWidth, style.borderColor);
         }
     }
     _drawLabel(ctx, pixels) {
-        let fontStyle = this.styleConfig.normal.label;
+        let fontStyle = this.style.normal.label;
         let fontSize = parseInt(fontStyle.font);
         ctx.font = fontStyle.font;
         ctx.textBaseline = 'top';
@@ -276,7 +244,7 @@ export class DotOverlay extends Parameter {
         // let param = {
         //     pixels: pixels,
         //     height: fontSize,
-        //     borderWidth: this.styleConfig.normal.borderWidth,
+        //     borderWidth: this.style.normal.borderWidth,
         //     byteWidth: byteWidth
         // };
         // this.postMessage('LablEvading.merge', param, (labels) => {
@@ -291,7 +259,7 @@ export class DotOverlay extends Parameter {
         // });
 
         let labels = pixels.map((val) => {
-            let radius = val.pixel.radius + this.styleConfig.normal.borderWidth;
+            let radius = val.pixel.radius + this.style.normal.borderWidth;
             return new Label(val.pixel.x, val.pixel.y, radius, fontSize, byteWidth, val.name);
         });
         //x排序从小到大
@@ -338,16 +306,15 @@ export class DotOverlay extends Parameter {
         }
     }
     Tdispose() {
-        this.batchesData && this.batchesData.clear();
         this.map.removeOverlay(this.mouseLayer);
-        this.mouseLayer.dispose();
     }
+
     tMousemove(event) {
 
         if (this.eventType == 'onmoving') {
             return;
         }
-        if (!this.tooltipConfig.show && isEmpty(this.styleConfig.mouseOver)) {
+        if (!this.tooltip.show && isEmpty(this.style.mouseOver)) {
             return;
         }
         let result = this.getTarget(event.pixel.x, event.pixel.y);
@@ -356,7 +323,7 @@ export class DotOverlay extends Parameter {
         if (temp != this.overItem) { //防止过度重新绘画
             this.overItem = temp;
             this.eventType = 'mousemove';
-            if (!isEmpty(this.styleConfig.mouseOver)) {
+            if (!isEmpty(this.style.mouseOver)) {
                 this.drawMouseLayer();
             }
         }
@@ -373,7 +340,7 @@ export class DotOverlay extends Parameter {
         if (this.eventType == 'onmoving') return;
         let {
             multiSelect
-        } = this.eventConfig;
+        } = this.event;
         let result = this.getTarget(event.pixel.x, event.pixel.y);
         if (result.index == -1) {
             return;
@@ -391,7 +358,7 @@ export class DotOverlay extends Parameter {
             this.selectItem = [result.item];
         }
 
-        this.eventConfig.onMouseClick(this.selectItem, event);
+        this.event.onMouseClick(this.selectItem, event);
 
 
         if (isMobile) {

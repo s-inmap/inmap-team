@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>HoneycombOverlay</title>
+    <title>DotOverlay-polyme 相交聚合</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <style type="text/css">
@@ -26,8 +26,8 @@
     </style>
 
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
-    <script src="../dist/inmap.js"></script>
     <script src="data/data.js"></script>
+    <script src="../dist/inmap.js"></script>
 </head>
 
 <body>
@@ -37,44 +37,46 @@
 </html>
 <script>
     var map = new inMap.Map({
-        id: document.getElementById('allmap'),
+        id: 'allmap',
+        skin: "Blueness",
         center: [105.403119, 38.028658],
         zoom: {
             value: 5,
             show: true,
-            max: 18,
-            min: 5
+            max: 22,
+            min: 6
         },
     })
 
-    var overlay = new inMap.HoneycombOverlay({
+
+    var overlay = new inMap.DotOverlay({
+        type: 'polyme',
         tooltip: {
             show: true,
-            // formatter: function (params) {
-            //     return params.count;
-            // }
-            formatter: "{count}"
+            formatter: function (params) {
+                return params.pixel.radius;
+            }
+            // formatter: "{count}~<br/>{count}"
         },
         legend: {
             show: true,
-            title: "图例"
-
+            title: "标题",
+            formatter: function (start, end, index) {
+                return start + "万~" + (end || "max") + "万";
+            }
         },
         style: {
-            type: "sum",
-            colors: [
-                "rgba(156,200,249,0.7)", "rgba(93,158,247,0.7)",
-                "rgba(134,207,55,0.7)",
-                "rgba(252,198,10,0.7)", "rgba(255,144,0,0.7)", "rgba(255,72,0,0.7)",
-                "rgba(255,0,0,0.7)"
-            ],
             normal: {
-                backgroundColor: 'rgba(200, 200, 200, 0.5)',
-                padding: 3,
-                size: 50,
+                backgroundColor: 'rgba(200, 200, 50, 1)',
+                borderWidth: 1,
+                borderColor: "rgba(255,255,255,1)",
+                size: 4,
+                mergeCount: 1.5,
             },
             mouseOver: {
                 backgroundColor: 'rgba(200, 200, 200, 1)',
+                borderColor: "rgba(255,255,255,1)",
+                borderWidth: 4,
             },
             selected: {
                 backgroundColor: 'rgba(184,0,0,1)',
@@ -84,10 +86,11 @@
         },
         data: data,
         event: {
-            onState(state) {
-                console.log(state);
+            onMouseClick: function (item) {
+                //能获取当前点的信息
+                console.log(item);
             }
         }
     });
-    map.add(overlay)
+    map.add(overlay);
 </script>

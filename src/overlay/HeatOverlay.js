@@ -3,8 +3,7 @@ import {
 } from './base/CanvasOverlay';
 import {
     merge,
-    isArray,
-    clearPushArray
+    isArray
 } from './../common/util';
 
 import HeatConfig from './../config/HeatConfig';
@@ -13,7 +12,6 @@ export class HeatOverlay extends CanvasOverlay {
     constructor(ops) {
         super(ops);
         this.points = [];
-        this.workerData = [];
         this._setStyle(HeatConfig, ops);
         this.delteOption();
         this.state = null;
@@ -21,15 +19,11 @@ export class HeatOverlay extends CanvasOverlay {
     resize() {
         this.drawMap();
     }
-    getTransformData() {
-        return this.workerData.length > 0 ? this.workerData : this.points;
-    }
-
     _setStyle(config, ops) {
         ops = ops || {};
         let option = merge(config, ops);
-        this.styleConfig = option.style;
-        this.eventConfig = option.event;
+        this.style = option.style;
+        this.event = option.event;
         this.gradient = option.style.gradient;
         this.points = ops.data ? option.data : this.points;
         this.tMapStyle(option.skin);
@@ -38,26 +32,22 @@ export class HeatOverlay extends CanvasOverlay {
     setOptionStyle(ops) {
         this._setStyle(HeatConfig, ops);
         this.delteOption();
-        clearPushArray(this.workerData,[]);
         this.drawMap();
     }
     setState(val) {
         this.state = val;
-        this.eventConfig.onState(this.state);
+        this.event.onState(this.state);
     }
     /**
      * 屏蔽参数
      */
     delteOption() {
-        this.tooltipConfig = {
+        this.tooltip = {
             show: false
         };
-        this.legendConfig = {
+        this.legend = {
             show: false
         };
-    }
-    setData(points) {
-        this.setPoints(points);
     }
     setPoints(points) {
         if (!isArray(points)) {
@@ -67,7 +57,7 @@ export class HeatOverlay extends CanvasOverlay {
         this.drawMap();
     }
     getMax() {
-        let normal = this.styleConfig.normal;
+        let normal = this.style.normal;
         normal.maxValue = 0;
         for (let i = 0, len = this.points.length; i < len; i++) {
             if (this.points[i].count > normal.maxValue) {
@@ -75,42 +65,29 @@ export class HeatOverlay extends CanvasOverlay {
             }
         }
     }
-    translation(distanceX, distanceY) {
-        for (let i = 0; i < this.workerData.length; i++) {
-            let pixel = this.workerData[i].pixel;
-            pixel.x = pixel.x + distanceX;
-            pixel.y = pixel.y + distanceY;
-        }
-        this.setState(State.drawBefore);
-        this.refresh();
-        this.setState(State.drawAfter);
-
-    }
-    setWorkerData(val) {
-        this.points = []; //优化
-        clearPushArray(this.workerData, val);
-    }
     drawMap() {
         this.setState(State.computeBefore);
 
-        this.postMessage('HeatOverlay.pointsToPixels', this.getTransformData(), (pixels,margin) => {
+        this.postMessage('HeatOverlay.pointsToPixels', this.points, (pixels) => {
 
             if (this.eventType == 'onmoving') {
                 return;
             }
             this.setState(State.conputeAfter);
 
-            this.setWorkerData(pixels);
-            this.translation(margin.left - this.margin.left, margin.top - this.margin.top);
-            
-            margin = null;
-            pixels = null;
- 
+            this.clearCanvas();
+            this.canvasResize();
+            this.setState(State.drawBefore);
+
+            this.workerData = pixels;
+            this.refresh();
+            this.setState(State.drawAfter);
+
+
         });
     }
     refresh() {
-        this.clearCanvas();
-        let normal = this.styleConfig.normal;
+        let normal = this.style.normal;
         let container = this.container;
         if (normal.maxValue == 0) {
             this.getMax();

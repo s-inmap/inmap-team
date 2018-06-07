@@ -20,6 +20,9 @@ import {
 import {
     LablEvading
 } from './transform/LablEvading';
+import {
+    RectOverlay
+} from './transform/RectOverlay';
 let callbackList = {
     'HeatOverlay': HeatOverlay,
     'HeatTileOverlay': HeatTileOverlay,
@@ -28,7 +31,8 @@ let callbackList = {
     'CircuitOverlay': CircuitOverlay,
     'HoneycombOverlay': HoneycombOverlay,
     'PolymeOverlay': PolymeOverlay,
-    'LablEvading': LablEvading
+    'LablEvading': LablEvading,
+    'RectOverlay': RectOverlay,
 };
 
 /**
@@ -48,7 +52,7 @@ let handler = {};
 /**
  * worker方法执行解析
  */
-let callbackFun = function (data) {
+let callbackFun = function(data) {
     let request = data.request;
     let classPath = request.classPath;
     let hashCode = request.hashCode;
@@ -63,13 +67,16 @@ let callbackFun = function (data) {
             //唯一生效队列控制
             handler[classPath] = hashCode + '_' + msgId;
             //查找到执行方法，并执行方法
-            let result = callback(data);
-            TDpost(result);
-
+            let obj = callback(data);
+            TDpost(obj.data, obj.client);
+            return;
         }
 
         if (!callback) {
-            throw new TypeError(`inMap : ${p[index - 1]} worker ${ classPath } is not a function`);
+            /*eslint-disable */
+            console.error(p[index - 1] + 'worker ' + classPath + ' is not a function');
+            /*eslint-enable */
+            return;
         }
     }
 };
@@ -79,20 +86,21 @@ let callbackFun = function (data) {
  * push到web消息
  * @param {Object} data
  */
-export let TDpost = function (client) {
-
+export let TDpost = function(data, client) {
+    let opts = client;
     let request = client.request;
     let classPath = request.classPath;
     let hashCode = request.hashCode;
     let msgId = request.msgId;
     let handler = callbackList[classPath];
-
+    //唯一生效队列判断
     if (handler && (handler != hashCode + '_' + msgId)) {
         return;
     }
-
-    postMessage(client);
-    client.request.data = [];
-    client = null;
+    opts.response = {
+        type: 'worker',
+        data: data
+    };
+    postMessage(opts);
 };
 export const boundaryOverlay = BoundaryOverlay;
