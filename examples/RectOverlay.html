@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>RectOverlay</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+    body,
+    html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+
+    #allmap {
+        width: 100%;
+        height: 100%;
+    }
+
+    p {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
+    <script src="./data/recdata.js"></script>
+    <script src="../dist/inmap.js"></script>
+</head>
+
+<body>
+    <div id="allmap"></div>
+</body>
+
+</html>
+<script>
+var inmap = new inMap.Map({
+    id: 'allmap',
+    skin: "WhiteLover",
+    center: ["116.407395", "39.904211"],
+    zoom: {
+        value: 12, //当前地图级别
+        show: true, //放大缩小按钮显示
+        max: 18,
+        min: 11
+    }
+});
+let datas = data.data.datas;
+var overlay = new inMap.RectOverlay({
+    tooltip: {
+        show: true,
+        position: 'top',
+        offsets: {
+            top: 5,
+            left: 12,
+        },
+    },
+    style: {
+        normal: {
+            size: 10,
+            padding: 2,
+        },
+        colors: [],
+        mouseOver: {
+            backgroundColor: 'blue',
+
+        },
+        selected: {
+            backgroundColor: 'blue'
+        },
+        splitList: [{ "start": 0, "end": 22837, "backgroundColor": "rgba(251,245,220,0.5)" }, { "start": 22837, "end": 45674, "backgroundColor": "rgba(255,237,161,0.5)" }, { "start": 45674, "end": 68511, "backgroundColor": "rgba(249,228,124,0.5)" }, { "start": 68511, "end": 91348, "backgroundColor": "rgba(254,199,93,0.5)" }, { "start": 91348, "end": 114185, "backgroundColor": "rgba(255,166,47,0.5)" }, { "start": 114185, "end": 137022, "backgroundColor": "rgba(249,130,44,0.5)" }, { "start": 137022, "end": 159859, "backgroundColor": "rgba(243,73,45,0.5)" }, { "start": 159859, "end": 182696, "backgroundColor": "rgba(216,14,16,0.5)" }, { "start": 182696, "end": 205533, "backgroundColor": "rgba(179,0,36,0.5)" }, { "start": 205533, "end": 228370, "backgroundColor": "rgba(114,0,34,0.5)" }, { "start": 228370, "backgroundColor": "rgba(76,0,34,0.5)" }]
+    },
+    // data: datas,
+    event: {
+        onState(state) {
+            console.log(state);
+        }
+    }
+});
+overlay.setPoints(datas)
+inmap.add(overlay);
+
+setTimeout(()=>{
+    overlay.setSelectd('neX==39.97424723')
+},7000)
+
+</script>

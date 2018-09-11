@@ -158,9 +158,8 @@ export default class RectOverlay extends Parameter {
         clearPushArray(this._workerData, []);
         this._map && this._drawMap();
     }
-    getTarget(x, y) {
+    _getTarget(x, y) {
         let data = this._workerData;
-        let zoomUnit = data.zoomUnit;
 
         let grids = data.grids || [];
 
@@ -260,7 +259,7 @@ export default class RectOverlay extends Parameter {
         if (item.count == 0) {
             color = 'rgba(255,255,255,0)';
         } else {
-            let style = this.setDrawStyle(item);
+            let style = this._setDrawStyle(item,true);
             color = style.backgroundColor;
         }
         return color;
@@ -289,7 +288,7 @@ export default class RectOverlay extends Parameter {
         // console.timeEnd("绘制矩形");
 
     }
-    findIndexSelectItem(item) {
+    _findIndexSelectItem(item) {
         let index = -1;
         if (item) {
             index = this._selectItem.findIndex(function(val) {
@@ -298,44 +297,44 @@ export default class RectOverlay extends Parameter {
         }
         return index;
     }
-    tMouseClick(event) {
-        if (this._eventType == 'onmoving') return;
-        this._eventType = event.type;
-        let {
-            multiSelect
-        } = this._eventConfig;
-        let result = this.getTarget(event.pixel.x, event.pixel.y);
-        if (result.index == -1) {
-            return;
-        }
-        let item = result.item;
-        //判断是否二次点击表示取消选中
-        const _item = this._selectItemContains(item);
-        if (_item) {
-            this._deleteSelectItem(item); //二次点击取消选中
-        } else {
-            if (multiSelect) {
-                if (this._selectItemContains(item)) {
-                    this._deleteSelectItem(item); //二次点击取消选中
-                } else {
-                    this._selectItem.push(result.item);
-                }
+    // tMouseClick(event) {
+    //     if (this._eventType == 'onmoving') return;
+    //     this._eventType = event.type;
+    //     let {
+    //         multiSelect
+    //     } = this._eventConfig;
+    //     let result = this._getTarget(event.pixel.x, event.pixel.y);
+    //     if (result.index == -1) {
+    //         return;
+    //     }
+    //     let item = result.item;
+    //     //判断是否二次点击表示取消选中
+    //     const _item = this._selectItemContains(item);
+    //     if (_item) {
+    //         this._deleteSelectItem(item); //二次点击取消选中
+    //     } else {
+    //         if (multiSelect) {
+    //             if (this._selectItemContains(item)) {
+    //                 this._deleteSelectItem(item); //二次点击取消选中
+    //             } else {
+    //                 this._selectItem.push(result.item);
+    //             }
 
-            } else {
-                this._selectItem = [result.item];
-            }
-        }
+    //         } else {
+    //             this._selectItem = [result.item];
+    //         }
+    //     }
 
 
-        this._swopData(result.index, item);
-        this._eventConfig.onMouseClick(this._selectItem, event);
+    //     this._swopData(result.index, item);
+    //     this._eventConfig.onMouseClick(this._selectItem, event);
 
-        this.refresh();
-        // if (isMobile) {
-        //     this._overItem = item;
-        //     this._setTooltip(event);
-        // }
-    }
+    //     this.refresh();
+    //     if (isMobile) {
+    //         this._overItem = item;
+    //         this._setTooltip(event);
+    //     }
+    // }
     tMouseleave() {
         if (this.tooltipDom) {
             this.tooltipDom.style.display = 'none';
@@ -343,37 +342,37 @@ export default class RectOverlay extends Parameter {
         this._eventConfig.onMouseLeave();
 
     }
-    tMousemove(event) {
-        if (this._eventType == 'onmoving') {
-            return;
-        }
-        if (!this.tooltip.show && isEmpty(this._styleConfig.mouseOver)) {
+    // tMousemove(event) {
+    //     if (this._eventType == 'onmoving') {
+    //         return;
+    //     }
+    //     if (!this.tooltip.show && isEmpty(this._styleConfig.mouseOver)) {
 
-            return;
-        }
+    //         return;
+    //     }
 
-        let result = this.getTarget(event.pixel.x, event.pixel.y);
-        let temp = result.item;
+    //     let result = this._getTarget(event.pixel.x, event.pixel.y);
+    //     let temp = result.item;
 
-        if (temp != this._overItem) { //防止过度重新绘画
-            this._overItem = temp;
-            if (temp) {
-                this._swopData(result.index, result.item);
-            }
-            this._eventType = 'mousemove';
-            if (!isEmpty(this._styleConfig.mouseOver)) {
-                this.refresh();
-            }
-        }
-        if (temp) {
-            this._map.setDefaultCursor('pointer');
-        } else {
-            this._map.setDefaultCursor('default');
-        }
+    //     if (temp != this._overItem) { //防止过度重新绘画
+    //         this._overItem = temp;
+    //         if (temp) {
+    //             this._swopData(result.index, result.item);
+    //         }
+    //         this._eventType = 'mousemove';
+    //         if (!isEmpty(this._styleConfig.mouseOver)) {
+    //             this.refresh();
+    //         }
+    //     }
+    //     if (temp) {
+    //         this._map.setDefaultCursor('pointer');
+    //     } else {
+    //         this._map.setDefaultCursor('default');
+    //     }
 
-        this._setTooltip(event);
-        this._eventConfig.onMouseOver(temp, event);
-    }
+    //     this._setTooltip(event);
+    //     this._eventConfig.onMouseOver(temp, event);
+    // }
     /**
      * 设置选中
      * @param {*} exp  表达式
