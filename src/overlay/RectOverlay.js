@@ -297,50 +297,46 @@ export default class RectOverlay extends Parameter {
         }
         return index;
     }
-    // tMouseClick(event) {
-    //     if (this._eventType == 'onmoving') return;
-    //     this._eventType = event.type;
-    //     let {
-    //         multiSelect
-    //     } = this._eventConfig;
-    //     let result = this._getTarget(event.pixel.x, event.pixel.y);
-    //     if (result.index == -1) {
-    //         return;
-    //     }
-    //     let item = result.item;
-    //     //判断是否二次点击表示取消选中
-    //     const _item = this._selectItemContains(item);
-    //     if (_item) {
-    //         this._deleteSelectItem(item); //二次点击取消选中
-    //     } else {
-    //         if (multiSelect) {
-    //             if (this._selectItemContains(item)) {
-    //                 this._deleteSelectItem(item); //二次点击取消选中
-    //             } else {
-    //                 this._selectItem.push(result.item);
-    //             }
-
-    //         } else {
-    //             this._selectItem = [result.item];
-    //         }
-    //     }
-
-
-    //     this._swopData(result.index, item);
-    //     this._eventConfig.onMouseClick(this._selectItem, event);
-
-    //     this.refresh();
-    //     if (isMobile) {
-    //         this._overItem = item;
-    //         this._setTooltip(event);
-    //     }
-    // }
     tMouseleave() {
         if (this.tooltipDom) {
             this.tooltipDom.style.display = 'none';
         }
         this._eventConfig.onMouseLeave();
 
+    }
+    _tMouseClick(event){
+        //未配置selected的情况下点击不会触发重绘
+        if(JSON.stringify(this._styleConfig.selected) === '{}'){
+            return 
+        }
+        if (this._eventType == 'onmoving') return;
+        let {
+            multiSelect
+        } = this._eventConfig;
+        let result = this._getTarget(event.pixel.x, event.pixel.y);
+        if (result.index == -1) {
+            return;
+        }
+        let item = JSON.parse(JSON.stringify(result.item)); //优化
+        if (multiSelect) {
+            if (this._selectItemContains(item)) {
+                this._deleteSelectItem(item); //二次点击取消选中
+            } else {
+                this._selectItem.push(result.item);
+            }
+
+        } else {
+            clearPushArray(this._selectItem, result.item);
+        }
+
+        this._swopData(result.index, item);
+        this._eventConfig.onMouseClick.call(this, this._selectItem, event);
+
+        this.refresh();
+        if (detectmob()) {
+            this._overItem = item;
+            this._setTooltip(event);
+        }
     }
     // tMousemove(event) {
     //     if (this._eventType == 'onmoving') {
