@@ -38,7 +38,7 @@ export default class RectOverlay extends Parameter {
         this._drawMap();
     }
     _drawMap() {
-        this._clearData();
+        // this._clearData();
         if (this.lock) {
             return;
         }
