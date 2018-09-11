@@ -137,6 +137,7 @@ export default class Parameter extends CanvasOverlay {
      * @param {*} otherMode  是否返回选中数据集的样式
      */
     _setDrawStyle(item, otherMode) {
+        console.log('setdrawstyle')
         let normal = this._styleConfig.normal, //正常样式
             mouseOverStyle = this._styleConfig.mouseOver, //悬浮样式
             selectedStyle = this._styleConfig.selected; //选中样式
