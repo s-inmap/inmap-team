@@ -187,8 +187,6 @@ export default class Parameter extends CanvasOverlay {
             }
         }
         result = merge(result, item.style || {});
-        if(JSON.stringify(this._overItem) === JSON.stringify(item))
-            console.log('================================')
 
         if (mouseOverStyle && this._overItem == item) {
             result = merge(result, mouseOverStyle, {
@@ -329,6 +327,10 @@ export default class Parameter extends CanvasOverlay {
         let temp = result.item;
 
         if (temp != this._overItem) { //防止过度重新绘画
+            //在同一个格子上移动时不重复触发mousemove
+            if(temp && this._overItem && JSON.stringify(this._overItem) === JSON.stringify(temp)){
+                return
+            }
             this._overItem = temp;
             if (temp) {
                 this._swopData(result.index, result.item);
