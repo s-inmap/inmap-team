@@ -5,6 +5,7 @@ import PointOverlay from './overlay/PointOverlay';
 
 import GriddingOverlay from './overlay/GriddingOverlay';
 import PolygonOverlay from './overlay/PolygonOverlay';
+import RectOverlay from './overlay/RectOverlay';
 
 import HeatOverlay from './overlay/HeatOverlay';
 import LineStringOverlay from './overlay/LineStringOverlay';
@@ -30,6 +31,7 @@ const inMap = {
     PointOverlay,
     GriddingOverlay,
     PolygonOverlay,
+    RectOverlay,
     PolygonEditorOverlay,
     HeatOverlay,
     LineStringOverlay,
@@ -48,6 +50,7 @@ export {
     PointOverlay,
     GriddingOverlay,
     PolygonOverlay,
+    RectOverlay,
     PolygonEditorOverlay,
     HeatOverlay,
     LineStringOverlay,
