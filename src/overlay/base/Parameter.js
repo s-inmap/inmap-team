@@ -14,7 +14,7 @@ let isMobile = detectmob();
  */
 export default class Parameter extends CanvasOverlay {
     constructor(baseConfig, ops) {
-        super();
+        super(ops);
         this._data = []; //数据
         this._workerData = []; //转换后的数据
         this._option = {};
@@ -140,24 +140,47 @@ export default class Parameter extends CanvasOverlay {
         let normal = this._styleConfig.normal, //正常样式
             mouseOverStyle = this._styleConfig.mouseOver, //悬浮样式
             selectedStyle = this._styleConfig.selected; //选中样式
-        let result = {};
-        result = merge(result, normal);
+        // let result = {};
+        // result = merge(result, normal);
+        // //区间样式
+        // let splitList = this._styleConfig.splitList;
+        // for (let i = 0; i < splitList.length; i++) {
+        //     let condition = splitList[i];
+        //     if (i == splitList.length - 1) {
+        //         if (condition.end == null) {
+        //             if (item.count >= condition.start) {
+        //                 result = this._mergeCondition(result, condition);
+        //                 break;
+        //             }
+        //         } else if (item.count >= condition.start && item.count <= condition.end) {
+        //             result = this._mergeCondition(result, condition);
+        //             break;
+        //         }
+        //     } else {
+        //         if (item.count >= condition.start && item.count < condition.end) {
+        //             result = this._mergeCondition(result, condition);
+        //             break;
+        //         }
+        //     }
+        // }
+        let result = merge({}, normal);
+        let count = parseFloat(item.count);
         //区间样式
         let splitList = this._styleConfig.splitList;
         for (let i = 0; i < splitList.length; i++) {
             let condition = splitList[i];
             if (i == splitList.length - 1) {
                 if (condition.end == null) {
-                    if (item.count >= condition.start) {
+                    if (count >= condition.start) {
                         result = this._mergeCondition(result, condition);
                         break;
                     }
-                } else if (item.count >= condition.start && item.count <= condition.end) {
+                } else if (count >= condition.start && count <= condition.end) {
                     result = this._mergeCondition(result, condition);
                     break;
                 }
             } else {
-                if (item.count >= condition.start && item.count < condition.end) {
+                if (count >= condition.start && count < condition.end) {
                     result = this._mergeCondition(result, condition);
                     break;
                 }

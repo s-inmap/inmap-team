@@ -22,6 +22,10 @@ export default class GriddingOverlay extends Parameter {
         this._eventConfig.onState.call(this, this._state);
     }
 
+    draw() {
+        this._toDraw();
+    }
+
     refresh() {
         this._setState(State.drawBefore);
         this._drawRec();
