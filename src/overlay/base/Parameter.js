@@ -140,29 +140,7 @@ export default class Parameter extends CanvasOverlay {
         let normal = this._styleConfig.normal, //正常样式
             mouseOverStyle = this._styleConfig.mouseOver, //悬浮样式
             selectedStyle = this._styleConfig.selected; //选中样式
-        // let result = {};
-        // result = merge(result, normal);
-        // //区间样式
-        // let splitList = this._styleConfig.splitList;
-        // for (let i = 0; i < splitList.length; i++) {
-        //     let condition = splitList[i];
-        //     if (i == splitList.length - 1) {
-        //         if (condition.end == null) {
-        //             if (item.count >= condition.start) {
-        //                 result = this._mergeCondition(result, condition);
-        //                 break;
-        //             }
-        //         } else if (item.count >= condition.start && item.count <= condition.end) {
-        //             result = this._mergeCondition(result, condition);
-        //             break;
-        //         }
-        //     } else {
-        //         if (item.count >= condition.start && item.count < condition.end) {
-        //             result = this._mergeCondition(result, condition);
-        //             break;
-        //         }
-        //     }
-        // }
+
         let result = merge({}, normal);
         let count = parseFloat(item.count);
         //区间样式
@@ -327,8 +305,7 @@ export default class Parameter extends CanvasOverlay {
         let temp = result.item;
 
         if (temp != this._overItem) { //防止过度重新绘画
-            //在同一个格子上移动时不重复触发mousemove
-            if(temp && this._overItem && JSON.stringify(this._overItem) === JSON.stringify(temp)){
+            if(temp && this._overItem){
                 return
             }
             this._overItem = temp;

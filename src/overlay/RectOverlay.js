@@ -338,37 +338,43 @@ export default class RectOverlay extends Parameter {
             this._setTooltip(event);
         }
     }
-    // tMousemove(event) {
-    //     if (this._eventType == 'onmoving') {
-    //         return;
-    //     }
-    //     if (!this.tooltip.show && isEmpty(this._styleConfig.mouseOver)) {
+    _tMousemove(event) {
+        if (this._eventType == 'onmoving') {
+            return;
+        }
+        if (!this._tooltipConfig.show && isEmpty(this._styleConfig.mouseOver)) {
+            return;
+        }
 
-    //         return;
-    //     }
+        let result = this._getTarget(event.pixel.x, event.pixel.y);
+        let temp = result.item;
 
-    //     let result = this._getTarget(event.pixel.x, event.pixel.y);
-    //     let temp = result.item;
+        if (temp != this._overItem) { //防止过度重新绘画
+            //在同一个格子上移动时不重复触发mousemove
+            if(temp && this._overItem && JSON.stringify(this._overItem) === JSON.stringify(temp)){
+                return
+            }
+            this._overItem = temp;
+            if (temp) {
+                this._swopData(result.index, result.item);
+            }
+            this._eventType = 'mousemove';
+            if (!isEmpty(this._styleConfig.mouseOver)) {
+                console.log(!isEmpty(this._eventConfig.onMouseOver))
+                this.refresh();
+                if(this._eventConfig.onMouseOver){
+                    this._eventConfig.onMouseOver.call(this, this._overItem, event);
+                }
+            }
+        }
+        if (temp) {
+            this._map.setDefaultCursor('pointer');
+        } else {
+            this._map.setDefaultCursor('default');
+        }
 
-    //     if (temp != this._overItem) { //防止过度重新绘画
-    //         this._overItem = temp;
-    //         if (temp) {
-    //             this._swopData(result.index, result.item);
-    //         }
-    //         this._eventType = 'mousemove';
-    //         if (!isEmpty(this._styleConfig.mouseOver)) {
-    //             this.refresh();
-    //         }
-    //     }
-    //     if (temp) {
-    //         this._map.setDefaultCursor('pointer');
-    //     } else {
-    //         this._map.setDefaultCursor('default');
-    //     }
-
-    //     this._setTooltip(event);
-    //     this._eventConfig.onMouseOver(temp, event);
-    // }
+        this._setTooltip(event);
+    }
     /**
      * 设置选中
      * @param {*} exp  表达式
