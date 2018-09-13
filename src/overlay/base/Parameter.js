@@ -289,8 +289,10 @@ export default class Parameter extends CanvasOverlay {
             this._workerData[index] = this._workerData[this._workerData.length - 1];
             this._workerData[this._workerData.length - 1] = item;
         }
+        // console.log('in _swopData is ', this._workerData)
     }
     _tMouseleave() {
+        // console.log('_tMouseleave')
         this.tooltip.hide();
     }
     _tMousemove(event) {
