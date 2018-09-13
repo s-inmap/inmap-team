@@ -5,7 +5,7 @@ import {
     isEmpty,
 } from './../common/util';
 import State from './../config/OnStateConfig';
-import EV from './../common/ev'
+// import EV from './../common/ev'
 /*
  * 点的绘制
  */
@@ -215,62 +215,62 @@ export default class ImgOverlay extends Parameter {
 
         }
     }
-    _tMousemove(event) {
-        if (this._eventType == 'onmoving') {
-            return;
-        }
-        if (!this._tooltipConfig.show && isEmpty(this._styleConfig.mouseOver)) {
-            return;
-        }
+    // _tMousemove(event) {
+    //     if (this._eventType == 'onmoving') {
+    //         return;
+    //     }
+    //     if (!this._tooltipConfig.show && isEmpty(this._styleConfig.mouseOver)) {
+    //         return;
+    //     }
 
-        //核心逻辑是同一pixel下找到一次就不会再找
-        if(EV.getEV() === null){
-            EV.setEV(event)
-        }
-        else{
-            if(event.pixel.x === EV.getEV().pixel.x && event.pixel.y === EV.getEV().pixel.y){
-                if(EV.getIsFind())
-                    return
-            }
-            else{
-                EV.setEV(event)
-                EV.setIsFind(false)
-            }
-        }
+    //     //核心逻辑是同一pixel下找到一次就不会再找
+    //     if(EV.getEV() === null){
+    //         EV.setEV(event)
+    //     }
+    //     else{
+    //         if(event.pixel.x === EV.getEV().pixel.x && event.pixel.y === EV.getEV().pixel.y){
+    //             if(EV.getIsFind())
+    //                 return
+    //         }
+    //         else{
+    //             EV.setEV(event)
+    //             EV.setIsFind(false)
+    //         }
+    //     }
         
-        let result = this._getTarget(event.pixel.x, event.pixel.y);
-        let temp = result.item;
-        if(EV.getIsFind()){
-            return
-        }
-        if(temp){
-            EV.setIsFind(true)
-        }
+    //     let result = this._getTarget(event.pixel.x, event.pixel.y);
+    //     let temp = result.item;
+    //     if(EV.getIsFind()){
+    //         return
+    //     }
+    //     if(temp){
+    //         EV.setIsFind(true)
+    //     }
       
-        if (temp != this._overItem) { //防止过度重新绘画
-            // if(temp && this._overItem){
-            //     return
-            // }
-            this._overItem = temp;
-            if (temp) {
-                this._swopData(result.index, result.item);
-            }
-            this._eventType = 'mousemove';
-            if (!isEmpty(this._styleConfig.mouseOver)) {
-                this.refresh();
-            }
-        }
-        if (temp) {
-            this._map.setDefaultCursor('pointer');
-        } else {
-            this._map.setDefaultCursor('default');
-        }
-        this._setTooltip(event,temp);
+    //     if (temp != this._overItem) { //防止过度重新绘画
+    //         // if(temp && this._overItem){
+    //         //     return
+    //         // }
+    //         this._overItem = temp;
+    //         if (temp) {
+    //             this._swopData(result.index, result.item);
+    //         }
+    //         this._eventType = 'mousemove';
+    //         if (!isEmpty(this._styleConfig.mouseOver)) {
+    //             this.refresh();
+    //         }
+    //     }
+    //     if (temp) {
+    //         this._map.setDefaultCursor('pointer');
+    //     } else {
+    //         this._map.setDefaultCursor('default');
+    //     }
+    //     this._setTooltip(event,temp);
 
-    }
-    _setTooltip(event,item) {
-        this.toolTip.render(event, item);
-    }
+    // }
+    // _setTooltip(event,item) {
+    //     this.toolTip.render(event, item);
+    // }
     _drawImage(ctx, img, x, y, width, height) {
         ctx.drawImage(img, x, y, width, height);
     }

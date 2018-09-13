@@ -120,10 +120,10 @@ export default class Legend {
         this._dom.innerHTML = str;
 
     }
-    dispose(parentDom) {
-        parentDom.removeChild(this._dom);
-        this._opts = null;
-        this._dom = null;
+    dispose() {
+         this._dom.parentNode.removeChild(this._dom);
+         this._opts = null;
+         this._dom = null;
 
     }
 }
