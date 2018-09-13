@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PointOverlayay</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+    body,
+    html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+
+    #allmap {
+        width: 100%;
+        height: 100%;
+    }
+
+    p {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
+    <script src="data/data3.js"></script>
+    <!-- <script src="../dist/inmap.js"></script> -->
+    <script src="https://smartdata.b0.upaiyun.com/thinkmark/inmap.min1.js"></script>
+</head>
+
+<body>
+    <div id="allmap"></div>
+</body>
+
+</html>
+<script>
+var inmap = new inMap.Map({
+    id: 'allmap',
+    skin: "Blueness",
+    center: [116.407395, 39.904211],
+    zoom: {
+        value: 12,
+        show: true,
+        max: 18,
+        min: 5
+    },
+})
+let points = data.data.storeList;
+points.map(item => {
+    item.count = 6;
+    item.geometry = {
+        "type": "Point",
+        "coordinates": [String(item.lng), String(item.lat)]
+    }
+})
+var overlay = new inMap.PointOverlay({
+    tooltip: {
+        show: true,
+        formatter: function(params) {
+            let message;
+            if (params.incomeMonthly == '0') {
+                message = '月流水未上传';
+            } else {
+                message = '月流水<em>' + params.incomeMonthly + '</em>元';
+            }
+            return ('<div class="mapLabel"><div class="name">' + params.name + '</div><div class="storeinfo">' + message + '</div><div class="arraw"></div></div>');
+        },
+        offsets: {
+            top: 5,
+            left: 12,
+        }
+    },
+    legend: {
+        show: false,
+        title: "标题",
+        formatter: function(start, end, index, item) {
+            console.log(start, end, index, item)
+            return start + "万~" + (end || "max") + "万";
+        },
+    },
+    style: {
+        normal: {
+            backgroundColor: 'rgba(200, 200, 50, 1)',
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,1)",
+            size: 6,
+        },
+    },
+    data: points,
+    event: {
+        onState(state) {
+            console.log(state);
+        },
+        // multiSelect: true,
+        onMouseClick: function(item, event) {
+            console.log(item);
+            //能获取当前点的信息
+        }
+    }
+});
+inmap.add(overlay);
+</script>
