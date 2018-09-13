@@ -1,12 +1,10 @@
- import ToolTip from './ToolTip';
- export default class Toolbar {
+export default class Toolbar {
      constructor(mapDom) {
-         let toolDom = this._create(mapDom);
-         let toolTip = new ToolTip(toolDom);
-         let legendContainer = this._createLegendContainer(toolDom);
+         let container = this._create(mapDom);
+         let legendContainer = this._createLegendContainer(container);
          return {
+             container,
              legendContainer,
-             toolTip
          };
      }
      _create(mapDom) {
@@ -21,4 +19,4 @@
          parentDom.appendChild(div);
          return div;
      }
- }
+ } 
