@@ -136,9 +136,9 @@ points2.map((item, index) => {
             "coordinates": [String(item.lng), String(item.lat)]
         }
     })
-    // let overlay1 = createDotOverlay()
-    // overlay1.setData(oldData);
-    // overlay1.setZIndex(600);
+    let overlay1 = createDotOverlay()
+    overlay1.setData(oldData);
+    overlay1.setZIndex(600);
 
     let overlay2 = createImgOverlay()
     overlay2.setData(oldData);
@@ -147,35 +147,36 @@ points2.map((item, index) => {
 
 
 
-// function createDotOverlay() {
-//     let overlay1 = new inMap.PointOverlay({
-//         tooltip: {
-//             // show:true
-//         },
-//         style: {
-//             normal: {
-//                 backgroundColor: 'rgba(129, 186, 246, 0.10)',
-//                 borderColor: "rgba(45, 140, 240, 0.60)",
-//                 borderWidth: 1,
-//                 size: 7
-//             },
-//         },
-//         event: {
-//             onState: (state) => {
-//                 if (state == 3) {}
-//             }
-//         }
-//     });
-//     //去掉点击事件
-//     overlay1._tMouseClick = null;
-//     overlay1.type = 1;
-//     inmap.add(overlay1);
-//     return overlay1;
-// }
+function createDotOverlay() {
+    let overlay1 = new inMap.PointOverlay({
+        tooltip: {
+            // show:true
+        },
+        style: {
+            normal: {
+                backgroundColor: 'rgba(129, 186, 246, 0.10)',
+                borderColor: "rgba(45, 140, 240, 0.60)",
+                borderWidth: 1,
+                unit: 'm',
+                size: 500
+            },
+        },
+        event: {
+            onState: (state) => {
+                if (state == 3) {}
+            }
+        }
+    });
+    //去掉点击事件
+    overlay1._tMouseClick = null;
+    overlay1.type = 1;
+    inmap.add(overlay1);
+    return overlay1;
+}
 
-// let overlay1 = createDotOverlay()
-// overlay1.setData(points);
-// overlay1.setZIndex(700);
+let overlay1 = createDotOverlay()
+overlay1.setData(points);
+overlay1.setZIndex(700);
 
 
 
@@ -234,8 +235,38 @@ function createImgOverlay(type) {
 
 let overlay = createImgOverlay(1)
 overlay.setData(points);
-console.log('points is ',points.length)
+console.log('points is ', points.length)
 overlay.setZIndex(799);
-console.log('overlay is ',overlay)
-console.log('map is ',this.inmap)
+console.log('overlay is ', overlay)
+console.log('map is ', this.inmap)
+
+const drawOption = {
+    fillColor: '#FF0000',
+    fillOpacity: 0.1,
+    strokeStyle: 'solid',
+    strokeColor: "#FF0000",
+    strokeWeight: 1,
+    enableClicking: true
+}
+
+function drawLngLat(lng, lat) {
+    return new BMap.Point(lng, lat);
+}
+
+function drawCircle(point, radius) {
+    var opts = {};
+
+    opts.fillColor = drawOption.fillColor;
+    opts.fillOpacity = drawOption.fillOpacity;
+    opts.strokeStyle = drawOption.strokeStyle;
+    opts.strokeColor = drawOption.strokeColor;
+    opts.strokeWeight = drawOption.strokeWeight;
+    opts.enableClicking = drawOption.enableClicking;
+
+
+    return new BMap.Circle(point, radius, opts);
+}
+let point = drawLngLat('116.475959000000003', '39.9216699999999989');
+let circle = drawCircle(point, 500);
+inmap.add(circle);
 </script>
