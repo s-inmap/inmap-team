@@ -84,7 +84,7 @@ export default class PointOverlay extends Parameter {
      */
     _getMpp() {
         let mapCenter = this._map.getCenter();
-        let assistValue = 10;
+        let assistValue = 1;
         let cpt = new BMap.Point(mapCenter.lng, mapCenter.lat + assistValue);
         let dpx = Math.abs(this._map.pointToPixel(mapCenter).y - this._map.pointToPixel(cpt).y);
         return this._map.getDistance(mapCenter, cpt) / dpx;
