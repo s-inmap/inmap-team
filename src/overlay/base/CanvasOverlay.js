@@ -66,8 +66,10 @@ export default class CanvasOverlay extends BaseClass {
         // this.legend = new Legend(legendContainer);
         // this.toolTip = map._inmapToolBar.toolTip;
         // legendContainer = null;
-         this.legend = new Legend(map._inmapToolBar.legendContainer);
-         this.toolTip = new ToolTip(map._inmapToolBar.container);
+
+        this.legend = new Legend(map._inmapToolBar.legendContainer);
+        this.toolTip = new ToolTip(map._inmapToolBar.container);
+
         this._canvasInit();
         return this._container;
 
@@ -191,7 +193,7 @@ export default class CanvasOverlay extends BaseClass {
     /**
      * 设置overlay z-index
      */
-     setZIndex(zIndex) {
+    setZIndex(zIndex) {
         this._zIndex = zIndex;
         this._container.style.zIndex = this._zIndex;
     }

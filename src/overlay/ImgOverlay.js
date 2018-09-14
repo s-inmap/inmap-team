@@ -3,6 +3,7 @@ import ImgConfig from './../config/ImgConfig';
 import {
     isString,
     isEmpty,
+    merge
 } from './../common/util';
 import State from './../config/OnStateConfig';
 // import EV from './../common/ev'
@@ -23,7 +24,7 @@ export default class ImgOverlay extends Parameter {
     }
     _setState(val) {
         this._state = val;
-        this._eventConfig.onState.call(this,this._state);
+        this._eventConfig.onState.call(this, this._state);
     }
     _translation(distanceX, distanceY) {
         for (let i = 0; i < this._workerData.length; i++) {
@@ -62,7 +63,7 @@ export default class ImgOverlay extends Parameter {
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.geometry.pixel;
-            let style = this._setDrawStyle(item,true);
+            let style = this._setDrawStyle(item, true);
             let img;
             if (isString(img)) {
                 img = this._cacheImg[style.icon];
@@ -175,19 +176,20 @@ export default class ImgOverlay extends Parameter {
      */
     _setDrawStyle(item) {
         let normal = this._styleConfig.normal; //正常样式
-        let result = {};
-        Object.assign(result, normal);
-        //区间样式
+        let result = merge({}, normal);
+        let count = parseFloat(item.count);
 
+        //区间样式
         let splitList = this._styleConfig.splitList;
         for (let i = 0; i < splitList.length; i++) {
             let condition = splitList[i];
+           
             if (condition.end == null) {
-                if (item.count >= condition.start) {
+                if (count >= condition.start) {
                     Object.assign(result, normal, condition);
                     break;
                 }
-            } else if (item.count >= condition.start && item.count < condition.end) {
+            } else if (count >= condition.start && count < condition.end) {
                 Object.assign(result, normal, condition);
                 break;
             }

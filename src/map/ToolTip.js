@@ -19,7 +19,7 @@ export default class ToolTip {
     _compileTooltipTemplate(formatter) {
         //语法解析 先暂时不支持ie11
         let RexStr = /\{|\}/g;
-        formatter = formatter.replace(RexStr, function (MatchStr) {
+        formatter = formatter.replace(RexStr, function(MatchStr) {
             switch (MatchStr) {
                 case '{':
                     return 'overItem.';
@@ -92,9 +92,9 @@ export default class ToolTip {
 
     }
     dispose() {
-         this._dom.parentNode.removeChild(this._dom);
-         this._tooltipTemplate = null;
-         this._opts = null;
-         this._dom = null;
+        this._dom.parentNode.removeChild(this._dom);
+        this._tooltipTemplate = null;
+        this._opts = null;
+        this._dom = null;
     }
 }

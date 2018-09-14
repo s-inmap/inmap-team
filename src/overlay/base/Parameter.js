@@ -56,7 +56,7 @@ export default class Parameter extends CanvasOverlay {
                 throw new TypeError('inMap: data must be a Array');
             }
             this._data = points;
-            
+
         } else {
             this._data = [];
 
@@ -76,7 +76,7 @@ export default class Parameter extends CanvasOverlay {
     setPoints(points) {
         this.setData(points);
     }
-    getData() {
+    getRenderData() {
         return this._workerData;
     }
     _getTransformData() {
@@ -141,7 +141,6 @@ export default class Parameter extends CanvasOverlay {
         let normal = this._styleConfig.normal, //正常样式
             mouseOverStyle = this._styleConfig.mouseOver, //悬浮样式
             selectedStyle = this._styleConfig.selected; //选中样式
-
         let result = merge({}, normal);
         let count = parseFloat(item.count);
         //区间样式
@@ -226,9 +225,9 @@ export default class Parameter extends CanvasOverlay {
         /** 需要子类去实现 */
         return -1;
     }
-   
+
     _getTarget(x, y) {
-         /**需要子类去实现*/
+        /**需要子类去实现*/
         return {
             item: null,
             index: -1
@@ -330,7 +329,7 @@ export default class Parameter extends CanvasOverlay {
         // }
 
         if (temp != this._overItem) { //防止过度重新绘画
-            if(temp && this._overItem){
+            if (temp && this._overItem) {
                 return
             }
             this._overItem = temp;
