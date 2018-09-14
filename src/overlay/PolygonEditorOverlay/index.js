@@ -33,6 +33,14 @@
          this.isCreate = false;
 
      }
+     setZIndex(zIndex) {
+         this._zIndex = zIndex;
+         if (this._container) this._container.style.zIndex = this._zIndex;
+
+         this._polygonOverlay && this._polygonOverlay.setZIndex(this._zIndex + 1);
+         this._pointOverlay && this._pointOverlay.setZIndex(this._zIndex + 2);
+         this._virtualPointOverlay && this._virtualPointOverlay.setZIndex(this._zIndex + 4);
+     }
      _canvasInit() {
          this._polygonOverlay = new PolygonOverlay({
              style: this._opts.style.polygon,
@@ -40,7 +48,7 @@
              event: {
                  onState: (state) => {
                      if (state == 3) {
-                         this._workerData = this._polygonOverlay.getData();
+                         this._workerData = this._polygonOverlay.getRenderData();
                          if (this._workerData.length == 0) {
                              this._workerData.push({
                                  geometry: {
@@ -66,7 +74,8 @@
                      }
 
                  }
-             }
+             },
+             zIndex: this._zIndex + 1
          });
 
          this._map.addOverlay(this._polygonOverlay);
@@ -81,7 +90,8 @@
                  onDragEnd: this._dragEndPoint,
                  onDragging: this._draggingPoint,
                  onDblclick: this._dblclickPoint,
-             }
+             },
+             zIndex: this._zIndex + 2
          });
          this._map.addOverlay(this._pointOverlay);
 
@@ -94,7 +104,8 @@
              event: {
                  onDragEnd: this._dragEndVirtual,
                  onDragging: this._draggingVirtual
-             }
+             },
+             zIndex: this._zIndex + 4
          });
          this._map.addOverlay(this._virtualPointOverlay);
          this._map.addEventListener('rightclick', this._rightclick);
@@ -129,9 +140,7 @@
              this.setPath(opts.data);
          }
      }
-     create() {
-
-         this.isCreate = true;
+     _wokerDataClear() {
          this._workerData = [{
              geometry: {
                  type: 'MultiPolygon',
@@ -141,6 +150,11 @@
 
              }
          }];
+     }
+     create() {
+
+         this.isCreate = true;
+         this._wokerDataClear();
          this._createTempCache = null;
          this._createIndex = -1;
          if (this._map) {
@@ -158,7 +172,7 @@
      setPath(data) {
          this.isCreate = false;
          this._opts.data = data;
-         this._workerData = [];
+         this._wokerDataClear();
          this._pointDataGroup = [];
          this._draggingPointTemp = null;
          this._draggingVirtualTemp = null;
@@ -210,6 +224,7 @@
                  }
              }
              this._polygonOverlay && this._polygonOverlay.refresh();
+             this._eventConfig.onChange.call(this, 'translationPixel');
          }
      }
      _removeMoveEvent() {

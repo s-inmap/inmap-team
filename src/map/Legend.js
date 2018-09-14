@@ -121,9 +121,8 @@ export default class Legend {
 
     }
     dispose() {
-         this._dom.parentNode.removeChild(this._dom);
-         this._opts = null;
-         this._dom = null;
-
+        this._dom.parentNode.removeChild(this._dom);
+        this._opts = null;
+        this._dom = null;
     }
 }

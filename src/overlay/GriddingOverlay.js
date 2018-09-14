@@ -1,7 +1,7 @@
 import Parameter from './base/Parameter.js';
 import GriddingConfig from './../config/GriddingConfig.js';
 import State from './../config/OnStateConfig';
- 
+
 export default class GriddingOverlay extends Parameter {
     constructor(ops) {
         super(GriddingConfig, ops);
@@ -9,7 +9,7 @@ export default class GriddingOverlay extends Parameter {
         this._drawSize = 0;
         this._mpp = {};
     }
-   
+
     _parameterInit() {
 
     }
@@ -21,11 +21,9 @@ export default class GriddingOverlay extends Parameter {
         this._state = val;
         this._eventConfig.onState.call(this, this._state);
     }
-
     draw() {
         this._toDraw();
     }
-
     refresh() {
         this._setState(State.drawBefore);
         this._drawRec();
@@ -50,7 +48,7 @@ export default class GriddingOverlay extends Parameter {
         }
     }
     /**
-     * 获得每个像素对应多少米	
+     * 获得每个像素对应多少米  
      */
     _getMpp() {
         let mapCenter = this._map.getCenter();
@@ -126,7 +124,7 @@ export default class GriddingOverlay extends Parameter {
     _findIndexSelectItem(item) {
         let index = -1;
         if (item) {
-            index = this._selectItem.findIndex(function (val) {
+            index = this._selectItem.findIndex(function(val) {
                 return val && val.x == item.x && val.y == item.y;
             });
         }
@@ -220,7 +218,7 @@ export default class GriddingOverlay extends Parameter {
                 backgroundColor: 'rgba(255,255,255,0)'
             };
         } else {
-            return this._setDrawStyle(item,true);
+            return this._setDrawStyle(item, true);
         }
 
     }

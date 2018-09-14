@@ -19,17 +19,25 @@ export default class PointOverlay extends Parameter {
         if (!isEmpty(this._option.draw)) {
             this._batchesData = new BatchesData(this._option.draw);
         }
-        this._mouseLayer = new CanvasOverlay();
+        this._mouseLayer = new CanvasOverlay({
+            zIndex: this._zIndex + 1
+        });
         this._state = null;
         this._mpp = {};
     }
     _initLegend() {
-        if (this._styleConfig.colors.length > 0) {
+        if (this._styleConfig.splitList.length === 0 && this._styleConfig.colors.length > 0) {
             this._compileSplitList(this._getTransformData());
         } else {
             this._setlegend(this._legendConfig, this._styleConfig.splitList);
         }
 
+    }
+    setZIndex(zIndex) {
+        this._zIndex = zIndex;
+        if (this._container) this._container.style.zIndex = this._zIndex;
+
+        this._mouseLayer.setZIndex(this._zIndex + 1);
     }
     _onOptionChange() {
         this._map && this._initLegend();
@@ -186,15 +194,14 @@ export default class PointOverlay extends Parameter {
                 star = data[i].count;
             }
         }
-        //去除最后判断区间，防止区间遗漏
-        if (split.length > 0) {
-            split.push({
-                start: star,
-                end: null,
-                backgroundColor: colors[colorIndex],
-            });
 
-        }
+        data.length > 0 && split.push({
+            start: star,
+            end: null,
+            backgroundColor: colors[colorIndex],
+        });
+
+
 
 
         let result = [];

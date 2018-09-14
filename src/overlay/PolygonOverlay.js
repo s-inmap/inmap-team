@@ -17,7 +17,10 @@ export default class PolygonOverlay extends Parameter {
         this._initLegend();
     }
     _initLegend() {
-        this._compileSplitList(this._styleConfig.colors, this._getTransformData());
+        const splitList = this._styleConfig.splitList;
+        if( splitList.length === 0 ){
+            this._compileSplitList(this._styleConfig.colors, this._getTransformData());
+        }
         this._patchSplitList();
         this._setlegend(this._legendConfig, this._styleConfig.splitList);
     }
@@ -26,7 +29,7 @@ export default class PolygonOverlay extends Parameter {
      * 
      * @memberof Parameter
      */
-    _setSelectedList(list) {
+    setSelectedList(list) {
         clearPushArray(this._selectItem, list);
     }
     _clearSelectedList() {
@@ -93,8 +96,7 @@ export default class PolygonOverlay extends Parameter {
      * @param {} data 
      */
     _compileSplitList(colors, data) {
-
-        if (colors.length <= 0) return;
+        if ( colors.length <= 0) return;
         data = data.sort((a, b) => {
             return parseFloat(a.count) - parseFloat(b.count);
         });
@@ -122,15 +124,13 @@ export default class PolygonOverlay extends Parameter {
                 star = data[i].count;
             }
         }
-        //去除最后判断区间，防止区间遗漏
-        if (split.length > 0) {
-            split.push({
-                start: star,
-                end: null,
-                backgroundColor: colors[colorIndex],
-            });
 
-        }
+        data.length > 0 && split.push({
+            start: star,
+            end: null,
+            backgroundColor: colors[colorIndex],
+        });
+
         let result = [];
         for (let i = 0; i < split.length; i++) {
             let item = split[i];
@@ -139,7 +139,6 @@ export default class PolygonOverlay extends Parameter {
                 result.push(item);
             }
         }
-
         this._styleConfig.splitList = result;
     }
     _patchSplitList() {
@@ -199,7 +198,7 @@ export default class PolygonOverlay extends Parameter {
 
         this._setState(State.drawBefore);
         this._clearCanvas();
-        this._drawLine(this.getData());
+        this._drawLine(this.getRenderData());
         this._setState(State.drawAfter);
     }
     _drawMap() {
@@ -220,7 +219,7 @@ export default class PolygonOverlay extends Parameter {
         });
     }
     _getTarget(x, y) {
-        let data = this.getData();
+        let data = this.getRenderData();
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
             let geometry = item.geometry;
