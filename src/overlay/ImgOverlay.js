@@ -22,6 +22,13 @@ export default class ImgOverlay extends Parameter {
     setOptionStyle(ops) {
         this._setStyle(this._option, ops);
     }
+    setTooltipIsShow(val) {
+        this.setOptionStyle({
+            tooltip: {
+                show: val
+            }
+        });
+    }
     _setState(val) {
         this._state = val;
         this._eventConfig.onState.call(this, this._state);
@@ -106,7 +113,7 @@ export default class ImgOverlay extends Parameter {
     _findIndexSelectItem(item) {
         let index = -1;
         if (item) {
-            index = this._selectItem.findIndex(function (val) {
+            index = this._selectItem.findIndex(function(val) {
                 return val && val.lat == item.lat && val.lng == item.lng;
             });
         }
@@ -127,7 +134,7 @@ export default class ImgOverlay extends Parameter {
             if (!image) {
                 let image = new Image();
                 image.src = img;
-                image.onload = function () {
+                image.onload = function() {
                     me._cacheImg[img] = image;
                     fun(image);
                 };
@@ -183,7 +190,7 @@ export default class ImgOverlay extends Parameter {
         let splitList = this._styleConfig.splitList;
         for (let i = 0; i < splitList.length; i++) {
             let condition = splitList[i];
-           
+
             if (condition.end == null) {
                 if (count >= condition.start) {
                     Object.assign(result, normal, condition);
@@ -239,7 +246,7 @@ export default class ImgOverlay extends Parameter {
     //             EV.setIsFind(false)
     //         }
     //     }
-        
+
     //     let result = this._getTarget(event.pixel.x, event.pixel.y);
     //     let temp = result.item;
     //     if(EV.getIsFind()){
@@ -248,7 +255,7 @@ export default class ImgOverlay extends Parameter {
     //     if(temp){
     //         EV.setIsFind(true)
     //     }
-      
+
     //     if (temp != this._overItem) { //防止过度重新绘画
     //         // if(temp && this._overItem){
     //         //     return

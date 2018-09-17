@@ -92,13 +92,17 @@
     <script src="data/data3.js"></script>
     <script src="data/data4.js"></script>
     <script src="../dist/inmap.js"></script>
-    <!--<script type="text/javascript" src="http://unpkg.com/inmap/dist/inmap.min.js"></script>
-
-     <script src="https://smartdata.b0.upaiyun.com/thinkmark/inmap.min1.js"></script> -->
+    <!-- <script type="text/javascript" src="http://unpkg.com/inmap/dist/inmap.min.js"></script> -->
+    <!-- <script src="https://smartdata.b0.upaiyun.com/thinkmark/inmap_g_v2.min.js"></script> -->
 </head>
 
 <body>
     <div id="allmap"></div>
+    <div style="position: absolute;right:0;top:0">
+        <button onclick="showYellow()">显示黄色</button>
+        <button onclick="hideYellow()">隐藏黄色</button>
+        <button onclick="showTip()">显示tooltip</button>
+    </div>
 </body>
 
 </html>
@@ -114,41 +118,10 @@ var inmap = new inMap.Map({
         min: 5
     },
 })
-let points = data.data.storeList;
-points.map(item => {
-    item.count = 6;
-    item.geometry = {
-        "type": "Point",
-        "coordinates": [String(item.lng), String(item.lat)]
-    }
-})
-
-//排斥点
-let points2 = list.data;
-// console.log(points2);
-
-points2.map((item, index) => {
-    let oldData = item.stores;
-    oldData.map(item => {
-        item.count = 6;
-        item.geometry = {
-            "type": "Point",
-            "coordinates": [String(item.lng), String(item.lat)]
-        }
-    })
-    let overlay1 = createDotOverlay()
-    overlay1.setData(oldData);
-    overlay1.setZIndex(600);
-
-    let overlay2 = createImgOverlay()
-    overlay2.setData(oldData);
-    overlay2.setZIndex(699);
-})
-
-
+var map = inmap.getMap();
 
 function createDotOverlay() {
-    let overlay1 = new inMap.PointOverlay({
+    let overlay = new inMap.PointOverlay({
         tooltip: {
             // show:true
         },
@@ -168,18 +141,11 @@ function createDotOverlay() {
         }
     });
     //去掉点击事件
-    overlay1._tMouseClick = null;
-    overlay1.type = 1;
-    inmap.add(overlay1);
-    return overlay1;
+    overlay._tMouseClick = null;
+    overlay.type = 1;
+    inmap.add(overlay);
+    return overlay;
 }
-
-let overlay1 = createDotOverlay()
-overlay1.setData(points);
-overlay1.setZIndex(700);
-
-
-
 
 function createImgOverlay(type) {
     let img = new Image();
@@ -190,7 +156,7 @@ function createImgOverlay(type) {
     }
     var overlay = new inMap.ImgOverlay({
         tooltip: {
-            show: true,
+            show: false,
             customClass: "auto",
             formatter: function(params) {
                 if (type === 1) {
@@ -233,13 +199,96 @@ function createImgOverlay(type) {
     return overlay;
 }
 
-let overlay = createImgOverlay(1)
-overlay.setData(points);
-console.log('points is ', points.length)
-overlay.setZIndex(799);
-console.log('overlay is ', overlay)
-console.log('map is ', this.inmap)
+function showYellow() {
+    console.log('show')
+    let list = map.getOverlays();
+    let arr = [];
+    list.map((overlay, index) => {
+        if (overlay.type === 4) {
+            overlay.show();
+            overlay.element.show();
+            overlay._tooltipConfig.show = true;
+        }
+    })
+}
 
+function hideYellow() {
+    console.log('hide')
+    let list = map.getOverlays();
+    let arr = [];
+    list.map((overlay, index) => {
+        if (overlay.type === 4) {
+            console.log(overlay)
+            overlay.hide();
+            overlay.element.hide();
+            overlay._tooltipConfig.show = false;
+        }
+    })
+}
+
+function showTip() {
+    let list = map.getOverlays();
+    let arr = [];
+    list.map((overlay, index) => {
+        if (overlay.type === 3) {
+
+            overlay.setTooltipIsShow(true)
+            console.log(overlay)
+
+        }
+    })
+}
+let points1 = data.data.storeList;
+points1.map(item => {
+    item.count = 6;
+    item.geometry = {
+        "type": "Point",
+        "coordinates": [String(item.lng), String(item.lat)]
+    }
+})
+let overlay1 = createDotOverlay()
+overlay1.setData(points1);
+overlay1.setZIndex(600);
+
+let overlay = createImgOverlay(1);
+overlay.type = 3;
+overlay.setData(points1);
+
+// console.log('points is ', points1.length)
+overlay.setZIndex(699);
+// console.log('overlay is ', overlay)
+// console.log('map is ', this.inmap)
+
+
+//排斥点
+let points2 = list.data;
+// console.log(points2);
+
+points2.map((item, index) => {
+    let oldData = item.stores;
+    oldData.map(item => {
+        item.count = 6;
+        item.geometry = {
+            "type": "Point",
+            "coordinates": [String(item.lng), String(item.lat)]
+        }
+    })
+    let dotoverlay = createDotOverlay()
+    dotoverlay.setData(oldData);
+    dotoverlay.setZIndex(600);
+
+    let imgoverlay = createImgOverlay()
+    imgoverlay.type = 4;
+    imgoverlay.setData(oldData);
+    imgoverlay.setZIndex(699);
+
+    imgoverlay.element = dotoverlay;
+    imgoverlay.hide();
+    imgoverlay.element.hide();
+    imgoverlay._tooltipConfig.show = false;
+})
+
+/*画圆*/
 const drawOption = {
     fillColor: '#FF0000',
     fillOpacity: 0.1,
