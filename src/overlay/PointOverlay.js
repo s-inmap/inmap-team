@@ -19,9 +19,18 @@ export default class PointOverlay extends Parameter {
         if (!isEmpty(this._option.draw)) {
             this._batchesData = new BatchesData(this._option.draw);
         }
-        this._mouseLayer = new CanvasOverlay({
-            zIndex: this._zIndex + 1
-        });
+        let mouseOver = opts.style.mouseOver;
+        if (mouseOver === undefined || mouseOver.show === false) {
+            this._mouseOverShow = false;
+        }else if (mouseOver.show === undefined || mouseOver.show === true) {
+            this._mouseOverShow = true;
+        }
+        if (this._mouseOverShow) {
+            this._mouseLayer = new CanvasOverlay({
+                zIndex: this._zIndex + 1
+            });
+        }
+
         this._state = null;
         this._mpp = {};
     }
@@ -36,8 +45,9 @@ export default class PointOverlay extends Parameter {
     setZIndex(zIndex) {
         this._zIndex = zIndex;
         if (this._container) this._container.style.zIndex = this._zIndex;
-
-        this._mouseLayer.setZIndex(this._zIndex + 1);
+        if (this._mouseOverShow) {
+            this._mouseLayer.setZIndex(this._zIndex + 1);
+        }
     }
     _onOptionChange() {
         this._map && this._initLegend();
@@ -46,7 +56,9 @@ export default class PointOverlay extends Parameter {
         this._map && this._initLegend();
     }
     _parameterInit() {
-        this._map.addOverlay(this._mouseLayer);
+        if (this._mouseOverShow) {
+            this._map.addOverlay(this._mouseLayer);
+        }
         this._initLegend();
     }
     setOptionStyle(ops) {
@@ -88,7 +100,7 @@ export default class PointOverlay extends Parameter {
         return result;
     }
     /**
-     * 获得每个像素对应多少米	
+     * 获得每个像素对应多少米  
      */
     _getMpp() {
         let mapCenter = this._map.getCenter();
@@ -110,12 +122,16 @@ export default class PointOverlay extends Parameter {
     }
     _drawMouseLayer() {
         let overArr = this._overItem ? [this._overItem] : [];
-        this._mouseLayer._clearCanvas();
-        this._loopDraw(this._mouseLayer._getContext(), this._selectItem.concat(overArr), true);
-
+        if (this._mouseOverShow) {
+            this._mouseLayer._clearCanvas();
+            this._loopDraw(this._mouseLayer._getContext(), this._selectItem.concat(overArr), true);
+        }
     }
     _clearAll() {
-        this._mouseLayer._clearCanvas();
+        if (this._mouseOverShow) {
+            this._mouseLayer._clearCanvas();
+        }
+
         this._clearCanvas();
     }
     _drawMap() {
@@ -152,7 +168,7 @@ export default class PointOverlay extends Parameter {
 
         for (let i = 0; i < allItems.length; i++) {
             let item = allItems[i];
-            let ret = this._workerData.find(function (val) {
+            let ret = this._workerData.find(function(val) {
                 let itemCoordinates = item.geometry.coordinates;
                 let valCoordinates = val.geometry.coordinates;
                 return val && itemCoordinates[0] == valCoordinates[0] && itemCoordinates[1] == valCoordinates[1] && val.count == item.count;
@@ -249,7 +265,7 @@ export default class PointOverlay extends Parameter {
     _findIndexSelectItem(item) {
         let index = -1;
         if (item) {
-            index = this._selectItem.findIndex(function (val) {
+            index = this._selectItem.findIndex(function(val) {
                 let itemCoordinates = item.geometry.coordinates;
                 let valCoordinates = val.geometry.coordinates;
                 return val && itemCoordinates[0] == valCoordinates[0] && itemCoordinates[1] == valCoordinates[1] && val.count == item.count;
@@ -260,7 +276,10 @@ export default class PointOverlay extends Parameter {
     refresh() {
         this._setState(State.drawBefore);
         this._clearCanvas();
-        this._mouseLayer._canvasResize();
+
+        if (this._mouseOverShow) {
+            this._mouseLayer._canvasResize();
+        }
         if (this._batchesData) {
             this._batchesData.clear();
             this._batchesData.action(this._workerData, this._loopDraw, this._ctx);
@@ -377,7 +396,7 @@ export default class PointOverlay extends Parameter {
 
         //排序 x 从小到大
         //逐一遍历  判断是否相交 就移动label文字方位 当都不满足时隐藏当前label  
-        labels.forEach(function (item) {
+        labels.forEach(function(item) {
             if (item.show) {
                 let pixel = item.getCurrentRect();
                 ctx.beginPath();
@@ -401,8 +420,10 @@ export default class PointOverlay extends Parameter {
     }
     _Tdispose() {
         this._batchesData && this._batchesData.clear();
-        this._map.removeOverlay(this._mouseLayer);
-        this._mouseLayer.dispose();
+        if (this._mouseOverShow) {
+            this._map.removeOverlay(this._mouseLayer);
+            this._mouseLayer.dispose();
+        }
     }
     _tMousemove(event) {
 
