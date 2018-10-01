@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PointOverlayay</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+    body,
+    html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+
+    #allmap {
+        width: 100%;
+        height: 100%;
+    }
+
+    p {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+
+    .mapLabel {
+        padding: 8px 12px;
+        width: 200px;
+        background: #fff;
+        /*position: relative;*/
+    }
+    .mapLabel .name {
+        /*display: inline-block;
+        width: 100%;
+        line-height: 20px;
+        font-size: 12px;
+        color: var(--color-title);
+        font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;*/
+    }
+    .mapLabel .arraw {
+        /* border: 8px solid transparent;
+        border-right-color: #fff;
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 50%;
+        left: -16px;
+        margin-top: -10px;*/
+    }
+    .mapLabel .edit {
+        width: 20px;
+        height: 20px;
+        background: red;
+    }
+    .mapLabel .storeinfo {
+        /*color: var(--color-detail);
+        white-space: nowrap;*/
+    }
+    .mapLabel .storeinfo em {
+        /*color: #ED4014;
+        font-size: 14px;
+        padding: 0 4px;*/
+    }
+
+    .mapLabel .storeinfo ul li {
+        /*height: 30px;
+        line-height: 30px;*/
+    }
+    .mapLabel .storeinfo ul li span {
+        /*width: 56px;
+        display: inline-block;
+        text-align: right;
+        margin-right: 40px;*/
+    }
+    .mapLabel .storeinfo li.address {
+        /*line-height: 18px;
+        padding: 4px 0;*/
+    }
+    .mapLabel .storeinfo .search {
+        span {
+            /*margin-right: 10px;*/
+        }
+    }
+    .mapLabel .storeinfo .toLocation {
+        /*font-size: 12px;
+        border-radius: 4px;
+        margin-top: 8px;
+        padding: 4px 15px 4px 15px;
+        width: 100%;
+        margin-bottom: 10px;*/
+    }
+    .my-popper {
+        position: absolute;
+        background: #FFC107;
+        color: black;
+        width: 150px;
+        border-radius: 3px;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        text-align: center;
+    }
+    .popper[x-placement^="top"] .popper__arrow,
+    .tooltip[x-placement^="top"] .tooltip-arrow {
+        border-width: 5px 5px 0 5px;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        bottom: -5px;
+        left: calc(50% - 5px);
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    .tooltip .tooltip-arrow,
+    .popper .popper__arrow {
+        border-color: #FFC107;
+    }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
+    <script src="data/data3.js"></script>
+    <script src="data/data4.js"></script>
+    <script src="../dist/inmap.js"></script>
+    <!-- <script type="text/javascript" src="http://unpkg.com/inmap/dist/inmap.min.js"></script> -->
+    <!-- <script src="https://smartdata.b0.upaiyun.com/thinkmark/inmap_g_v2.min.js"></script> -->
+</head>
+
+<body>
+    <div id="allmap"></div>
+    <div style="position: absolute;right:0;top:0" class="my-button">
+        <button onclick="showYellow()">显示黄色</button>
+        <button onclick="hideYellow()">隐藏黄色</button>
+        <button onclick="showTip()">显示tooltip</button>
+    </div>
+</body>
+
+</html>
+<script>
+let inmap = new inMap.Map({
+    id: 'allmap',
+    skin: 'Blueness',
+    center: [116.407395, 39.904211],
+    zoom: {
+        value: 12,
+        show: true,
+        max: 18,
+        min: 5
+    },
+});
+let map = inmap.getMap();
+
+function editFunc(e) {
+    if (e.target.className === 'edit') {
+        editOverlay();
+    }
+}
+function editOverlay() {
+    console.log('点击红色方框触发点击事件');
+}
+
+function createDotOverlay() {
+    let list = data.data.storeList;
+    // console.log('Dot类',list)
+    // list.map((item,index)=>{
+    //     if(item.address && item.address.indexOf('小屯路')>-1){
+    //     console.log(index)
+
+    //     }
+    // })
+    // console.log(list[325])
+    let overlay = new inMap.PointOverlay({
+        tooltip: {
+            show: false,
+            customClass: 'point',
+            // formatter: function(params, dom) {
+            //     console.log(params)
+            // },
+        },
+        style: {
+            normal: {
+                backgroundColor: 'rgba(129, 186, 246, 0.10)',
+                borderColor: 'rgba(45, 140, 240, 0.60)',
+                borderWidth: 1,
+                unit: 'm',
+                size: 500
+            }
+        },
+        event: {
+            onState: (state) => {
+                if (state == 3) {}
+            }
+        },
+        selected: [list[325]],
+    });
+    //去掉点击事件
+    overlay._tMouseClick = null;
+    overlay.type = 1;
+    inmap.add(overlay);
+    return overlay;
+}
+
+function createImgOverlay(type) {
+    let img = new Image();
+    if (type === 1) {
+        img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_mine.png';
+    } else {
+        img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_pc.png';
+    }
+    let overlay = new inMap.ImgOverlay({
+        tooltip: {
+            show: true,
+            customClass: "auto",
+            formatter: function(params, dom) {
+                if (type === 1) {
+
+                    let message;
+                    if (params.incomeMonthly == '0') {
+                        message = '月流水未上传';
+                    } else {
+                        message = '月流水<em>' + params.incomeMonthly + '</em>元';
+                    }
+                    dom.addEventListener('click', editFunc);
+
+                    return (`
+                        <div class="mapLabel">
+                            <div class="arraw"></div>
+                            <div class="edit"></div>
+                            <div class="header">
+                                <div class="name">${params.name}</div>
+                                <div class="type">我的门店</div>
+                            </div>
+                            <div class="content">
+                                <div class="box addr">
+                                    <span>地址</span>
+                                    <span>${params.address}</span>
+                                </div>
+                                <div class="box">
+                                    <span>月营业额</span>
+                                    <span>${message}</span>
+                                </div>
+                                <div class="box">
+                                    <span>面积</span>
+                                    <span>${params.area}</span>
+                                </div>
+                                <div class="box">
+                                    <span>租金</span>
+                                    <span>${params.rent}</span>
+                                </div>
+                                <div class="box">
+                                    <span>经营状况</span>
+                                    <span>${params.situation}</span>
+                                </div>
+                            </div>
+                        </div>`);
+                } else {
+                    return ('<div class="mapLabel"><div class="name">' + params.name + '</div><div class="arraw"></div></div>');
+                }
+
+            },
+        },
+        style: {
+            normal: {
+                icon: img,
+                width: 24,
+                height: 24,
+                offsets: {
+                    top: "-90%",
+                    left: "-40%",
+                }
+            },
+        },
+        event: {
+            onState: (state) => {
+                // console.log(state)
+                if (state == 3) {}
+            },
+            onMouseClick: function(item, event) {
+                console.log(item);
+                //能获取当前点的信息
+            }
+        }
+    });
+    inmap.add(overlay);
+
+    return overlay;
+}
+
+
+
+function showYellow() {
+    let list = map.getOverlays();
+    list.map(overlay => {
+        if (overlay.type === 4) {
+            overlay.show();
+            overlay.element.show();
+            overlay._tooltipConfig.show = true;
+        }
+    });
+}
+
+
+function hideYellow() {
+    console.log('hide');
+    let list = map.getOverlays();
+    list.map(overlay => {
+        if (overlay.type === 4) {
+            overlay.hide();
+            overlay.element.hide();
+            overlay._tooltipConfig.show = false;
+        }
+    });
+}
+
+function showTip() {
+    let list = map.getOverlays();
+    list.map(overlay => {
+        if (overlay.type === 3) {
+            overlay.setTooltipIsShow(true);
+        }
+    });
+}
+
+let points1 = data.data.storeList;
+points1.map(item => {
+    item.count = 6;
+    item.geometry = {
+        'type': 'Point',
+        'coordinates': [String(item.lng), String(item.lat)]
+    };
+});
+let overlay1 = createDotOverlay();
+overlay1.setData(points1);
+overlay1.setZIndex(600);
+
+let overlay = createImgOverlay(1);
+overlay.type = 3;
+overlay.setData(points1);
+
+// console.log('points is ', points1.length)
+overlay.setZIndex(699);
+// console.log('overlay is ', overlay)
+// console.log('map is ', this.inmap)
+
+
+//排斥点
+let points2 = list.data;
+
+points2.map((item, index) => {
+    let oldData = item.stores;
+    oldData.map(item => {
+        item.count = 6;
+        item.geometry = {
+            'type': 'Point',
+            'coordinates': [String(item.lng), String(item.lat)]
+        };
+    });
+    let dotoverlay = createDotOverlay();
+    dotoverlay.setData(oldData);
+    dotoverlay.setZIndex(600);
+
+    let imgoverlay = createImgOverlay();
+    imgoverlay.type = 4;
+    imgoverlay.setData(oldData);
+    imgoverlay.setZIndex(699);
+
+    imgoverlay.element = dotoverlay;
+    imgoverlay.hide();
+    imgoverlay.element.hide();
+    imgoverlay._tooltipConfig.show = false;
+});
+
+/*画圆*/
+const drawOption = {
+    fillColor: '#FF0000',
+    fillOpacity: 0.1,
+    strokeStyle: 'solid',
+    strokeColor: '#FF0000',
+    strokeWeight: 1,
+    enableClicking: true
+};
+
+function drawLngLat(lng, lat) {
+    return new BMap.Point(lng, lat);
+}
+
+function drawCircle(point, radius) {
+    let opts = {};
+
+    opts.fillColor = drawOption.fillColor;
+    opts.fillOpacity = drawOption.fillOpacity;
+    opts.strokeStyle = drawOption.strokeStyle;
+    opts.strokeColor = drawOption.strokeColor;
+    opts.strokeWeight = drawOption.strokeWeight;
+    opts.enableClicking = drawOption.enableClicking;
+
+
+    return new BMap.Circle(point, radius, opts);
+}
+let point = drawLngLat('116.475959000000003', '39.9216699999999989');
+let circle = drawCircle(point, 500);
+inmap.add(circle);
+</script>

@@ -246,8 +246,8 @@ export default class Parameter extends CanvasOverlay {
     /**
      * 设置悬浮信息
      */
-    _setTooltip(event) {
-        this.toolTip.render(event, this._overItem);
+    _setTooltip(event, overItem) {
+        this.toolTip.render(event, overItem);
     }
 
     _Tclear() {
@@ -327,10 +327,9 @@ export default class Parameter extends CanvasOverlay {
         // if(temp){
         //     EV.setIsFind(true)
         // }
-
         if (temp != this._overItem) { //防止过度重新绘画
             if (temp && this._overItem) {
-                return
+                return;
             }
             this._overItem = temp;
             if (temp) {
@@ -340,16 +339,14 @@ export default class Parameter extends CanvasOverlay {
             if (!isEmpty(this._styleConfig.mouseOver)) {
                 this.refresh();
             }
+            this._setTooltip(event, temp);
         }
+
         if (temp) {
             this._map.setDefaultCursor('pointer');
         } else {
             this._map.setDefaultCursor('default');
         }
-
-        // this._setTooltip(event,temp);
-        this._setTooltip(event)
-
     }
     _tMouseClick(event) {
         if (this._eventType == 'onmoving') return;

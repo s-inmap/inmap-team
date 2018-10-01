@@ -36,8 +36,12 @@ export default class ToolTip {
             left,
             top
         } = this._opts.offsets;
-        this._dom.style.left = x + left + 'px';
-        this._dom.style.top = y + top + 'px';
+        this._dom.style.left = 0;
+        this._dom.style.top = 0;
+        let pixelX = x + left,
+            pixelY = y + top;
+        this._dom.style.transform = `translate3d(${pixelX}px, ${pixelY}px, 0px)`;
+        this._dom.style.visibility = 'visible';
         this._dom.style.display = 'block';
     }
     showCenterText(text, x, y) {
@@ -56,7 +60,7 @@ export default class ToolTip {
         this._dom.style.display = 'block';
     }
     hide() {
-        this._dom.style.display = 'none';
+        this._dom.style.visibility = 'hidden';
     }
     setOption(opts) {
         let result = merge(this._opts, opts);
@@ -81,11 +85,15 @@ export default class ToolTip {
         if (overItem) {
             let formatter = this._opts.formatter;
             if (isFunction(formatter)) {
-                this._dom.innerHTML = formatter(overItem);
+                this._dom.innerHTML = formatter(overItem, this._dom);
             } else if (isString(formatter)) {
                 this._dom.innerHTML = this._tooltipTemplate(overItem);
             }
-            this.show(event.offsetX, event.offsetY);
+
+            let pixel = overItem.geometry.pixel,
+                x = pixel.x,
+                y = pixel.y;
+            this.show(x, y);
         } else {
             this.hide();
         }
