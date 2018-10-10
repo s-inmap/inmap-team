@@ -14,6 +14,10 @@
         font-family: "微软雅黑";
     }
 
+    #app {
+        width: 100%;
+        height: 100%;
+    }
     #allmap {
         width: 100%;
         height: 100%;
@@ -118,8 +122,68 @@
     .popper .popper__arrow {
         border-color: #FFC107;
     }
+    #editCanvas .ivu-modal-mask {
+        background-color: inherit;
+    }
+    #editIntention {
+        position: relative;
+        .chooser-select {
+            position: absolute;
+            right: 0;
+            top: -43px;
+            display: flex;
+            font-size: 12px;
+            .all {
+                margin-right: 16px;
+                cursor: pointer;
+            }
+            .cancel {
+                cursor: pointer;
+            }
+            .allActive {
+                color: var(--color-icon1);
+                cursor: auto;
+            }
+            .cancelActive {
+                color: var(--color-icon1);
+                cursor: auto;
+            }
+        }
+        .chooser-list {
+            margin-top: 16px;
+            min-height: 24px;
+            overflow: hidden;
+            ul {
+                li {
+                    float: left;
+                    width: 64px;
+                    height: 24px;
+                    display: block;
+                    margin-right: 8px;
+                    margin-bottom: 8px;
+                    border: 1px solid #DCDEE2;
+                    border-radius: 2px;
+                    text-align: center;
+                    line-height: 24px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    color: var(--color-detail);
+                }
+                li.active {
+                    border: 1px solid var(--color-hover);
+                    color: var(--color-hover);
+                }
+            }
+        }
+    }
+    .selfModal .ivu-modal {
+        top: 0;
+    }
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
+    <script src="https://lib.baomitu.com/vue/2.5.17/vue.min.js"></script>
+    <script src="https://unpkg.com/iview@2.14.3/dist/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/iview@2.14.3/dist/styles/iview.css">
     <script src="data/data3.js"></script>
     <script src="data/data4.js"></script>
     <script src="../dist/inmap.js"></script>
@@ -128,16 +192,118 @@
 </head>
 
 <body>
-    <div id="allmap"></div>
-    <div style="position: absolute;right:0;top:0" class="my-button">
-        <button onclick="showYellow()">显示黄色</button>
-        <button onclick="hideYellow()">隐藏黄色</button>
-        <button onclick="showTip()">显示tooltip</button>
+    <div id="app">
+        <div id="allmap"></div>
+        <div style="position: absolute;right:0;top:0" class="my-button">
+            <button onclick="showYellow()">显示黄色</button>
+            <button onclick="hideYellow()">隐藏黄色</button>
+            <button onclick="showTip()">显示tooltip</button>
+        </div>
+        <Modal v-model="showModal" width="262" :closable="false" :mask-closable="false" title="编辑研究区域" id="editCanvas" ref="editCanvas" class-name="selfModal editModal">
+            <!--内容-->
+            <i-form label-position="top">
+                <template>
+                    <Form-item label="区域名称">
+                        <Input placeholder="请输入区域名称" v-model="storeName"></Input>
+                    </Form-item>
+                </template>
+                <template>
+                    <div class="type">
+                        <div class="head">
+                            <div class="title">构建方式</div>
+                        </div>
+                        <RadioGroup v-model="radioModel" @on-change="radioChange">
+                            <Radio label="按区域半径"></Radio>
+                            <Radio label="按步行时间"></Radio>
+                        </RadioGroup>
+                    </div>
+                </template>
+                <template v-if="circleShow">
+                    <div class="time">
+                        <div class="head">
+                            <div class="title">区域半径</div>
+                            <span class="minute">{{scope/1000}}km</span>
+                        </div>
+                        <div class="slider">
+                            <Slider v-model="scope" :step="10" :min="200" :max="3000">
+                            </Slider>
+                            <div class="text">
+                                <span>0.2km</span>
+                                <span>1.5km</span>
+                                <span>3km</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-if="!circleShow">
+                    <div class="time">
+                        <div class="head">
+                            <div class="title">步行时间</div>
+                            <span class="minute">{{scope}} 分钟</span>
+                        </div>
+                        <div class="slider">
+                            <Slider v-model="scope" :step="1" :min="10" :max="30"></Slider>
+                            <div class="text">
+                                <span>10分钟</span>
+                                <span>20分钟</span>
+                                <span>30分钟</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </i-form>
+            <div slot="footer" class="footer" style="display: flex;">
+                <Button type="primary" size="large" @click="handleSubmit">保存</Button>
+                <Button type="ghost" size="large" class="cancle" @click="handleCancel">取消</Button>
+            </div>
+        </Modal>
     </div>
 </body>
 
 </html>
 <script>
+let vm = new Vue({
+    el: '#app',
+    data: {
+        radioModel: '按区域半径',
+        range: 0,
+        showModal: false,
+        circleShow: true,
+        serviceItem: {},
+        intentionType: 2,
+        storeName: '',
+        scope: 0
+    },
+    methods: {
+        radioChange(val) {
+            if (val === '按区域半径') {
+                this.circleShow = true;
+                this.scope = 200;
+            } else {
+                this.circleShow = false;
+                this.scope = 10;
+            }
+        },
+        handleCancel() {
+            console.log(1111);
+            this.showModal = false;
+        },
+        handleSubmit() {
+            this.showModal = false;
+            //1:步行，2：开车，3：圆，4：多边形
+            if (this.radioModel === '按区域半径') {
+                // this.updateCircle(3);
+                // this.$emit('on-submit', this.serviceItem);
+            } else {
+                // this.updateWalking(1)
+                //     .then(() => {
+                //         this.$emit('on-submit', this.serviceItem);
+                //     });
+            }
+        },
+    }
+})
+
 let inmap = new inMap.Map({
     id: 'allmap',
     skin: 'Blueness',
@@ -156,8 +322,10 @@ function editFunc(e) {
         editOverlay();
     }
 }
+
 function editOverlay() {
     console.log('点击红色方框触发点击事件');
+    vm.showModal = true;
 }
 
 function createDotOverlay() {
@@ -221,7 +389,7 @@ function createImgOverlay(type) {
                     } else {
                         message = '月流水<em>' + params.incomeMonthly + '</em>元';
                     }
-                    dom.addEventListener('click', editFunc);
+                    dom.addEventListener('click', editFunc,false);
 
                     return (`
                         <div class="mapLabel">
