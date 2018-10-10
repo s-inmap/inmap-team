@@ -51,11 +51,16 @@
     var overlay = new inMap.PointOverlay({
         tooltip: {
             show: true,
-            formatter: "{count}",
+            // formatter: "{count}",
             offsets: {
                 top: 5,
                 left: 12,
-            }
+            },
+            formatter: function(params) {
+                                return (
+                                    '<div class="mapLabel"><div class="name">112131</div><div class="arraw"></div></div>'
+                                );
+                            },
         },
         legend: {
             show: true,
