@@ -442,14 +442,14 @@ export default class PointOverlay extends Parameter {
             if (!isEmpty(this._styleConfig.mouseOver)) {
                 this._drawMouseLayer();
             }
+            this._setTooltip(event);
         }
         if (temp) {
             this._map.setDefaultCursor('pointer');
         } else {
             this._map.setDefaultCursor('default');
         }
-
-        this._setTooltip(event);
+   
 
     }
     _tMouseClick(event) {
