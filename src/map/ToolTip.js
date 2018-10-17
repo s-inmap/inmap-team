@@ -85,7 +85,10 @@ export default class ToolTip {
         if (overItem) {
             let formatter = this._opts.formatter;
             if (isFunction(formatter)) {
-                this._dom.innerHTML = formatter(overItem, this._dom);
+                this._dom.innerHTML = formatter(overItem, this._dom, () => {
+                    //回调函数
+                    this.hide();
+                });
             } else if (isString(formatter)) {
                 this._dom.innerHTML = this._tooltipTemplate(overItem);
             }
