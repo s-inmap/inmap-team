@@ -340,7 +340,7 @@
              geoJSON.geometry.pixels.splice(this._createIndex, 1);
 
              this._polygonOverlay.refresh();
-             console.log(geoJSON);
+             // console.log(geoJSON);
              this._createIndex--;
          } else {
 
