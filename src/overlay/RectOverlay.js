@@ -74,7 +74,7 @@ export default class RectOverlay extends Parameter {
                 return;
             }
             this._setState(State.conputeAfter);
-
+            this._setWorkerData(points);
             //清除
             this._clearCanvas();
             this._canvasResize();
@@ -232,10 +232,10 @@ export default class RectOverlay extends Parameter {
         this._styleConfig.splitList = split;
         this._setlegend(this.legend, this._styleConfig.splitList);
     }
-    createColorSplit(grids) {
+    createColorSplit(points) {
         let data = [];
-        for (let i = 0, len = grids.length; i < len; i++) {
-            let count = grids[i]['count'];
+        for (let i = 0, len = points.length; i < len; i++) {
+            let count = points[i]['count'];
 
             if (count > 0) {
                 data.push({
@@ -256,7 +256,7 @@ export default class RectOverlay extends Parameter {
         if (item.count == 0) {
             color = 'rgba(255,255,255,0)';
         } else {
-            let style = this._setDrawStyle(item,true);
+            let style = this._setDrawStyle(item, true);
             color = style.backgroundColor;
         }
         return color;
@@ -296,17 +296,10 @@ export default class RectOverlay extends Parameter {
         }
         return index;
     }
-    tMouseleave() {
-        if (this.tooltipDom) {
-            this.tooltipDom.style.display = 'none';
-        }
-        this._eventConfig.onMouseLeave();
-
-    }
-    _tMouseClick(event){
+    _tMouseClick(event) {
         //未配置selected的情况下点击不会触发重绘
-        if(JSON.stringify(this._styleConfig.selected) === '{}'){
-            return 
+        if (JSON.stringify(this._styleConfig.selected) === '{}') {
+            return
         }
         if (this._eventType == 'onmoving') return;
         let {
@@ -350,7 +343,7 @@ export default class RectOverlay extends Parameter {
 
         if (temp != this._overItem) { //防止过度重新绘画
             //在同一个格子上移动时不重复触发mousemove
-            if(temp && this._overItem && JSON.stringify(this._overItem) === JSON.stringify(temp)){
+            if (temp && this._overItem && JSON.stringify(this._overItem) === JSON.stringify(temp)) {
                 return
             }
             this._overItem = temp;
@@ -361,51 +354,48 @@ export default class RectOverlay extends Parameter {
             if (!isEmpty(this._styleConfig.mouseOver)) {
                 // console.log(!isEmpty(this._eventConfig.onMouseOver))
                 this.refresh();
-                if(this._eventConfig.onMouseOver){
+                if (this._eventConfig.onMouseOver) {
                     this._eventConfig.onMouseOver.call(this, this._overItem, event);
                 }
             }
-            this._setTooltip(event);
+            
         }
         if (temp) {
             this._map.setDefaultCursor('pointer');
         } else {
             this._map.setDefaultCursor('default');
         }
+        this._setTooltip(event);
 
-        
     }
     /**
      * 设置选中
      * @param {*} exp  表达式
      */
     setSelectd(exp) {
-        if (this._data.length > 0) {
-
-            let filterFun = new Function('item', 'with(item){ if(item.data){return item.data.' + exp + '}else{ return item.' + exp + '} }');
-            let temp = this._data.filter(filterFun);
-            if (temp.length > 0 && this._workerData.grids.length > 0) {
-
-                const selectItems = this._workerData.grids.filter(filterFun);
-                const selectItem = selectItems[0] || {};
-                const item = this._selectItemContains(selectItem);
+        if (this._workerData.length > 0) {
+            const selectItems = this._workerData.filter((item) => {
                 if (item) {
-                    this._deleteSelectItem(selectItem); //二次点击取消选中
-                } else {
-                    if (this._eventConfig.multiSelect) {
-                        if (item) {
-                            this._deleteSelectItem(selectItem); //二次点击取消选中
-                        } else {
-                            this._selectItem.push(selectItem);
-                        }
-
-                    } else {
-                        this._selectItem = [selectItem];
-                    }
+                    return eval('item.' + exp);
                 }
-                this.refresh();
+            });
+            const selectItem = selectItems[0] || {};
+            const item = this._selectItemContains(selectItem);
+            if (item) {
+                this._deleteSelectItem(selectItem); //二次点击取消选中
+            } else {
+                if (this._eventConfig.multiSelect) {
+                    if (item) {
+                        this._deleteSelectItem(selectItem); //二次点击取消选中
+                    } else {
+                        this._selectItem.push(selectItem);
+                    }
 
+                } else {
+                    this._selectItem = [selectItem];
+                }
             }
+            this.refresh();
         }
     }
 }
