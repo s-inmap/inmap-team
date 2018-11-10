@@ -1,10 +1,10 @@
 import Parameter from './base/Parameter';
-import PointConfig from '../config/LabelConfig';
+import Config from '../config/LabelConfig';
 import State from './../config/OnStateConfig';
 
 export default class LabelOverlay extends Parameter {
     constructor(opts) {
-        super(PointConfig, opts);
+        super(Config, opts);
         this._state = null;
     }
     _onOptionChange() {
@@ -117,7 +117,7 @@ export default class LabelOverlay extends Parameter {
             let item = pixels[i];
             let pixel = item.geometry.pixel;
             ctx.beginPath();
-            let style = this._setDrawStyle(item,true);
+            let style = this._setDrawStyle(item,true,i);
             ctx.font = style.font;
             ctx.fillStyle = style.color;
 

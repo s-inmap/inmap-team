@@ -4,7 +4,8 @@ import ImgConfig from './../config/ImgConfig';
 import {
     isString,
     isEmpty,
-    merge
+    merge,
+    typeOf
 } from './../common/util';
 import State from './../config/OnStateConfig';
 // import EV from './../common/ev'
@@ -95,7 +96,7 @@ export default class ImgOverlay extends Parameter {
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.geometry.pixel;
-            let style = this._setDrawStyle(item, false);
+            let style = this._setDrawStyle(item, i, false);
             let img;
             if (isString(img)) {
                 img = this._cacheImg[style.icon];
@@ -209,7 +210,7 @@ export default class ImgOverlay extends Parameter {
      * 根据用户配置，设置用户绘画样式
      * @param {*} item 
      */
-    _setDrawStyle(item, otherMode) {
+    _setDrawStyle(item, i, otherMode) {
         let normal = this._styleConfig.normal, //正常样式
             mouseOverStyle = this._styleConfig.mouseOver;
         let result;
@@ -221,10 +222,14 @@ export default class ImgOverlay extends Parameter {
         let count = parseFloat(item.count);
 
         //区间样式
-        let splitList = this._styleConfig.splitList;
-        for (let i = 0; i < splitList.length; i++) {
+        let splitList = this._styleConfig.splitList,
+            len = splitList.length;
+        len = splitList.length;
+        if (len > 0 && typeOf(count) !== 'number') {
+            throw new TypeError(`inMap: data index Line ${i}, The property count must be of type Number! about geoJSON, visit http://inmap.talkingdata.com/#/docs/v2/Geojson`);
+        }
+        for (let i = 0; i < len; i++) {
             let condition = splitList[i];
-
             if (condition.end == null) {
                 if (count >= condition.start) {
                     if (otherMode) {
@@ -247,22 +252,23 @@ export default class ImgOverlay extends Parameter {
         return result;
     }
     _loopDraw(ctx, pixels, otherMode) {
+        let mapSize = this._map.getSize();
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.geometry.pixel;
-            // let style = this._setDrawStyle(item);
-            let style = this._setDrawStyle(item, otherMode);
-            this._loadImg(style.icon, (img) => {
-                if (style.width && style.height) {
-                    let xy = this._getDrawXY(pixel, style.offsets.left, style.offsets.top, style.width, style.height);
-                    this._drawImage(this._ctx, img, xy.x, xy.y, style.width, style.height);
+            let style = this._setDrawStyle(item, i, otherMode);
+            if (pixel.x > -style.width && pixel.y > -style.height && pixel.x < mapSize.width + style.width && pixel.y < mapSize.height + style.height) {
+                this._loadImg(style.icon, (img) => {
+                    if (style.width && style.height) {
+                        let xy = this._getDrawXY(pixel, style.offsets.left, style.offsets.top, style.width, style.height);
+                        this._drawImage(this._ctx, img, xy.x, xy.y, style.width, style.height);
 
-                } else {
-                    let xy = this._getDrawXY(pixel, style.offsets.left, style.offsets.top, img.width, img.height, 1);
-                    this._drawImage(this._ctx, img, xy.x, xy.y, img.width, img.height);
-                }
-            });
-
+                    } else {
+                        let xy = this._getDrawXY(pixel, style.offsets.left, style.offsets.top, img.width, img.height, 1);
+                        this._drawImage(this._ctx, img, xy.x, xy.y, img.width, img.height);
+                    }
+                });
+            }
         }
     }
     _drawMouseLayer() {

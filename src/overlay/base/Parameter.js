@@ -3,9 +3,10 @@ import {
     detectmob,
     isEmpty,
     merge,
-    isArray,
+    typeOf,
+    checkGeoJSON,
     clearPushArray
-} from './../../common/util';
+} from '../../common/Util';
 import CanvasOverlay from './CanvasOverlay';
 import Color from './../../common/Color';
 import EV from '../../common/ev'
@@ -50,16 +51,16 @@ export default class Parameter extends CanvasOverlay {
         this.toolTip && this.toolTip.setOption(this._tooltipConfig);
 
     }
+    _checkGeoJSON(data) {
+        let isCheckCount = this._styleConfig.colors.length > 0 || this._styleConfig.splitList.length > 0;
+        checkGeoJSON(data, this._option.checkDataType.name, isCheckCount);
+    }
     setData(points) {
         if (points) {
-            if (!isArray(points)) {
-                throw new TypeError('inMap: data must be a Array');
-            }
+            this._checkGeoJSON(points);
             this._data = points;
-
         } else {
             this._data = [];
-
         }
 
         this._clearData();
@@ -97,7 +98,13 @@ export default class Parameter extends CanvasOverlay {
     _cancerSelectd() {
         clearPushArray(this._selectItem, []);
     }
-
+    /**
+     * 设置选中集合
+     */
+    setSelectedList(list) {
+        clearPushArray(this._selectItem, list);
+        this._map && this.refresh();
+    }
     _setWorkerData(val) {
         this._data = []; //优化
         this._overItem = null;
@@ -137,15 +144,20 @@ export default class Parameter extends CanvasOverlay {
      * @param {*} item 数据行
      * @param {*} otherMode  是否返回选中数据集的样式
      */
-    _setDrawStyle(item, otherMode) {
+    _setDrawStyle(item, otherMode, i) {
         let normal = this._styleConfig.normal, //正常样式
             mouseOverStyle = this._styleConfig.mouseOver, //悬浮样式
             selectedStyle = this._styleConfig.selected; //选中样式
         let result = merge({}, normal);
         let count = parseFloat(item.count);
         //区间样式
-        let splitList = this._styleConfig.splitList;
-        for (let i = 0; i < splitList.length; i++) {
+        let splitList = this._styleConfig.splitList,
+            len = splitList.length;
+        if (len > 0 && typeOf(count) !== 'number') {
+            throw new TypeError(`inMap: data index Line ${i}, The property count must be of type Number! about geoJSON, visit http://inmap.talkingdata.com/#/docs/v2/Geojson`);
+        }
+
+        for (let i = 0; i < len; i++) {
             let condition = splitList[i];
             if (i == splitList.length - 1) {
                 if (condition.end == null) {
@@ -268,14 +280,15 @@ export default class Parameter extends CanvasOverlay {
      */
     _setlegend(legendConfig, list) {
         if (!this._map) return;
-
-        if (list && list.length > 0) {
-            legendConfig['list'] = list;
-        } else {
-            legendConfig['list'] = legendConfig['list'] || [];
+        let option = {};
+        //legendConfig.list has a higher priority than list
+        if (!(legendConfig.list && legendConfig.list.length > 0)) {
+            option = merge(legendConfig, {
+                list: list
+            });
+         
         }
-
-        this.legend.setOption(legendConfig);
+        this.legend.setOption(option);
     }
 
     /**

@@ -41,6 +41,10 @@
 
      },
      data: [],
+     checkDataType: {
+         name: false,
+         count: false
+     },
      selected: [], //设置选中
      event: {
          multiSelect: false, //是否支持多选

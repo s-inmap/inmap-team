@@ -1,9 +1,9 @@
 import CanvasOverlay from './base/CanvasOverlay.js';
 import {
     merge,
-    isArray,
-    clearPushArray
-} from './../common/util';
+    clearPushArray,
+    checkGeoJSON
+} from '../common/Util.js';
 
 import LineStringAnimationConfig from './../config/LineStringAnimationConfig';
 class MarkLine {
@@ -98,10 +98,8 @@ export default class LineStringAnimationOverlay extends CanvasOverlay {
     }
     setData(points) {
         if (points) {
-            if (!isArray(points)) {
-                throw new TypeError('inMap: data must be a Array');
-            }
             this._data = points;
+            checkGeoJSON(points, this._option.checkDataType.name, this._option.checkDataType.count);
         } else {
             this._data = [];
         }
@@ -163,7 +161,7 @@ export default class LineStringAnimationOverlay extends CanvasOverlay {
         let me = this;
 
         function drawFrame() {
-            requestAnimationFrame(drawFrame);
+            !me.isDispose && requestAnimationFrame(drawFrame);
             now = Date.now();
             delta = now - then;
             if (delta > interval) {
