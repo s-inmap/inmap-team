@@ -1,4 +1,4 @@
-import Queue from './../lib/tinyqueue';
+import Queue from '../lib/tinyqueue';
 
 function Cell(x, y, h, polygon) {
     this.x = x; // 中心点x
@@ -84,7 +84,7 @@ function getCentroid(polygon) {
     return new Cell(totalX / totalArea, totalY / totalArea);
 }
 
-export default function polylabel(polygon) {
+export default function Polylabel(polygon) {
     // 计算bbox，为切分网格做准备
     let minX, minY, maxX, maxY;
     for (let i = 0; i < polygon[0].length; i++) {

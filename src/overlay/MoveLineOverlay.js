@@ -5,9 +5,8 @@ import LineStringAnimationOverlay from './LineStringAnimationOverlay';
 import config from './../config/MoveLineConfig';
 import {
     merge,
-    isArray,
-    isFunction
-} from './../common/util';
+    isFunction,
+} from '../common/Util';
 
 export default class MoveLineOverlay extends MultiOverlay {
     constructor(opts) {
@@ -48,11 +47,7 @@ export default class MoveLineOverlay extends MultiOverlay {
     }
     setData(data) {
         if (data) {
-            if (!isArray(data)) {
-                throw new TypeError('inMap: data must be a Array');
-            }
             this._data = data;
-
         } else {
             this._data = [];
         }

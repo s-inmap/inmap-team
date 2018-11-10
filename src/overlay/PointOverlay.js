@@ -7,7 +7,7 @@ import Parameter from './base/Parameter';
 import {
     isEmpty,
     detectmob,
-} from './../common/util';
+} from '../common/Util.js';
 import BatchesData from './base/BatchesData';
 import PointConfig from '../config/PointConfig';
 import State from './../config/OnStateConfig';
@@ -243,7 +243,7 @@ export default class PointOverlay extends Parameter {
                 x,
                 y,
             } = item.geometry.pixel;
-            let style = this._setDrawStyle(item);
+            let style = this._setDrawStyle(item, false, i);
             let size = this._calculateMpp(style.size);
             size += style.borderWidth || 0;
             if (x > -size && y > -size && x < mapSize.width + size && y < mapSize.height + size) {
@@ -316,7 +316,7 @@ export default class PointOverlay extends Parameter {
             } = pixel;
 
             //重构
-            let style = this._setDrawStyle(item, otherMode);
+            let style = this._setDrawStyle(item, otherMode, i);
             let size = this._calculateMpp(style.size);
             if (this._styleConfig.normal.label.show) {
                 pixel['radius'] = size;
@@ -478,7 +478,7 @@ export default class PointOverlay extends Parameter {
 
 
         if (isMobile) {
-            this._overItem = [item];
+            this._overItem = item;
             this._setTooltip(event);
         }
         this._drawMouseLayer();

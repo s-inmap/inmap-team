@@ -19,8 +19,13 @@ export default {
             shadowBlur: 10
         },
         splitList: [],
+        colors: []
     },
     data: [],
+    checkDataType: {
+        name: true,
+        count: false
+    },
     selected: [], //设置选中
     event: {
         multiSelect: false, //是否支持多选

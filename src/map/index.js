@@ -2,21 +2,22 @@ import {
     isString,
     merge,
     isArray
-} from './../common/util';
+} from './../common/Util';
 import {
     WhiteLover,
     Blueness
 } from './../config/MapStyleConfig';
 import MapZoom from './mapZoom';
 import Toolbar from './Toolbar';
-import inmapConfig from './../config/InmapConfig';
+import MapConfig from '../config/MapConfig';
+import Config from '../config/Config';
 import MultiOverlay from '../overlay/base/MultiOverlay';
 import './map.less';
 
 export default class Map {
     constructor(ops) {
         this._map = null;
-        this._option = merge(inmapConfig, ops);
+        this._option = merge(MapConfig, ops);
         this._create();
     }
     _tMapStyle(map, skin) {
@@ -57,8 +58,24 @@ export default class Map {
                 mapZoom.setButtonState();
             });
         }
-
         this._map = bmap;
+
+
+        bmap.addEventListener('moveend', () => {
+            if (Config.devtools) { //开发模式
+                this.printMapInfo();
+            }
+        });
+        bmap.addEventListener('zoomend', () => {
+            if (Config.devtools) { //开发模式
+                this.printMapInfo();
+            }
+        });
+
+    }
+    printMapInfo() {
+        let center = this._map.getCenter();
+        console.log(`Map: center:${JSON.stringify(center)} zoom:${this._map.getZoom()}`);
     }
     getMap() {
         return this._map;

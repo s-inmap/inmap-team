@@ -2,7 +2,7 @@ import Parameter from './base/Parameter.js';
 import Color from '../common/Color.js';
 import {
     clearPushArray
-} from '../common/util.js';
+} from '../common/Util.js';
 import PolygonConfig from '../config/PolygonConfig.js';
 import State from '../config/OnStateConfig.js';
 
@@ -12,25 +12,23 @@ export default class PolygonOverlay extends Parameter {
         super(PolygonConfig, ops);
         this._patchSplitList();
         this._state = null;
+        this._customZoom = null;
     }
     _parameterInit() {
         this._initLegend();
     }
     _initLegend() {
         const splitList = this._styleConfig.splitList;
-        if( splitList.length === 0 ){
+        if (splitList.length === 0) {
             this._compileSplitList(this._styleConfig.colors, this._getTransformData());
         }
         this._patchSplitList();
         this._setlegend(this._legendConfig, this._styleConfig.splitList);
     }
-    /**
-     * 设置选中集合，但不会触发绘画
-     * 
-     * @memberof Parameter
-     */
-    setSelectedList(list) {
-        clearPushArray(this._selectItem, list);
+
+    setCustomZoom(zoom) {
+        this._customZoom = zoom;
+        this._drawMap();
     }
     _clearSelectedList() {
         clearPushArray(this._selectItem);
@@ -96,7 +94,7 @@ export default class PolygonOverlay extends Parameter {
      * @param {} data 
      */
     _compileSplitList(colors, data) {
-        if ( colors.length <= 0) return;
+        if (colors.length <= 0) return;
         data = data.sort((a, b) => {
             return parseFloat(a.count) - parseFloat(b.count);
         });
@@ -198,14 +196,15 @@ export default class PolygonOverlay extends Parameter {
 
         this._setState(State.drawBefore);
         this._clearCanvas();
-        this._drawLine(this.getRenderData());
+        this._drawPolygon(this.getRenderData());
         this._setState(State.drawAfter);
     }
     _drawMap() {
         this._setState(State.computeBefore);
         let parameter = {
             data: this._getTransformData(),
-            enable: this._styleConfig.normal.label.enable
+            enable: this._styleConfig.normal.label.enable,
+            customZoom: this._customZoom
         };
 
         this._postMessage('PolygonOverlay.calculatePixel', parameter, (pixels, margin) => {
@@ -218,6 +217,7 @@ export default class PolygonOverlay extends Parameter {
             pixels = null, margin = null;
         });
     }
+
     _getTarget(x, y) {
         let data = this.getRenderData();
         for (let i = 0; i < data.length; i++) {
@@ -254,14 +254,13 @@ export default class PolygonOverlay extends Parameter {
         };
     }
     _drawData(pixelItem) {
-
         if (pixelItem.length == 0)
             return;
         let pixel = pixelItem[0];
         this._ctx.moveTo(pixel[0], pixel[1]);
         for (let k = 1, len = pixelItem.length; k < len; k++) {
             let item = pixelItem[k];
-            if (pixel[0] != item[0] && pixel[1] != item[1]) {
+            if (pixel[0] != item[0] || pixel[1] != item[1]) {
                 this._ctx.lineTo(pixelItem[k][0], pixelItem[k][1]);
                 pixel = item;
             }
@@ -293,7 +292,7 @@ export default class PolygonOverlay extends Parameter {
         }
         return outerRace;
     }
-    _drawPolygon(pixels, style) {
+    _drawPath(pixels, style) {
 
         for (let j = 0; j < pixels.length; j++) {
             this._ctx.save();
@@ -316,7 +315,7 @@ export default class PolygonOverlay extends Parameter {
 
         }
     }
-    _drawLine(data) {
+    _drawPolygon(data) {
         this._ctx.lineCap = 'round';
         this._ctx.lineJoin = 'round';
         this._ctx.miterLimit = 4;
@@ -324,7 +323,7 @@ export default class PolygonOverlay extends Parameter {
             let item = data[i];
             let geometry = item.geometry;
             let pixels = geometry.pixels;
-            let style = this._setDrawStyle(item, true);
+            let style = this._setDrawStyle(item, true, i);
             this._ctx.beginPath();
             this._ctx.shadowColor = style.shadowColor || 'transparent';
             this._ctx.shadowBlur = style.shadowBlur || 10;
@@ -333,14 +332,22 @@ export default class PolygonOverlay extends Parameter {
             this._ctx.fillStyle = style.backgroundColor;
             if (geometry.type == 'MultiPolygon') {
                 for (let k = 0; k < pixels.length; k++) {
-                    this._drawPolygon(pixels[k], style);
+                    this._drawPath(pixels[k], style);
                 }
 
             } else {
-                this._drawPolygon(pixels, style);
+                this._drawPath(pixels, style);
             }
+            style = null, pixels = null, geometry = null, item = null;
+            this._ctx.closePath();
+        }
 
-            if (this._styleConfig.normal.label.show) {
+        if (this._styleConfig.normal.label.show) {
+            for (let i = 0; i < data.length; i++) {
+                let item = data[i];
+                let geometry = item.geometry;
+                let pixels = geometry.pixels;
+                let style = this._setDrawStyle(item, true, i);
                 let labelPixels = geometry.labelPixels;
                 this._ctx.shadowBlur = 0;
                 this._ctx.lineWidth = style.label.lineWidth;
@@ -374,8 +381,8 @@ export default class PolygonOverlay extends Parameter {
                 }
                 labelPixels = null;
             }
-            style = null, pixels = null, geometry = null, item = null;
+
         }
-        this._ctx.closePath();
+
     }
 }

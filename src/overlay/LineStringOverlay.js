@@ -1,9 +1,8 @@
 import {
     isEmpty,
-    isArray,
     detectmob,
     clearPushArray
-} from './../common/util';
+} from '../common/Util';
 import CanvasOverlay from './base/CanvasOverlay.js';
 import Parameter from './base/Parameter';
 import LineStringConfig from '../config/LineStringConfig';
@@ -71,8 +70,8 @@ export default class LineStringOverlay extends Parameter {
         for (let i = 0, len = this._workerData.length; i < len; i++) {
             let item = this._workerData[i];
             let pixels = item.geometry.pixels;
-            let style = this._setDrawStyle(item);
-            for (let k = 0, len = pixels.length; k < len - 1; k++) {
+            let style = this._setDrawStyle(item, false, i);
+            for (let k = 0, len = pixels.length; k < len - 2; k++) {
                 let pixel1 = pixels[k];
                 let pixel2 = pixels[k + 1];
                 if (this._calcIsInsideThickLineSegment(pixel1, pixel2, mouseX, mouseY, style.borderWidth)) {
@@ -111,19 +110,7 @@ export default class LineStringOverlay extends Parameter {
             return (Math.sqrt(((line2[0] - mouseX) * (line2[0] - mouseX)) + ((line2[1] - mouseY) * (line2[1] - mouseY))) <= lineThickness);
         }
     }
-    setData(points) {
-        if (points) {
-            if (!isArray(points)) {
-                throw new TypeError('inMap: data must be a Array');
-            }
-            this._data = points;
-        } else {
-            this._data = [];
-        }
-        this._clearData();
-        this._cancerSelectd();
-        this._map && this._drawMap();
-    }
+
     refresh() {
         this._setState(State.drawBefore);
         this._mouseLayer._canvasResize();
@@ -197,7 +184,7 @@ export default class LineStringOverlay extends Parameter {
 
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
-            let style = this._setDrawStyle(item, otherMode);
+            let style = this._setDrawStyle(item, otherMode, i);
             ctx.strokeStyle = style.borderColor;
             let pixels = item.geometry.pixels;
             ctx.beginPath();
@@ -255,7 +242,7 @@ export default class LineStringOverlay extends Parameter {
 
         this._eventConfig.onMouseClick(this._selectItem, event);
         if (isMobile) {
-            this._overItem = [item];
+            this._overItem = item;
             this._setTooltip(event);
         }
         this._drawMouseLayer();
