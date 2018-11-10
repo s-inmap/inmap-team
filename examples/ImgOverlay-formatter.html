@@ -376,6 +376,9 @@ function createImgOverlay(type) {
     } else {
         img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_pc.png';
     }
+    let hoverImg = new Image();
+    hoverImg.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_hover.png';
+
     let overlay = new inMap.ImgOverlay({
         tooltip: {
             show: true,
@@ -437,6 +440,19 @@ function createImgOverlay(type) {
                     top: "-90%",
                     left: "-40%",
                 }
+            },
+            mouseOver: {
+                icon: hoverImg,
+                width: 24,
+                height: 24,
+                offsets: {
+                    top: "-90%",
+                    left: "-40%",
+                }
+            },
+            selected: {
+                backgroundColor: 'rgba(184,0,0,1)',
+                borderColor: "rgba(255,255,255,1)"
             },
         },
         event: {
@@ -513,31 +529,31 @@ overlay.setZIndex(699);
 
 
 //排斥点
-let points2 = list.data;
+// let points2 = list.data;
 
-points2.map((item, index) => {
-    let oldData = item.stores;
-    oldData.map(item => {
-        item.count = 6;
-        item.geometry = {
-            'type': 'Point',
-            'coordinates': [String(item.lng), String(item.lat)]
-        };
-    });
-    let dotoverlay = createDotOverlay();
-    dotoverlay.setData(oldData);
-    dotoverlay.setZIndex(600);
+// points2.map((item, index) => {
+//     let oldData = item.stores;
+//     oldData.map(item => {
+//         item.count = 6;
+//         item.geometry = {
+//             'type': 'Point',
+//             'coordinates': [String(item.lng), String(item.lat)]
+//         };
+//     });
+//     let dotoverlay = createDotOverlay();
+//     dotoverlay.setData(oldData);
+//     dotoverlay.setZIndex(600);
 
-    let imgoverlay = createImgOverlay();
-    imgoverlay.type = 4;
-    imgoverlay.setData(oldData);
-    imgoverlay.setZIndex(699);
+//     let imgoverlay = createImgOverlay();
+//     imgoverlay.type = 4;
+//     imgoverlay.setData(oldData);
+//     imgoverlay.setZIndex(699);
 
-    imgoverlay.element = dotoverlay;
-    imgoverlay.hide();
-    imgoverlay.element.hide();
-    imgoverlay._tooltipConfig.show = false;
-});
+//     imgoverlay.element = dotoverlay;
+//     imgoverlay.hide();
+//     imgoverlay.element.hide();
+//     imgoverlay._tooltipConfig.show = false;
+// });
 
 /*画圆*/
 const drawOption = {

@@ -247,7 +247,7 @@ export default class Parameter extends CanvasOverlay {
      * 设置悬浮信息
      */
     _setTooltip(event) {
-        this.toolTip.render(event,this._overItem);
+        this.toolTip.render(event, this._overItem);
     }
 
     _Tclear() {

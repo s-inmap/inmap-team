@@ -1,3 +1,4 @@
+import CanvasOverlay from './base/CanvasOverlay.js';
 import Parameter from './base/Parameter';
 import ImgConfig from './../config/ImgConfig';
 import {
@@ -15,12 +16,36 @@ export default class ImgOverlay extends Parameter {
         super(ImgConfig, opts);
         this._cacheImg = {}; //缓存图片对象
         this._state = null;
+        let mouseOver = opts.style.mouseOver;
+        if (mouseOver === undefined || mouseOver.show === false) {
+            this._mouseOverShow = false;
+        } else if (mouseOver.show === undefined || mouseOver.show === true) {
+            this._mouseOverShow = true;
+        }
+        if (this._mouseOverShow) {
+            this._mouseLayer = new CanvasOverlay({
+                zIndex: this._zIndex + 1
+            });
+        }
     }
     _toDraw() {
         this._drawMap();
     }
+    setZIndex(zIndex) {
+        this._zIndex = zIndex;
+        if (this._container) this._container.style.zIndex = this._zIndex;
+        if (this._mouseOverShow) {
+            this._mouseLayer.setZIndex(this._zIndex + 1);
+        }
+    }
     setOptionStyle(ops) {
         this._setStyle(this._option, ops);
+    }
+    _parameterInit() {
+        if (this._mouseOverShow) {
+            this._map.addOverlay(this._mouseLayer);
+        }
+        // this._initLegend();
     }
     _setState(val) {
         this._state = val;
@@ -37,8 +62,15 @@ export default class ImgOverlay extends Parameter {
         this.refresh();
 
     }
-    _drawMap() {
+    _clearAll() {
+        if (this._mouseOverShow) {
+            this._mouseLayer._clearCanvas();
+        }
 
+        this._clearCanvas();
+    }
+    _drawMap() {
+        this._clearAll();
         this._setState(State.computeBefore);
         this._postMessage('HeatOverlay.pointsToPixels', this._getTransformData(), (pixels, margin) => {
             if (this._eventType == 'onmoving') {
@@ -63,7 +95,7 @@ export default class ImgOverlay extends Parameter {
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.geometry.pixel;
-            let style = this._setDrawStyle(item, true);
+            let style = this._setDrawStyle(item, false);
             let img;
             if (isString(img)) {
                 img = this._cacheImg[style.icon];
@@ -116,9 +148,12 @@ export default class ImgOverlay extends Parameter {
     refresh() {
         this._setState(State.drawBefore);
         this._clearCanvas();
-        this._loopDraw(this._ctx, this._workerData);
+        if (this._mouseOverShow) {
+            this._mouseLayer._canvasResize();
+        }
+        this._loopDraw(this._ctx, this._workerData, false);
+        this._drawMouseLayer();
         this._setState(State.drawAfter);
-
     }
     _loadImg(img, fun) {
         let me = this;
@@ -174,9 +209,15 @@ export default class ImgOverlay extends Parameter {
      * 根据用户配置，设置用户绘画样式
      * @param {*} item 
      */
-    _setDrawStyle(item) {
-        let normal = this._styleConfig.normal; //正常样式
-        let result = merge({}, normal);
+    _setDrawStyle(item, otherMode) {
+        let normal = this._styleConfig.normal, //正常样式
+            mouseOverStyle = this._styleConfig.mouseOver;
+        let result;
+        if (otherMode) {
+            result = merge({}, mouseOverStyle);
+        } else {
+            result = merge({}, normal);
+        }
         let count = parseFloat(item.count);
 
         //区间样式
@@ -186,24 +227,31 @@ export default class ImgOverlay extends Parameter {
 
             if (condition.end == null) {
                 if (count >= condition.start) {
-                    Object.assign(result, normal, condition);
+                    if (otherMode) {
+                        Object.assign(result, mouseOverStyle, condition);
+                    } else {
+                        Object.assign(result, normal, condition);
+                    }
                     break;
                 }
             } else if (count >= condition.start && count < condition.end) {
-                Object.assign(result, normal, condition);
+                if (otherMode) {
+                    Object.assign(result, mouseOverStyle, condition);
+                } else {
+                    Object.assign(result, normal, condition);
+                }
                 break;
             }
         }
 
-
         return result;
-
     }
-    _loopDraw(ctx, pixels) {
+    _loopDraw(ctx, pixels, otherMode) {
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.geometry.pixel;
-            let style = this._setDrawStyle(item);
+            // let style = this._setDrawStyle(item);
+            let style = this._setDrawStyle(item, otherMode);
             this._loadImg(style.icon, (img) => {
                 if (style.width && style.height) {
                     let xy = this._getDrawXY(pixel, style.offsets.left, style.offsets.top, style.width, style.height);
@@ -217,59 +265,38 @@ export default class ImgOverlay extends Parameter {
 
         }
     }
-    // _tMousemove(event) {
-    //     if (this._eventType == 'onmoving') {
-    //         return;
-    //     }
-    //     if (!this._tooltipConfig.show && isEmpty(this._styleConfig.mouseOver)) {
-    //         return;
-    //     }
+    _drawMouseLayer() {
+        let overArr = this._overItem ? [this._overItem] : [];
+        if (this._mouseOverShow) {
+            this._mouseLayer._clearCanvas();
+            this._loopDraw(this._mouseLayer._getContext(), this._selectItem.concat(overArr), true);
+        }
+    }
+    _tMousemove(event) {
+        if (this._eventType == 'onmoving') {
+            return;
+        }
+        if (!this._tooltipConfig.show && isEmpty(this._styleConfig.mouseOver)) {
+            return;
+        }
+        let result = this._getTarget(event.pixel.x, event.pixel.y);
+        let temp = result.item;
 
-    //     //核心逻辑是同一pixel下找到一次就不会再找
-    //     if(EV.getEV() === null){
-    //         EV.setEV(event)
-    //     }
-    //     else{
-    //         if(event.pixel.x === EV.getEV().pixel.x && event.pixel.y === EV.getEV().pixel.y){
-    //             if(EV.getIsFind())
-    //                 return
-    //         }
-    //         else{
-    //             EV.setEV(event)
-    //             EV.setIsFind(false)
-    //         }
-    //     }
-
-    //     let result = this._getTarget(event.pixel.x, event.pixel.y);
-    //     let temp = result.item;
-    //     if(EV.getIsFind()){
-    //         return
-    //     }
-    //     if(temp){
-    //         EV.setIsFind(true)
-    //     }
-
-    //     if (temp != this._overItem) { //防止过度重新绘画
-    //         // if(temp && this._overItem){
-    //         //     return
-    //         // }
-    //         this._overItem = temp;
-    //         if (temp) {
-    //             this._swopData(result.index, result.item);
-    //         }
-    //         this._eventType = 'mousemove';
-    //         if (!isEmpty(this._styleConfig.mouseOver)) {
-    //             this.refresh();
-    //         }
-    //     }
-    //     if (temp) {
-    //         this._map.setDefaultCursor('pointer');
-    //     } else {
-    //         this._map.setDefaultCursor('default');
-    //     }
-    //     this._setTooltip(event,temp);
-
-    // }
+        if (temp != this._overItem) { //防止过度重新绘画
+            this._overItem = temp;
+            this._eventType = 'mousemove';
+            if (!isEmpty(this._styleConfig.mouseOver)) {
+                this.refresh();
+                this._drawMouseLayer();
+            }
+            this._setTooltip(event);
+        }
+        if (temp) {
+            this._map.setDefaultCursor('pointer');
+        } else {
+            this._map.setDefaultCursor('default');
+        }
+    }
     // _setTooltip(event,item) {
     //     this.toolTip.render(event, item);
     // }
