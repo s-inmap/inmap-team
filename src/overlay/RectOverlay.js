@@ -37,6 +37,18 @@ export default class RectOverlay extends Parameter {
     refresh() {
         this._drawMap();
     }
+    setPoints(points) {
+        if (points) {
+            if (!isArray(points)) {
+                throw new TypeError('inMap: data must be a Array');
+            }
+            this._data = points;
+        } else {
+            this._data = [];
+        }
+        clearPushArray(this._workerData);
+        this._map && this._drawMap();
+    }
     _drawMap() {
         // this._clearData();
         if (this.lock) {
@@ -142,18 +154,6 @@ export default class RectOverlay extends Parameter {
             result.borderColor = color.getRgbaStyle(result.borderOpacity);
         }
         return result;
-    }
-    setPoints(points) {
-        if (points) {
-            if (!isArray(points)) {
-                throw new TypeError('inMap: data must be a Array');
-            }
-            this._data = points;
-        } else {
-            this._data = [];
-        }
-        clearPushArray(this._workerData, []);
-        this._map && this._drawMap();
     }
     _getTarget(x, y) {
         let data = this._workerData;
@@ -358,7 +358,7 @@ export default class RectOverlay extends Parameter {
                     this._eventConfig.onMouseOver.call(this, this._overItem, event);
                 }
             }
-            
+
         }
         if (temp) {
             this._map.setDefaultCursor('pointer');
