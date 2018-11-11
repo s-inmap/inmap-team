@@ -10956,6 +10956,20 @@ var RectOverlay = function (_Parameter) {
             this._drawMap();
         }
     }, {
+        key: 'setPoints',
+        value: function setPoints(points) {
+            if (points) {
+                if (!(0, _util.isArray)(points)) {
+                    throw new TypeError('inMap: data must be a Array');
+                }
+                this._data = points;
+            } else {
+                this._data = [];
+            }
+            (0, _util.clearPushArray)(this._workerData);
+            this._map && this._drawMap();
+        }
+    }, {
         key: '_drawMap',
         value: function _drawMap() {
             var _this2 = this;
@@ -11062,20 +11076,6 @@ var RectOverlay = function (_Parameter) {
                 result.borderColor = _color.getRgbaStyle(result.borderOpacity);
             }
             return result;
-        }
-    }, {
-        key: 'setPoints',
-        value: function setPoints(points) {
-            if (points) {
-                if (!(0, _util.isArray)(points)) {
-                    throw new TypeError('inMap: data must be a Array');
-                }
-                this._data = points;
-            } else {
-                this._data = [];
-            }
-            (0, _util.clearPushArray)(this._workerData, []);
-            this._map && this._drawMap();
         }
     }, {
         key: '_getTarget',
