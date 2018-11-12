@@ -81,20 +81,24 @@ export default class RectOverlay extends Parameter {
             zoom: zoom
         };
         this._setState(State.computeBefore);
-        this._postMessage('RectOverlay.pointsToPixels', this._getTransformData(), (points) => {
+        // this._postMessage('RectOverlay.pointsToPixels', this._getTransformData(), (points) => {
+        this._postMessage('RectOverlay.pointsToPixels', params, (gridsObj) => {
             if (this._eventType == 'onmoving') {
                 return;
             }
+            let grids = gridsObj.points;
             this._setState(State.conputeAfter);
-            this._setWorkerData(points);
+            // this._setWorkerData(points);
             //清除
             this._clearCanvas();
             this._canvasResize();
 
             this._setState(State.drawBefore);
 
-            this.createColorSplit(points);
-            this.drawRec(size, zoomUnit, points);
+            // this.createColorSplit(points);
+            // this.drawRec(size, zoomUnit, points);
+             this.createColorSplit(grids);
+             this.drawRec(size, zoomUnit, grids);
             this._setState(State.drawAfter);
 
 
@@ -167,7 +171,8 @@ export default class RectOverlay extends Parameter {
         }
         for (let i = 0, len = grids.length; i < len; i++) {
             const item = grids[i],
-                pixel = item.pixel;
+                // pixel = item.pixel;
+                  pixel = item.pixels;
             const x1 = pixel.swX - style.padding,
                 y1 = pixel.neY - style.padding,
                 x2 = pixel.neX - style.padding,
@@ -275,17 +280,19 @@ export default class RectOverlay extends Parameter {
             if (item) {
                 const count = item.count;
                 // console.log(item)
-                // const _item = {
-                //     pixels: item.pixel,
-                //     count: count,
-                //     data: item
-                // };
+                const _item = {
+                    pixels: item.pixel,
+                    count: count,
+                    data: item
+                };
+                const color = this.getColor(_item);
                 // console.log(_item)
-                const color = this.getColor(item);
+                // const color = this.getColor(item);
                 this._ctx.fillStyle = color;
                 this._ctx.fillRect(item.pixel.swX, item.pixel.neY, item.pixel.neX - item.pixel.swX - style.padding, item.pixel.swY - item.pixel.neY - style.padding);
                 if (count > 0) {
-                    this._workerData.grids.push(item);
+                    // this._workerData.grids.push(item);
+                    this._workerData.grids.push(_item);
                 }
             }
         }

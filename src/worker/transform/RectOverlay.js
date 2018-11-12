@@ -40,8 +40,9 @@ import {
   */
 const RectOverlay = {
     pointsToPixels(webObj) {
+        webObj.request.data.points.forEach((val) => {
         // console.time("转换坐标为像素");
-        webObj.request.data.forEach((val) => {
+        // webObj.request.data.forEach((val) => {
             var ne_pixel = pointToPixelWorker({ lng: val.neY || 0, lat: val.neX || 0 }, webObj.request.map);
             var sw_pixel = pointToPixelWorker({ lng: val.swY || 0, lat: val.swX || 0 }, webObj.request.map);
             val['pixel'] = {
@@ -50,11 +51,12 @@ const RectOverlay = {
                 'swX': sw_pixel.x,
                 'swY': sw_pixel.y,
             }
-            val['geometry']['pixel'] = {
-                'x': ne_pixel.x,
-                'y': ne_pixel.y
-            }
+            // val['geometry']['pixel'] = {
+            //     'x': ne_pixel.x,
+            //     'y': ne_pixel.y
+            // }
         });
+        // console.log('webObj is ',webObj)
         // console.timeEnd("转换坐标为像素");
         return webObj
     }
