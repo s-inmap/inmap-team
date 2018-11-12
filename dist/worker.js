@@ -73,12 +73,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 193);
+/******/ 	return __webpack_require__(__webpack_require__.s = 192);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 155:
+/***/ 154:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -208,7 +208,7 @@ exports.default = GriddingOverlay;
 
 /***/ }),
 
-/***/ 156:
+/***/ 155:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -237,7 +237,7 @@ exports.default = HeatOverlay;
 
 /***/ }),
 
-/***/ 157:
+/***/ 156:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -374,7 +374,7 @@ exports.default = HoneycombOverlay;
 
 /***/ }),
 
-/***/ 158:
+/***/ 157:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -384,7 +384,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Label = __webpack_require__(71);
+var _Label = __webpack_require__(70);
 
 var LablEvading = {
     merge: function merge(webObj) {
@@ -439,7 +439,7 @@ exports.default = LablEvading;
 
 /***/ }),
 
-/***/ 159:
+/***/ 158:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -451,7 +451,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _pointToPixel = __webpack_require__(36);
 
-var _Curive = __webpack_require__(163);
+var _Curive = __webpack_require__(162);
 
 var LineStringOverlay = {
     transferCoordinate: function transferCoordinate(_coordinates, nwMc, zoomUnit) {
@@ -563,7 +563,7 @@ exports.default = LineStringOverlay;
 
 /***/ }),
 
-/***/ 160:
+/***/ 159:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -575,11 +575,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _pointToPixel = __webpack_require__(36);
 
-var _Point = __webpack_require__(164);
+var _Point = __webpack_require__(163);
 
 var _Point2 = _interopRequireDefault(_Point);
 
-var _Polylabel = __webpack_require__(165);
+var _Polylabel = __webpack_require__(164);
 
 var _Polylabel2 = _interopRequireDefault(_Polylabel);
 
@@ -637,7 +637,7 @@ exports.default = PolygonOverlay;
 
 /***/ }),
 
-/***/ 161:
+/***/ 160:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -728,7 +728,7 @@ exports.default = PolymeOverlay;
 
 /***/ }),
 
-/***/ 162:
+/***/ 161:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -765,7 +765,7 @@ exports.default = RectOverlay;
 
 /***/ }),
 
-/***/ 163:
+/***/ 162:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -875,7 +875,7 @@ function getPointList(start, end, deltaAngle) {
 
 /***/ }),
 
-/***/ 164:
+/***/ 163:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -885,7 +885,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Util = __webpack_require__(9);
+var _Util = __webpack_require__(6);
 
 function Point(lng, lat) {
     if (isNaN(lng)) {
@@ -915,7 +915,7 @@ exports.default = Point;
 
 /***/ }),
 
-/***/ 165:
+/***/ 164:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -926,7 +926,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = Polylabel;
 
-var _tinyqueue = __webpack_require__(185);
+var _tinyqueue = __webpack_require__(184);
 
 var _tinyqueue2 = _interopRequireDefault(_tinyqueue);
 
@@ -1064,7 +1064,7 @@ function Polylabel(polygon) {
 
 /***/ }),
 
-/***/ 185:
+/***/ 184:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1162,7 +1162,7 @@ TinyQueue.prototype = {
 
 /***/ }),
 
-/***/ 193:
+/***/ 192:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1173,35 +1173,35 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TDpost = undefined;
 
-var _HeatOverlay = __webpack_require__(156);
+var _HeatOverlay = __webpack_require__(155);
 
 var _HeatOverlay2 = _interopRequireDefault(_HeatOverlay);
 
-var _GriddingOverlay = __webpack_require__(155);
+var _GriddingOverlay = __webpack_require__(154);
 
 var _GriddingOverlay2 = _interopRequireDefault(_GriddingOverlay);
 
-var _PolygonOverlay = __webpack_require__(160);
+var _PolygonOverlay = __webpack_require__(159);
 
 var _PolygonOverlay2 = _interopRequireDefault(_PolygonOverlay);
 
-var _LineStringOverlay = __webpack_require__(159);
+var _LineStringOverlay = __webpack_require__(158);
 
 var _LineStringOverlay2 = _interopRequireDefault(_LineStringOverlay);
 
-var _HoneycombOverlay = __webpack_require__(157);
+var _HoneycombOverlay = __webpack_require__(156);
 
 var _HoneycombOverlay2 = _interopRequireDefault(_HoneycombOverlay);
 
-var _PolymeOverlay = __webpack_require__(161);
+var _PolymeOverlay = __webpack_require__(160);
 
 var _PolymeOverlay2 = _interopRequireDefault(_PolymeOverlay);
 
-var _LablEvading = __webpack_require__(158);
+var _LablEvading = __webpack_require__(157);
 
 var _LablEvading2 = _interopRequireDefault(_LablEvading);
 
-var _RectOverlay = __webpack_require__(162);
+var _RectOverlay = __webpack_require__(161);
 
 var _RectOverlay2 = _interopRequireDefault(_RectOverlay);
 
@@ -2132,11 +2132,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     }
   }]);
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(400)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(399)(module)))
 
 /***/ }),
 
-/***/ 400:
+/***/ 399:
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -2165,304 +2165,7 @@ module.exports = function(module) {
 
 /***/ }),
 
-/***/ 70:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var isMergeableObject = function isMergeableObject(value) {
-	return isNonNullObject(value)
-		&& !isSpecial(value)
-};
-
-function isNonNullObject(value) {
-	return !!value && typeof value === 'object'
-}
-
-function isSpecial(value) {
-	var stringValue = Object.prototype.toString.call(value);
-
-	return stringValue === '[object RegExp]'
-		|| stringValue === '[object Date]'
-		|| isReactElement(value)
-}
-
-// see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
-var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
-var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
-
-function isReactElement(value) {
-	return value.$$typeof === REACT_ELEMENT_TYPE
-}
-
-function emptyTarget(val) {
-    return Array.isArray(val) ? [] : {}
-}
-
-function cloneIfNecessary(value, optionsArgument) {
-    var clone = optionsArgument && optionsArgument.clone === true;
-    return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
-}
-
-function defaultArrayMerge(target, source, optionsArgument) {
-    var destination = target.slice();
-    source.forEach(function(e, i) {
-        if (typeof destination[i] === 'undefined') {
-            destination[i] = cloneIfNecessary(e, optionsArgument);
-        } else if (isMergeableObject(e)) {
-            destination[i] = deepmerge(target[i], e, optionsArgument);
-        } else if (target.indexOf(e) === -1) {
-            destination.push(cloneIfNecessary(e, optionsArgument));
-        }
-    });
-    return destination
-}
-
-function mergeObject(target, source, optionsArgument) {
-    var destination = {};
-    if (isMergeableObject(target)) {
-        Object.keys(target).forEach(function(key) {
-            destination[key] = cloneIfNecessary(target[key], optionsArgument);
-        });
-    }
-    Object.keys(source).forEach(function(key) {
-        if (!isMergeableObject(source[key]) || !target[key]) {
-            destination[key] = cloneIfNecessary(source[key], optionsArgument);
-        } else {
-            destination[key] = deepmerge(target[key], source[key], optionsArgument);
-        }
-    });
-    return destination
-}
-
-function deepmerge(target, source, optionsArgument) {
-    var sourceIsArray = Array.isArray(source);
-    var targetIsArray = Array.isArray(target);
-    var options = optionsArgument || { arrayMerge: defaultArrayMerge };
-    var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
-
-    if (!sourceAndTargetTypesMatch) {
-        return cloneIfNecessary(source, optionsArgument)
-    } else if (sourceIsArray) {
-        var arrayMerge = options.arrayMerge || defaultArrayMerge;
-        return arrayMerge(target, source, optionsArgument)
-    } else {
-        return mergeObject(target, source, optionsArgument)
-    }
-}
-
-deepmerge.all = function deepmergeAll(array, optionsArgument) {
-    if (!Array.isArray(array) || array.length < 2) {
-        throw new Error('first argument should be an array with at least two elements')
-    }
-
-    // we are sure there are at least 2 values, so it is safe to have no initial value
-    return array.reduce(function(prev, next) {
-        return deepmerge(prev, next, optionsArgument)
-    })
-};
-
-var deepmerge_1 = deepmerge;
-
-module.exports = deepmerge_1;
-
-
-/***/ }),
-
-/***/ 71:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Label = function () {
-    function Label(x, y, radius, height, byteWidth, name) {
-        _classCallCheck(this, Label);
-
-        this.center = {
-            x: x,
-            y: y
-        };
-        this.virtualReact = {
-            maxX: 0,
-            maxY: 0,
-            minX: 0,
-            minY: 0,
-            width: 0,
-            height: 0
-        };
-        this.show = true;
-        this.text = name;
-        this.textReact = {
-            width: 0,
-            height: 0
-        };
-        this.radius = radius + 2;
-        this.padding = 0;
-        this.aIndex = 0;
-        if (!name) return;
-        this._getRectangle(height * 1.1, byteWidth - 0.6);
-    }
-
-    _createClass(Label, [{
-        key: 'getCurrentRect',
-        value: function getCurrentRect() {
-            var result = null;
-            switch (this.aIndex.toString()) {
-                case '0':
-                    result = this._getRightAnchor();
-                    break;
-                case '1':
-                    result = this._getBottomAnchor();
-                    break;
-                case '2':
-                    result = this._getLeftAnchor();
-                    break;
-                case '3':
-                    result = this._getTopAnchor();
-                    break;
-                default:
-                    result = this._getCenterRectange();
-                    break;
-
-            }
-            return result;
-        }
-    }, {
-        key: 'next',
-        value: function next() {
-            this.aIndex++;
-            if (this.aIndex > 3) {
-                this.show = false;
-            }
-            return this.getCurrentRect();
-        }
-    }, {
-        key: '_getTrueLength',
-        value: function _getTrueLength(str) {
-            var len = str.length,
-                truelen = 0;
-            for (var x = 0; x < len; x++) {
-                if (str.charCodeAt(x) > 128) {
-                    truelen += 2;
-                } else {
-                    truelen += 1;
-                }
-            }
-            return truelen;
-        }
-    }, {
-        key: 'isAnchorMeet',
-        value: function isAnchorMeet(target) {
-            var react = this.getCurrentRect(),
-                targetReact = target.getCurrentRect();
-            if (react.minX < targetReact.maxX && targetReact.minX < react.maxX && react.minY < targetReact.maxY && targetReact.minY < react.maxY) {
-                return true;
-            }
-            return false;
-        }
-    }, {
-        key: '_getCenterRectange',
-        value: function _getCenterRectange() {
-            return {
-                minX: this.center.x - this.radius,
-                maxX: this.center.x + this.radius,
-                minY: this.center.y - this.radius,
-                maxY: this.center.y + this.radius
-            };
-        }
-    }, {
-        key: '_getRectangle',
-        value: function _getRectangle(height, byteWidth) {
-            var width = this._getTrueLength(this.text) * byteWidth;
-            this.textReact = {
-                width: width + this.padding * 2,
-                height: height
-            };
-        }
-    }, {
-        key: '_getLeftAnchor',
-        value: function _getLeftAnchor() {
-
-            var x = this.center.x - this.radius - this.textReact.width,
-                y = this.center.y - this.textReact.height / 2,
-                diam = this.radius * 2,
-                maxH = diam > this.textReact.height ? diam : this.textReact.height;
-            return {
-                x: x,
-                y: y,
-                minX: x,
-                maxX: this.center.x + this.radius,
-                minY: this.center.y - maxH / 2,
-                maxY: this.center.y + maxH / 2
-            };
-        }
-    }, {
-        key: '_getRightAnchor',
-        value: function _getRightAnchor() {
-            var x = this.center.x + this.radius,
-                y = this.center.y - this.textReact.height / 2,
-                diam = this.radius * 2,
-                maxH = diam > this.textReact.height ? diam : this.textReact.height;
-            return {
-                x: x,
-                y: y,
-                minX: this.center.x - this.radius,
-                maxX: this.center.x + this.radius + this.textReact.width,
-                minY: this.center.y - maxH / 2,
-                maxY: this.center.y + maxH / 2
-            };
-        }
-    }, {
-        key: '_getTopAnchor',
-        value: function _getTopAnchor() {
-            var x = this.center.x - this.textReact.width / 2,
-                y = this.center.y - this.radius - this.textReact.height,
-                diam = this.radius * 2,
-                maxW = diam > this.textReact.width ? diam : this.textReact.width;
-            return {
-                x: x,
-                y: y,
-                minX: this.center.x - maxW / 2,
-                maxX: this.center.x + maxW / 2,
-                minY: this.center.y - this.radius - this.textReact.height,
-                maxY: this.center.y + this.radius
-            };
-        }
-    }, {
-        key: '_getBottomAnchor',
-        value: function _getBottomAnchor() {
-            var x = this.center.x - this.textReact.width / 2,
-                y = this.center.y + this.radius,
-                maxW = this.radius > this.textReact.width ? this.radius : this.textReact.width;
-            return {
-                x: x,
-                y: y,
-                minX: this.center.x - maxW / 2,
-                maxX: this.center.x + maxW / 2,
-                minY: this.center.y - this.radius,
-                maxY: this.center.y + this.radius + this.textReact.height
-            };
-        }
-    }]);
-
-    return Label;
-}();
-
-exports.default = Label;
-
-/***/ }),
-
-/***/ 9:
+/***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2492,7 +2195,7 @@ exports.clearPushArray = clearPushArray;
 exports.checkType = checkType;
 exports.checkGeoJSON = checkGeoJSON;
 
-var _deepmerge = __webpack_require__(70);
+var _deepmerge = __webpack_require__(97);
 
 var _deepmerge2 = _interopRequireDefault(_deepmerge);
 
@@ -2691,6 +2394,303 @@ function checkGeoJSON(data, isCheckName, isCheckCount) {
         }
     }
 }
+
+/***/ }),
+
+/***/ 70:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Label = function () {
+    function Label(x, y, radius, height, byteWidth, name) {
+        _classCallCheck(this, Label);
+
+        this.center = {
+            x: x,
+            y: y
+        };
+        this.virtualReact = {
+            maxX: 0,
+            maxY: 0,
+            minX: 0,
+            minY: 0,
+            width: 0,
+            height: 0
+        };
+        this.show = true;
+        this.text = name;
+        this.textReact = {
+            width: 0,
+            height: 0
+        };
+        this.radius = radius + 2;
+        this.padding = 0;
+        this.aIndex = 0;
+        if (!name) return;
+        this._getRectangle(height * 1.1, byteWidth - 0.6);
+    }
+
+    _createClass(Label, [{
+        key: 'getCurrentRect',
+        value: function getCurrentRect() {
+            var result = null;
+            switch (this.aIndex.toString()) {
+                case '0':
+                    result = this._getRightAnchor();
+                    break;
+                case '1':
+                    result = this._getBottomAnchor();
+                    break;
+                case '2':
+                    result = this._getLeftAnchor();
+                    break;
+                case '3':
+                    result = this._getTopAnchor();
+                    break;
+                default:
+                    result = this._getCenterRectange();
+                    break;
+
+            }
+            return result;
+        }
+    }, {
+        key: 'next',
+        value: function next() {
+            this.aIndex++;
+            if (this.aIndex > 3) {
+                this.show = false;
+            }
+            return this.getCurrentRect();
+        }
+    }, {
+        key: '_getTrueLength',
+        value: function _getTrueLength(str) {
+            var len = str.length,
+                truelen = 0;
+            for (var x = 0; x < len; x++) {
+                if (str.charCodeAt(x) > 128) {
+                    truelen += 2;
+                } else {
+                    truelen += 1;
+                }
+            }
+            return truelen;
+        }
+    }, {
+        key: 'isAnchorMeet',
+        value: function isAnchorMeet(target) {
+            var react = this.getCurrentRect(),
+                targetReact = target.getCurrentRect();
+            if (react.minX < targetReact.maxX && targetReact.minX < react.maxX && react.minY < targetReact.maxY && targetReact.minY < react.maxY) {
+                return true;
+            }
+            return false;
+        }
+    }, {
+        key: '_getCenterRectange',
+        value: function _getCenterRectange() {
+            return {
+                minX: this.center.x - this.radius,
+                maxX: this.center.x + this.radius,
+                minY: this.center.y - this.radius,
+                maxY: this.center.y + this.radius
+            };
+        }
+    }, {
+        key: '_getRectangle',
+        value: function _getRectangle(height, byteWidth) {
+            var width = this._getTrueLength(this.text) * byteWidth;
+            this.textReact = {
+                width: width + this.padding * 2,
+                height: height
+            };
+        }
+    }, {
+        key: '_getLeftAnchor',
+        value: function _getLeftAnchor() {
+
+            var x = this.center.x - this.radius - this.textReact.width,
+                y = this.center.y - this.textReact.height / 2,
+                diam = this.radius * 2,
+                maxH = diam > this.textReact.height ? diam : this.textReact.height;
+            return {
+                x: x,
+                y: y,
+                minX: x,
+                maxX: this.center.x + this.radius,
+                minY: this.center.y - maxH / 2,
+                maxY: this.center.y + maxH / 2
+            };
+        }
+    }, {
+        key: '_getRightAnchor',
+        value: function _getRightAnchor() {
+            var x = this.center.x + this.radius,
+                y = this.center.y - this.textReact.height / 2,
+                diam = this.radius * 2,
+                maxH = diam > this.textReact.height ? diam : this.textReact.height;
+            return {
+                x: x,
+                y: y,
+                minX: this.center.x - this.radius,
+                maxX: this.center.x + this.radius + this.textReact.width,
+                minY: this.center.y - maxH / 2,
+                maxY: this.center.y + maxH / 2
+            };
+        }
+    }, {
+        key: '_getTopAnchor',
+        value: function _getTopAnchor() {
+            var x = this.center.x - this.textReact.width / 2,
+                y = this.center.y - this.radius - this.textReact.height,
+                diam = this.radius * 2,
+                maxW = diam > this.textReact.width ? diam : this.textReact.width;
+            return {
+                x: x,
+                y: y,
+                minX: this.center.x - maxW / 2,
+                maxX: this.center.x + maxW / 2,
+                minY: this.center.y - this.radius - this.textReact.height,
+                maxY: this.center.y + this.radius
+            };
+        }
+    }, {
+        key: '_getBottomAnchor',
+        value: function _getBottomAnchor() {
+            var x = this.center.x - this.textReact.width / 2,
+                y = this.center.y + this.radius,
+                maxW = this.radius > this.textReact.width ? this.radius : this.textReact.width;
+            return {
+                x: x,
+                y: y,
+                minX: this.center.x - maxW / 2,
+                maxX: this.center.x + maxW / 2,
+                minY: this.center.y - this.radius,
+                maxY: this.center.y + this.radius + this.textReact.height
+            };
+        }
+    }]);
+
+    return Label;
+}();
+
+exports.default = Label;
+
+/***/ }),
+
+/***/ 97:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isMergeableObject = function isMergeableObject(value) {
+	return isNonNullObject(value)
+		&& !isSpecial(value)
+};
+
+function isNonNullObject(value) {
+	return !!value && typeof value === 'object'
+}
+
+function isSpecial(value) {
+	var stringValue = Object.prototype.toString.call(value);
+
+	return stringValue === '[object RegExp]'
+		|| stringValue === '[object Date]'
+		|| isReactElement(value)
+}
+
+// see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
+var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
+
+function isReactElement(value) {
+	return value.$$typeof === REACT_ELEMENT_TYPE
+}
+
+function emptyTarget(val) {
+    return Array.isArray(val) ? [] : {}
+}
+
+function cloneIfNecessary(value, optionsArgument) {
+    var clone = optionsArgument && optionsArgument.clone === true;
+    return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
+}
+
+function defaultArrayMerge(target, source, optionsArgument) {
+    var destination = target.slice();
+    source.forEach(function(e, i) {
+        if (typeof destination[i] === 'undefined') {
+            destination[i] = cloneIfNecessary(e, optionsArgument);
+        } else if (isMergeableObject(e)) {
+            destination[i] = deepmerge(target[i], e, optionsArgument);
+        } else if (target.indexOf(e) === -1) {
+            destination.push(cloneIfNecessary(e, optionsArgument));
+        }
+    });
+    return destination
+}
+
+function mergeObject(target, source, optionsArgument) {
+    var destination = {};
+    if (isMergeableObject(target)) {
+        Object.keys(target).forEach(function(key) {
+            destination[key] = cloneIfNecessary(target[key], optionsArgument);
+        });
+    }
+    Object.keys(source).forEach(function(key) {
+        if (!isMergeableObject(source[key]) || !target[key]) {
+            destination[key] = cloneIfNecessary(source[key], optionsArgument);
+        } else {
+            destination[key] = deepmerge(target[key], source[key], optionsArgument);
+        }
+    });
+    return destination
+}
+
+function deepmerge(target, source, optionsArgument) {
+    var sourceIsArray = Array.isArray(source);
+    var targetIsArray = Array.isArray(target);
+    var options = optionsArgument || { arrayMerge: defaultArrayMerge };
+    var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+
+    if (!sourceAndTargetTypesMatch) {
+        return cloneIfNecessary(source, optionsArgument)
+    } else if (sourceIsArray) {
+        var arrayMerge = options.arrayMerge || defaultArrayMerge;
+        return arrayMerge(target, source, optionsArgument)
+    } else {
+        return mergeObject(target, source, optionsArgument)
+    }
+}
+
+deepmerge.all = function deepmergeAll(array, optionsArgument) {
+    if (!Array.isArray(array) || array.length < 2) {
+        throw new Error('first argument should be an array with at least two elements')
+    }
+
+    // we are sure there are at least 2 values, so it is safe to have no initial value
+    return array.reduce(function(prev, next) {
+        return deepmerge(prev, next, optionsArgument)
+    })
+};
+
+var deepmerge_1 = deepmerge;
+
+module.exports = deepmerge_1;
+
 
 /***/ })
 
