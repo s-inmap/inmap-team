@@ -6,7 +6,7 @@ import {
     isEmpty,
     merge,
     clearPushArray
-} from '../common/util.js';
+} from '../common/Util.js';
 import RectConfig from '../config/RectConfig.js';
 import State from '../config/OnStateConfig.js';
 
