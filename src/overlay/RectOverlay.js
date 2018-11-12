@@ -235,14 +235,17 @@ export default class RectOverlay extends Parameter {
     createColorSplit(points) {
         let data = [];
         for (let i = 0, len = points.length; i < len; i++) {
-            let count = points[i]['count'];
+            if (points[i]) {
+                let count = points[i]['count'];
 
-            if (count > 0) {
-                data.push({
-                    name: '',
-                    count: count
-                });
+                if (count > 0) {
+                    data.push({
+                        name: '',
+                        count: count
+                    });
+                }
             }
+
         }
         if (this._styleConfig.splitList.length > 0 || this._styleConfig.colors.length > 0) {
             this.compileSplitList(data);
@@ -269,19 +272,21 @@ export default class RectOverlay extends Parameter {
         // console.time("绘制矩形");
         for (let i = 0, len = grids.length; i < len; i++) {
             const item = grids[i];
-            const count = item.count;
-            // console.log(item)
-            // const _item = {
-            //     pixels: item.pixel,
-            //     count: count,
-            //     data: item
-            // };
-            // console.log(_item)
-            const color = this.getColor(item);
-            this._ctx.fillStyle = color;
-            this._ctx.fillRect(item.pixel.swX, item.pixel.neY, item.pixel.neX - item.pixel.swX - style.padding, item.pixel.swY - item.pixel.neY - style.padding);
-            if (count > 0) {
-                this._workerData.grids.push(item);
+            if (item) {
+                const count = item.count;
+                // console.log(item)
+                // const _item = {
+                //     pixels: item.pixel,
+                //     count: count,
+                //     data: item
+                // };
+                // console.log(_item)
+                const color = this.getColor(item);
+                this._ctx.fillStyle = color;
+                this._ctx.fillRect(item.pixel.swX, item.pixel.neY, item.pixel.neX - item.pixel.swX - style.padding, item.pixel.swY - item.pixel.neY - style.padding);
+                if (count > 0) {
+                    this._workerData.grids.push(item);
+                }
             }
         }
         // console.timeEnd("绘制矩形");
