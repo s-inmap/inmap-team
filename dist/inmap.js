@@ -11156,13 +11156,15 @@ var RectOverlay = function (_Parameter) {
         value: function createColorSplit(points) {
             var data = [];
             for (var i = 0, len = points.length; i < len; i++) {
-                var count = points[i]['count'];
+                if (points[i]) {
+                    var count = points[i]['count'];
 
-                if (count > 0) {
-                    data.push({
-                        name: '',
-                        count: count
-                    });
+                    if (count > 0) {
+                        data.push({
+                            name: '',
+                            count: count
+                        });
+                    }
                 }
             }
             if (this._styleConfig.splitList.length > 0 || this._styleConfig.colors.length > 0) {
@@ -11194,13 +11196,15 @@ var RectOverlay = function (_Parameter) {
 
             for (var i = 0, len = grids.length; i < len; i++) {
                 var item = grids[i];
-                var count = item.count;
+                if (item) {
+                    var count = item.count;
 
-                var color = this.getColor(item);
-                this._ctx.fillStyle = color;
-                this._ctx.fillRect(item.pixel.swX, item.pixel.neY, item.pixel.neX - item.pixel.swX - style.padding, item.pixel.swY - item.pixel.neY - style.padding);
-                if (count > 0) {
-                    this._workerData.grids.push(item);
+                    var color = this.getColor(item);
+                    this._ctx.fillStyle = color;
+                    this._ctx.fillRect(item.pixel.swX, item.pixel.neY, item.pixel.neX - item.pixel.swX - style.padding, item.pixel.swY - item.pixel.neY - style.padding);
+                    if (count > 0) {
+                        this._workerData.grids.push(item);
+                    }
                 }
             }
         }
