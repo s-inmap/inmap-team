@@ -92,11 +92,14 @@ export default class ToolTip {
             } else if (isString(formatter)) {
                 this._dom.innerHTML = this._tooltipTemplate(overItem);
             }
-
-            let pixel = overItem.geometry.pixel,
-                x = pixel.x,
-                y = pixel.y;
-            this.show(x, y);
+            if (overItem.geometry) {
+                let pixel = overItem.geometry.pixel,
+                    x = pixel.x,
+                    y = pixel.y;
+                this.show(x, y);
+            } else {
+                this.show(overItem.pixels.neX, overItem.pixels.neY);
+            }
         } else {
             this.hide();
         }

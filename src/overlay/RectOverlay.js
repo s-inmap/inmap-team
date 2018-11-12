@@ -97,8 +97,8 @@ export default class RectOverlay extends Parameter {
 
             // this.createColorSplit(points);
             // this.drawRec(size, zoomUnit, points);
-             this.createColorSplit(grids);
-             this.drawRec(size, zoomUnit, grids);
+            this.createColorSplit(grids);
+            this.drawRec(size, zoomUnit, grids);
             this._setState(State.drawAfter);
 
 
@@ -172,7 +172,7 @@ export default class RectOverlay extends Parameter {
         for (let i = 0, len = grids.length; i < len; i++) {
             const item = grids[i],
                 // pixel = item.pixel;
-                  pixel = item.pixels;
+                pixel = item.pixels;
             const x1 = pixel.swX - style.padding,
                 y1 = pixel.neY - style.padding,
                 x2 = pixel.neX - style.padding,
@@ -385,10 +385,10 @@ export default class RectOverlay extends Parameter {
      * @param {*} exp  表达式
      */
     setSelectd(exp) {
-        if (this._workerData.length > 0) {
-            const selectItems = this._workerData.filter((item) => {
+        if (this._data.length > 0) {
+            const selectItems = this._workerData.grids.filter((item) => {
                 if (item) {
-                    return eval('item.' + exp);
+                    return eval('item.data.' + exp);
                 }
             });
             const selectItem = selectItems[0] || {};
