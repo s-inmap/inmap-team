@@ -286,7 +286,7 @@ export default class Parameter extends CanvasOverlay {
             option = merge(legendConfig, {
                 list: list
             });
-         
+
         }
         this.legend.setOption(option);
     }
