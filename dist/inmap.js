@@ -1428,7 +1428,6 @@ var Parameter = function (_CanvasOverlay) {
     }, {
         key: '_tMouseleave',
         value: function _tMouseleave() {
-            console.log('_tMouseleave');
             this.tooltip.hide();
         }
     }, {
@@ -1468,7 +1467,6 @@ var Parameter = function (_CanvasOverlay) {
     }, {
         key: '_tMouseClick',
         value: function _tMouseClick(event) {
-            console.log(event);
             if (this._eventType == 'onmoving') return;
             var multiSelect = this._eventConfig.multiSelect;
 
@@ -5795,7 +5793,6 @@ var PointOverlay = function (_Parameter) {
                 if (!(0, _Util.isEmpty)(this._styleConfig.mouseOver)) {
                     this._drawMouseLayer();
                 }
-                console.log('point', this._overItem);
                 this._setTooltip(event);
             }
             if (temp) {
