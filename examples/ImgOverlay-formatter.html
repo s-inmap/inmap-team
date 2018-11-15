@@ -179,6 +179,12 @@
     .selfModal .ivu-modal {
         top: 0;
     }
+    #zengyi {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #fff;
+    }
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
     <script src="https://lib.baomitu.com/vue/2.5.17/vue.min.js"></script>
@@ -186,6 +192,7 @@
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/iview@2.14.3/dist/styles/iview.css">
     <script src="data/data3.js"></script>
     <script src="data/data4.js"></script>
+    <script src="data/data5.js"></script>
     <script src="../dist/inmap.js"></script>
     <!-- <script type="text/javascript" src="http://unpkg.com/inmap/dist/inmap.min.js"></script> -->
     <!-- <script src="https://smartdata.b0.upaiyun.com/thinkmark/inmap_g_v2.min.js"></script> -->
@@ -195,10 +202,12 @@
     <div id="app">
         <div id="allmap"></div>
         <div style="position: absolute;right:0;top:0" class="my-button">
+            <button onclick="showR()">显示黄色新数据</button>
             <button onclick="showYellow()">显示黄色</button>
             <button onclick="hideYellow()">隐藏黄色</button>
             <button onclick="showTip()">显示tooltip</button>
         </div>
+        <div id="zengyi"></div>
         <Modal v-model="showModal" width="262" :closable="false" :mask-closable="false" title="编辑研究区域" id="editCanvas" ref="editCanvas" class-name="selfModal editModal">
             <!--内容-->
             <i-form label-position="top">
@@ -285,7 +294,6 @@ let vm = new Vue({
             }
         },
         handleCancel() {
-            console.log(1111);
             this.showModal = false;
         },
         handleSubmit() {
@@ -384,6 +392,7 @@ function createImgOverlay(type) {
             show: true,
             customClass: "auto",
             formatter: function(params, dom) {
+                console.log(params)
                 if (type === 1) {
 
                     let message;
@@ -392,7 +401,7 @@ function createImgOverlay(type) {
                     } else {
                         message = '月流水<em>' + params.incomeMonthly + '</em>元';
                     }
-                    dom.addEventListener('click', editFunc,false);
+                    dom.addEventListener('click', editFunc, false);
 
                     return (`
                         <div class="mapLabel">
@@ -426,7 +435,9 @@ function createImgOverlay(type) {
                             </div>
                         </div>`);
                 } else {
-                    return ('<div class="mapLabel"><div class="name">' + params.name + '</div><div class="arraw"></div></div>');
+                    return (`
+                        <div class="mapLabel"><div class="name">${params.name}</div><div class="arraw"></div></div>
+                    `);
                 }
 
             },
@@ -479,20 +490,19 @@ function showYellow() {
         if (overlay.type === 4) {
             overlay.show();
             overlay.element.show();
-            overlay._tooltipConfig.show = true;
+            overlay.setTooltipIsShow(true);
         }
     });
 }
 
 
 function hideYellow() {
-    console.log('hide');
     let list = map.getOverlays();
     list.map(overlay => {
         if (overlay.type === 4) {
             overlay.hide();
             overlay.element.hide();
-            overlay._tooltipConfig.show = false;
+            overlay.setTooltipIsShow(false);
         }
     });
 }
@@ -506,54 +516,89 @@ function showTip() {
     });
 }
 
-let points1 = data.data.storeList;
-points1.map(item => {
-    item.count = 6;
-    item.geometry = {
-        'type': 'Point',
-        'coordinates': [String(item.lng), String(item.lat)]
-    };
-});
-let overlay1 = createDotOverlay();
-overlay1.setData(points1);
-overlay1.setZIndex(600);
+function showR() {
+    removeYellow(imgoverlay);
+    imgoverlay = undefined;
+    paichi(listnew.data);
+}
+//删除黄色点
+function removeYellow(overlay) {
+    overlay.setTooltipIsShow(false);
+    inmap.remove(overlay.element);
+    inmap.remove(overlay);
+}
+let dotoverlay1,
+    imgoverlay1;
 
-let overlay = createImgOverlay(1);
-overlay.type = 3;
-overlay.setData(points1);
+function myShop() {
+    //我的门店
+    let points1 = data.data.storeList;
+    points1.map(item => {
+        item.count = 6;
+        item.geometry = {
+            'type': 'Point',
+            'coordinates': [String(item.lng), String(item.lat)]
+        };
+    });
+    dotoverlay1 = createDotOverlay();
+    dotoverlay1.setData(points1);
+    dotoverlay1.setZIndex(600);
 
-// console.log('points is ', points1.length)
-overlay.setZIndex(699);
-// console.log('overlay is ', overlay)
-// console.log('map is ', this.inmap)
+    imgoverlay1 = createImgOverlay(1);
+    imgoverlay1.type = 3;
+    imgoverlay1.element = dotoverlay1;
+    imgoverlay1.setData(points1);
+    imgoverlay1.setZIndex(699);
+    // console.log('overlay is ', overlay)
+    // console.log('map is ', this.inmap)
+}
+myShop();
 
-
+let dotoverlay,
+    imgoverlay;
 //排斥点
-// let points2 = list.data;
+function paichi(data) {
+    let points2 = data;
+    let allData = [];
+    let str = ''
 
-// points2.map((item, index) => {
-//     let oldData = item.stores;
-//     oldData.map(item => {
-//         item.count = 6;
-//         item.geometry = {
-//             'type': 'Point',
-//             'coordinates': [String(item.lng), String(item.lat)]
-//         };
-//     });
-//     let dotoverlay = createDotOverlay();
-//     dotoverlay.setData(oldData);
-//     dotoverlay.setZIndex(600);
+    points2.map((item, index) => {
+        let oldData = item.stores;
+        oldData.map(x => {
+            x.count = 6;
+            x.geometry = {
+                'type': 'Point',
+                'coordinates': [String(x.lng), String(x.lat)]
+            };
+            allData.push(x)
 
-//     let imgoverlay = createImgOverlay();
-//     imgoverlay.type = 4;
-//     imgoverlay.setData(oldData);
-//     imgoverlay.setZIndex(699);
+        });
+        str += '<ul><li>' + item.brand + '</li></ul>';
+    });
+    let zengyi = document.getElementById('zengyi');
+    zengyi.innerHTML = str;
+    // console.log(allData, dotoverlay, imgoverlay);
+    if (imgoverlay === undefined) {
+        dotoverlay = createDotOverlay();
+        dotoverlay.setData(allData);
+        dotoverlay.setZIndex(600);
 
-//     imgoverlay.element = dotoverlay;
-//     imgoverlay.hide();
-//     imgoverlay.element.hide();
-//     imgoverlay._tooltipConfig.show = false;
-// });
+        imgoverlay = createImgOverlay();
+        imgoverlay.type = 4;
+        imgoverlay.setData(allData);
+        imgoverlay.setZIndex(699);
+
+        imgoverlay.element = dotoverlay;
+    } else {
+        imgoverlay.setData(allData);
+        imgoverlay.element.setData(allData);
+    }
+
+    // imgoverlay.hide();
+    // imgoverlay.element.hide();
+    // imgoverlay.setTooltipIsShow(false);
+}
+paichi(list.data)
 
 /*画圆*/
 const drawOption = {

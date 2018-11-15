@@ -22,7 +22,7 @@ export default class PointOverlay extends Parameter {
         let mouseOver = opts.style.mouseOver;
         if (mouseOver === undefined || mouseOver.show === false) {
             this._mouseOverShow = false;
-        }else if (mouseOver.show === undefined || mouseOver.show === true) {
+        } else if (mouseOver.show === undefined || mouseOver.show === true) {
             this._mouseOverShow = true;
         }
         if (this._mouseOverShow) {
@@ -449,7 +449,7 @@ export default class PointOverlay extends Parameter {
         } else {
             this._map.setDefaultCursor('default');
         }
-   
+
 
     }
     _tMouseClick(event) {

@@ -152,6 +152,13 @@ export default class ImgOverlay extends Parameter {
         if (this._mouseOverShow) {
             this._mouseLayer._canvasResize();
         }
+        if (this._batchesData) {
+            this._batchesData.clear();
+            this._batchesData.action(this._workerData, this._loopDraw, this._ctx);
+
+        } else {
+            this._loopDraw(this._ctx, this._workerData, false);
+        }
         this._loopDraw(this._ctx, this._workerData, false);
         this._drawMouseLayer();
         this._setState(State.drawAfter);
@@ -276,6 +283,13 @@ export default class ImgOverlay extends Parameter {
         if (this._mouseOverShow) {
             this._mouseLayer._clearCanvas();
             this._loopDraw(this._mouseLayer._getContext(), this._selectItem.concat(overArr), true);
+        }
+    }
+    _Tdispose() {
+        this._batchesData && this._batchesData.clear();
+        if (this._mouseOverShow) {
+            this._map.removeOverlay(this._mouseLayer);
+            this._mouseLayer.dispose();
         }
     }
     _tMousemove(event) {
