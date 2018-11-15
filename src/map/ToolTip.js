@@ -36,13 +36,33 @@ export default class ToolTip {
             left,
             top
         } = this._opts.offsets;
-        this._dom.style.left = 0;
-        this._dom.style.top = 0;
-        let pixelX = x + left,
-            pixelY = y + top;
-        this._dom.style.transform = `translate3d(${pixelX}px, ${pixelY}px, 0px)`;
-        this._dom.style.visibility = 'visible';
-        this._dom.style.display = 'block';
+
+        let pixelY = y + top;
+
+        let leftX = this.getPixelX(x, left);
+
+        this._dom.style.cssText = `
+            left:0;
+            top:0;
+            transform:translate3d(${leftX}px, ${pixelY}px, 0px);
+            visibility: visible;
+            display: block;
+        `;
+    }
+    getPixelX(pixelX, offsetLeft) {
+        //弹出框边缘智能控制
+        let obj = this._dom.getBoundingClientRect(),
+            domWidth = obj.width,
+            screenWidth = document.documentElement.clientWidth;
+        if (pixelX > screenWidth - domWidth) {
+            this._dom.classList.add('arrow-right');
+            this._dom.classList.remove('arrow-left');
+            return pixelX - domWidth - offsetLeft;
+        } else {
+            this._dom.classList.add('arrow-left');
+            this._dom.classList.remove('arrow-right');
+            return pixelX + offsetLeft;
+        }
     }
     showCenterText(text, x, y) {
         this._dom.innerHTML = text;
