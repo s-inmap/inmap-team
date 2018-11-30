@@ -2,6 +2,7 @@ import './lib/require-babel-polyfill.js';
 
 import LabelOverlay from './overlay/LabelOverlay';
 import PointOverlay from './overlay/PointOverlay';
+import PieOverlay from './overlay/PieOverlay';
 
 import GriddingOverlay from './overlay/GriddingOverlay';
 import PolygonOverlay from './overlay/PolygonOverlay';
@@ -30,6 +31,7 @@ const inMap = {
     Map,
     LabelOverlay,
     PointOverlay,
+    PieOverlay,
     GriddingOverlay,
     PolygonOverlay,
     RectOverlay,
@@ -51,6 +53,7 @@ export {
     Map,
     LabelOverlay,
     PointOverlay,
+    PieOverlay,
     GriddingOverlay,
     PolygonOverlay,
     RectOverlay,
