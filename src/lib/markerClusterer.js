@@ -476,7 +476,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
         this._gridBounds = null; //以中心点为准，向四边扩大gridSize个像素的范围，也即网格范围
         this._isReal = false; //真的是个聚合
 
-        this._clusterMarker = new BMapLib.TextIconOverlay(this._center, this._markers.length, { "styles": this._markerClusterer.getStyles() });
+        // this._clusterMarker = new BMapLib.TextIconOverlay(this._center, this._markers.length, { "styles": this._markerClusterer.getStyles() });
         //this._map.addOverlay(this._clusterMarker);
     }
 
@@ -536,7 +536,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
                 this._map.addOverlay(this._markers[i]);
             }
         } else {
-            this._map.addOverlay(this._clusterMarker);
+            // this._map.addOverlay(this._clusterMarker);
             this._isReal = true;
             this.updateClusterMarker();
         }
@@ -588,7 +588,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
      */
     Cluster.prototype.updateClusterMarker = function() {
         if (this._map.getZoom() > this._markerClusterer.getMaxZoom()) {
-            this._clusterMarker && this._map.removeOverlay(this._clusterMarker);
+            // this._clusterMarker && this._map.removeOverlay(this._clusterMarker);
             for (var i = 0, marker; marker = this._markers[i]; i++) {
                 this._map.addOverlay(marker);
             }
@@ -596,19 +596,19 @@ var BMapLib = window.BMapLib = BMapLib || {};
         }
 
         if (this._markers.length < this._minClusterSize) {
-            this._clusterMarker.hide();
+            // this._clusterMarker.hide();
             return;
         }
 
-        this._clusterMarker.setPosition(this._center);
+        // this._clusterMarker.setPosition(this._center);
 
-        this._clusterMarker.setText(this._markers.length);
+        // this._clusterMarker.setText(this._markers.length);
 
         var thatMap = this._map;
         var thatBounds = this.getBounds();
-        this._clusterMarker.addEventListener("click", function(event) {
-            thatMap.setViewport(thatBounds);
-        });
+        // this._clusterMarker.addEventListener("click", function(event) {
+        //     thatMap.setViewport(thatBounds);
+        // });
 
     };
 
