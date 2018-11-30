@@ -318,7 +318,9 @@ export default class PieOverlay extends Parameter {
                 y
             } = pixel;
 
-            this._drawCircleBackground(ctx, x, y, backgroundStyle);
+            if (backgroundStyle.show) {
+                this._drawCircleBackground(ctx, x, y, backgroundStyle);
+            }
 
             let count = 0;
             for (let i = 0, len = value.length; i < len; i++) {
@@ -329,9 +331,15 @@ export default class PieOverlay extends Parameter {
                 let deg = Math.floor(value[i] / count * 360);
                 ary.push(deg);
             }
-            this._drawPie(ctx, x, y, ary, pieStyle);
 
-            this._drawText(ctx, x, y, count, textStyle);
+            if (pieStyle.show) {
+                this._drawPie(ctx, x, y, ary, pieStyle);
+            }
+
+            if (textStyle.show) {
+                this._drawText(ctx, x, y, count, textStyle);
+            }
+
         });
     }
     _drawCircleBackground(ctx, x, y, style) {
@@ -362,7 +370,7 @@ export default class PieOverlay extends Parameter {
     }
     _drawText(ctx, x, y, count, style) {
         ctx.beginPath();
-        ctx.font = style.fontSize + ' Roboto-Regular';
+        ctx.font = `${style.fontSize}px ${style.fontWeight} sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = style.fontColor;

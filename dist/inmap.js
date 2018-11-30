@@ -10282,7 +10282,9 @@ var PieOverlay = function (_Parameter) {
                     y = pixel.y;
 
 
-                _this4._drawCircleBackground(ctx, x, y, backgroundStyle);
+                if (backgroundStyle.show) {
+                    _this4._drawCircleBackground(ctx, x, y, backgroundStyle);
+                }
 
                 var count = 0;
                 for (var i = 0, len = value.length; i < len; i++) {
@@ -10293,9 +10295,14 @@ var PieOverlay = function (_Parameter) {
                     var deg = Math.floor(value[_i2] / count * 360);
                     ary.push(deg);
                 }
-                _this4._drawPie(ctx, x, y, ary, pieStyle);
 
-                _this4._drawText(ctx, x, y, count, textStyle);
+                if (pieStyle.show) {
+                    _this4._drawPie(ctx, x, y, ary, pieStyle);
+                }
+
+                if (textStyle.show) {
+                    _this4._drawText(ctx, x, y, count, textStyle);
+                }
             });
         }
     }, {
@@ -10333,7 +10340,7 @@ var PieOverlay = function (_Parameter) {
         key: '_drawText',
         value: function _drawText(ctx, x, y, count, style) {
             ctx.beginPath();
-            ctx.font = style.fontSize + ' Roboto-Regular';
+            ctx.font = style.fontSize + 'px ' + style.fontWeight + ' sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = style.fontColor;
