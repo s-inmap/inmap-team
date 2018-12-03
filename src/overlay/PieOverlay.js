@@ -11,6 +11,7 @@ import {
 import BatchesData from './base/BatchesData';
 import PointConfig from '../config/PointConfig';
 import State from './../config/OnStateConfig';
+
 let isMobile = detectmob();
 export default class PieOverlay extends Parameter {
     constructor(opts) {
@@ -309,7 +310,6 @@ export default class PieOverlay extends Parameter {
         let backgroundStyle = this._styleConfig.backgroundStyle;
         let pieStyle = this._styleConfig.pieStyle;
         let textStyle = this._styleConfig.textStyle;
-
         pixels.map(item => {
             let value = item.value;
             let pixel = item.geometry.pixel;
@@ -494,10 +494,10 @@ export default class PieOverlay extends Parameter {
     }
     _tMouseClick(event) {
         if (this._eventType == 'onmoving') return;
-        let {
-            multiSelect
-        } = this._eventConfig;
-        let result = this._getTarget(event.pixel.x, event.pixel.y);
+        // let {
+        //     multiSelect
+        // } = this._eventConfig;
+        // let result = this._getTarget(event.pixel.x, event.pixel.y);
         // if (result.index == -1) {
         //     return;
         // }

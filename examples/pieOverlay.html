@@ -110,9 +110,9 @@ function getZengyi() {
 
 function getMarkerClusterer() {
     let markerClusterer = new BMapLib.MarkerClusterer(map, {
-        markers: markers
+        markers: markers,
+        gridSize: 50
     });
-    markerClusterer.setGridSize(200);
     return markerClusterer;
 }
 
@@ -205,13 +205,11 @@ function initOverlay(ary) {
                 show: true,
                 fontSize: 12,
                 fontColor: '#17233D',
-                fontWeight: 'bold'
+                fontWeight: ''
             },
-            normal: {
-                backgroundColor: 'rgba(200, 200, 50, 1)',
-                borderWidth: 1,
-                borderColor: 'rgba(255,255,255,1)',
-                size: 10,
+            cluster: {
+                show: true,
+                gridSize: 50,
             },
         },
         data: ary,
@@ -230,6 +228,8 @@ getZengyi();
 // console.log('原始markers集合', markers);
 //生成聚合实例
 let markerClusterer = getMarkerClusterer();
+// markerClusterer.clearMarkers();
+console.log(markerClusterer.getMarkers())
 //分解聚合结果，生成inmap数据
 let ary = getOverlayData();
 //渲染inmap
@@ -238,6 +238,7 @@ initOverlay(ary);
 
 map.addEventListener('zoomend', e => {
     let ary = getOverlayData();
+    console.log(ary)
     overlay.setData(ary);
 });
 </script>
