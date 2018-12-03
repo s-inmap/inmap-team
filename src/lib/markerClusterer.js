@@ -1,6 +1,6 @@
 /**
  * @fileoverview MarkerClusterer标记聚合器用来解决加载大量点要素到地图上产生覆盖现象的问题，并提高性能。
- * 主入口类是<a href="symbols/BMapLib.MarkerClusterer.html">MarkerClusterer</a>，
+ * 主入口类是<a href="http://api.map.baidu.com/library/MarkerClusterer/1.2/docs/symbols/BMapLib.MarkerClusterer.html">MarkerClusterer</a>，
  * 基于Baidu Map API 1.2。
  *
  * @author Baidu Map Api Group 
@@ -137,9 +137,10 @@ var BMapLib = window.BMapLib = BMapLib || {};
                 that._redraw();
             });
 
-            this._map.addEventListener("moveend", function() {
-                that._redraw();
-            });
+            // this._map.addEventListener("moveend", function() {
+            //     console.log('move')
+            //     that._redraw();
+            // });
 
             var mkrs = opts["markers"];
             isArray(mkrs) && this.addMarkers(mkrs);
@@ -187,6 +188,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
      * @return 无返回值
      */
     MarkerClusterer.prototype._createClusters = function() {
+
         var mapBounds = this._map.getBounds();
         var extendedBounds = getExtendedBounds(this._map, mapBounds, this._gridSize);
         for (var i = 0, marker; marker = this._markers[i]; i++) {
@@ -516,7 +518,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
         //     for (var i = 0; i < len; i++) {
         //         this._markers[i].getMap() && this._map.removeOverlay(this._markers[i]);
         //     }
-            
+
         // } 
         // this._map.addOverlay(this._clusterMarker);
         // this._isReal = true;
@@ -588,7 +590,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
      */
     Cluster.prototype.updateClusterMarker = function() {
         if (this._map.getZoom() > this._markerClusterer.getMaxZoom()) {
-            // this._clusterMarker && this._map.removeOverlay(this._clusterMarker);
+            this._clusterMarker && this._map.removeOverlay(this._clusterMarker);
             for (var i = 0, marker; marker = this._markers[i]; i++) {
                 this._map.addOverlay(marker);
             }
@@ -596,19 +598,19 @@ var BMapLib = window.BMapLib = BMapLib || {};
         }
 
         if (this._markers.length < this._minClusterSize) {
-            // this._clusterMarker.hide();
+            this._clusterMarker.hide();
             return;
         }
 
-        // this._clusterMarker.setPosition(this._center);
+        this._clusterMarker.setPosition(this._center);
 
-        // this._clusterMarker.setText(this._markers.length);
+        this._clusterMarker.setText(this._markers.length);
 
         var thatMap = this._map;
         var thatBounds = this.getBounds();
-        // this._clusterMarker.addEventListener("click", function(event) {
-        //     thatMap.setViewport(thatBounds);
-        // });
+        this._clusterMarker.addEventListener("click", function(event) {
+            thatMap.setViewport(thatBounds);
+        });
 
     };
 

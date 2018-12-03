@@ -10274,7 +10274,6 @@ var PieOverlay = function (_Parameter) {
             var backgroundStyle = this._styleConfig.backgroundStyle;
             var pieStyle = this._styleConfig.pieStyle;
             var textStyle = this._styleConfig.textStyle;
-
             pixels.map(function (item) {
                 var value = item.value;
                 var pixel = item.geometry.pixel;
@@ -10457,9 +10456,6 @@ var PieOverlay = function (_Parameter) {
         key: '_tMouseClick',
         value: function _tMouseClick(event) {
             if (this._eventType == 'onmoving') return;
-            var multiSelect = this._eventConfig.multiSelect;
-
-            var result = this._getTarget(event.pixel.x, event.pixel.y);
         }
     }]);
 
