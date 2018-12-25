@@ -394,10 +394,11 @@ export default class Parameter extends CanvasOverlay {
 
     }
     setTooltipIsShow(val) {
-        this.setOptionStyle({
-            tooltip: {
-                show: val
-            }
-        });
+        // this.setOptionStyle({
+        //     tooltip: {
+        //         show: val
+        //     }
+        // });
+        this.toolTip._opts.show = val
     }
 }
