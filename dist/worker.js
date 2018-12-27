@@ -73,12 +73,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 193);
+/******/ 	return __webpack_require__(__webpack_require__.s = 195);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 157:
+/***/ 158:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -208,7 +208,7 @@ exports.default = GriddingOverlay;
 
 /***/ }),
 
-/***/ 158:
+/***/ 159:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -237,7 +237,7 @@ exports.default = HeatOverlay;
 
 /***/ }),
 
-/***/ 159:
+/***/ 160:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -374,7 +374,7 @@ exports.default = HoneycombOverlay;
 
 /***/ }),
 
-/***/ 160:
+/***/ 161:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -439,7 +439,7 @@ exports.default = LablEvading;
 
 /***/ }),
 
-/***/ 161:
+/***/ 162:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -451,7 +451,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _pointToPixel = __webpack_require__(36);
 
-var _Curive = __webpack_require__(165);
+var _Curive = __webpack_require__(166);
 
 var LineStringOverlay = {
     transferCoordinate: function transferCoordinate(_coordinates, nwMc, zoomUnit) {
@@ -563,7 +563,7 @@ exports.default = LineStringOverlay;
 
 /***/ }),
 
-/***/ 162:
+/***/ 163:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -575,11 +575,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _pointToPixel = __webpack_require__(36);
 
-var _Point = __webpack_require__(166);
+var _Point = __webpack_require__(167);
 
 var _Point2 = _interopRequireDefault(_Point);
 
-var _Polylabel = __webpack_require__(167);
+var _Polylabel = __webpack_require__(168);
 
 var _Polylabel2 = _interopRequireDefault(_Polylabel);
 
@@ -637,7 +637,7 @@ exports.default = PolygonOverlay;
 
 /***/ }),
 
-/***/ 163:
+/***/ 164:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -728,7 +728,7 @@ exports.default = PolymeOverlay;
 
 /***/ }),
 
-/***/ 164:
+/***/ 165:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -761,7 +761,7 @@ exports.default = RectOverlay;
 
 /***/ }),
 
-/***/ 165:
+/***/ 166:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -871,7 +871,7 @@ function getPointList(start, end, deltaAngle) {
 
 /***/ }),
 
-/***/ 166:
+/***/ 167:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -911,7 +911,7 @@ exports.default = Point;
 
 /***/ }),
 
-/***/ 167:
+/***/ 168:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -922,7 +922,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = Polylabel;
 
-var _tinyqueue = __webpack_require__(186);
+var _tinyqueue = __webpack_require__(188);
 
 var _tinyqueue2 = _interopRequireDefault(_tinyqueue);
 
@@ -1060,7 +1060,7 @@ function Polylabel(polygon) {
 
 /***/ }),
 
-/***/ 186:
+/***/ 188:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1158,7 +1158,7 @@ TinyQueue.prototype = {
 
 /***/ }),
 
-/***/ 193:
+/***/ 195:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1169,35 +1169,35 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TDpost = undefined;
 
-var _HeatOverlay = __webpack_require__(158);
+var _HeatOverlay = __webpack_require__(159);
 
 var _HeatOverlay2 = _interopRequireDefault(_HeatOverlay);
 
-var _GriddingOverlay = __webpack_require__(157);
+var _GriddingOverlay = __webpack_require__(158);
 
 var _GriddingOverlay2 = _interopRequireDefault(_GriddingOverlay);
 
-var _PolygonOverlay = __webpack_require__(162);
+var _PolygonOverlay = __webpack_require__(163);
 
 var _PolygonOverlay2 = _interopRequireDefault(_PolygonOverlay);
 
-var _LineStringOverlay = __webpack_require__(161);
+var _LineStringOverlay = __webpack_require__(162);
 
 var _LineStringOverlay2 = _interopRequireDefault(_LineStringOverlay);
 
-var _HoneycombOverlay = __webpack_require__(159);
+var _HoneycombOverlay = __webpack_require__(160);
 
 var _HoneycombOverlay2 = _interopRequireDefault(_HoneycombOverlay);
 
-var _PolymeOverlay = __webpack_require__(163);
+var _PolymeOverlay = __webpack_require__(164);
 
 var _PolymeOverlay2 = _interopRequireDefault(_PolymeOverlay);
 
-var _LablEvading = __webpack_require__(160);
+var _LablEvading = __webpack_require__(161);
 
 var _LablEvading2 = _interopRequireDefault(_LablEvading);
 
-var _RectOverlay = __webpack_require__(164);
+var _RectOverlay = __webpack_require__(165);
 
 var _RectOverlay2 = _interopRequireDefault(_RectOverlay);
 
@@ -2128,11 +2128,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     }
   }]);
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(400)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(402)(module)))
 
 /***/ }),
 
-/***/ 400:
+/***/ 402:
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
