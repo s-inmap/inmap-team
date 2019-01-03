@@ -1,6 +1,7 @@
 import {
     isString,
     isFunction,
+    isArray,
     merge
 } from '../common/Util';
 export default class ToolTip {
@@ -113,10 +114,14 @@ export default class ToolTip {
                 this._dom.innerHTML = this._tooltipTemplate(overItem);
             }
             if (overItem.geometry) {
-                let pixel = overItem.geometry.pixel,
-                    x = pixel.x,
-                    y = pixel.y;
-                this.show(x, y);
+                if (isArray(overItem.geometry.pixels)) {
+                    this.show(event.offsetX, event.offsetY);
+                } else {
+                    let pixel = overItem.geometry.pixel,
+                        x = pixel.x,
+                        y = pixel.y;
+                    this.show(x, y);
+                }
             } else {
                 this.show(overItem.pixels.neX, overItem.pixels.neY);
             }

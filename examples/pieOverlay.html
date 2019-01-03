@@ -40,7 +40,6 @@
     <script src="data/paichi.js"></script>
     <script src="data/zengyi.js"></script>
     <script src="../dist/inmap.js"></script>
-    <script src="../src/lib/markerClusterer.js"></script>
 </head>
 
 <body>
@@ -118,9 +117,9 @@ function getZengyi() {
 }
 
 
-
+console.log(inMap)
 function getMarkerClusterer() {
-    let markerClusterer = new BMapLib.MarkerClusterer(map, {
+    let markerClusterer = new inMap.MarkerClusterer(map, {
         markers: markers,
         gridSize: 50
     });
