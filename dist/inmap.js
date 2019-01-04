@@ -1392,7 +1392,11 @@ var Parameter = function (_CanvasOverlay) {
     }, {
         key: 'setTooltipIsShow',
         value: function setTooltipIsShow(val) {
-            this.toolTip._opts.show = val;
+            this.setOptionStyle({
+                tooltip: {
+                    show: val
+                }
+            });
         }
     }]);
 
@@ -11931,7 +11935,6 @@ var RectOverlay = function (_Parameter) {
                     start: star,
                     end: end,
                     backgroundColor: typeof colors[i] === 'string' ? colors[i] : colors[i].backgroundColor
-
                 });
             }
 
@@ -12108,6 +12111,11 @@ var RectOverlay = function (_Parameter) {
                 }
                 this.refresh();
             }
+        }
+    }, {
+        key: 'setTooltipIsShow',
+        value: function setTooltipIsShow(val) {
+            this.toolTip._opts.show = val;
         }
     }]);
 

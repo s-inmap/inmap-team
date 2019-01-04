@@ -225,13 +225,11 @@ export default class RectOverlay extends Parameter {
                 start: star,
                 end: end,
                 backgroundColor: typeof colors[i] === 'string' ? colors[i] : colors[i].backgroundColor,
-
             });
-
         }
         // }
-        //  else {
-        //     split=this._styleConfig.splitList;
+        // else {
+        // 		split=this._styleConfig.splitList;	
         // }
 
         this._styleConfig.splitList = split;
@@ -409,5 +407,8 @@ export default class RectOverlay extends Parameter {
             }
             this.refresh();
         }
+    }
+    setTooltipIsShow(val) {
+        this.toolTip._opts.show = val
     }
 }
