@@ -102,6 +102,7 @@
         <button onclick="showYellow()">显示黄色</button>
         <button onclick="hideYellow()">隐藏黄色</button>
         <button onclick="showTip()">显示tooltip</button>
+        <button onclick="hideTip()">隱藏tooltip</button>
     </div>
 </body>
 
@@ -122,6 +123,7 @@ var map = inmap.getMap();
 
 function createDotOverlay() {
     let overlay = new inMap.PointOverlay({
+        name:'蓝色圈图',
         tooltip: {
             // show:true
         },
@@ -155,9 +157,10 @@ function createImgOverlay(type) {
         img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_pc.png';
     }
     var overlay = new inMap.ImgOverlay({
+        name:'蓝色点图',
         tooltip: {
             show: false,
-            customClass: "auto",
+            customClass: "imgauto",
             formatter: function(params) {
                 if (type === 1) {
                     let message;
@@ -238,6 +241,18 @@ function showTip() {
         }
     })
 }
+function hideTip() {
+    let list = map.getOverlays();
+    let arr = [];
+    list.map((overlay, index) => {
+        if (overlay.type === 3) {
+
+            console.log(overlay)
+            overlay.setTooltipIsShow(false)
+
+        }
+    })
+}
 let points1 = data.data.storeList;
 points1.map(item => {
     item.count = 6;
@@ -261,32 +276,32 @@ overlay.setZIndex(699);
 
 
 //排斥点
-let points2 = list.data;
-// console.log(points2);
+// let points2 = list.data;
+// // console.log(points2);
 
-points2.map((item, index) => {
-    let oldData = item.stores;
-    oldData.map(item => {
-        item.count = 6;
-        item.geometry = {
-            "type": "Point",
-            "coordinates": [String(item.lng), String(item.lat)]
-        }
-    })
-    let dotoverlay = createDotOverlay()
-    dotoverlay.setData(oldData);
-    dotoverlay.setZIndex(600);
+// points2.map((item, index) => {
+//     let oldData = item.stores;
+//     oldData.map(item => {
+//         item.count = 6;
+//         item.geometry = {
+//             "type": "Point",
+//             "coordinates": [String(item.lng), String(item.lat)]
+//         }
+//     })
+//     let dotoverlay = createDotOverlay()
+//     dotoverlay.setData(oldData);
+//     dotoverlay.setZIndex(600);
 
-    let imgoverlay = createImgOverlay()
-    imgoverlay.type = 4;
-    imgoverlay.setData(oldData);
-    imgoverlay.setZIndex(699);
+//     let imgoverlay = createImgOverlay()
+//     imgoverlay.type = 4;
+//     imgoverlay.setData(oldData);
+//     imgoverlay.setZIndex(699);
 
-    imgoverlay.element = dotoverlay;
-    imgoverlay.hide();
-    imgoverlay.element.hide();
-    imgoverlay._tooltipConfig.show = false;
-})
+//     imgoverlay.element = dotoverlay;
+//     imgoverlay.hide();
+//     imgoverlay.element.hide();
+//     imgoverlay._tooltipConfig.show = false;
+// })
 
 /*画圆*/
 const drawOption = {
