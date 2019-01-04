@@ -73,12 +73,244 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 195);
+/******/ 	return __webpack_require__(__webpack_require__.s = 173);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 158:
+/***/ 11:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.chunk = exports.extend = exports.isPromiseLike = exports.isEmpty = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.typeOf = typeOf;
+exports.isNumber = isNumber;
+exports.isBoolean = isBoolean;
+exports.isFunction = isFunction;
+exports.isString = isString;
+exports.isObject = isObject;
+exports.isArray = isArray;
+exports.setDevicePixelRatio = setDevicePixelRatio;
+exports.encodeHTML = encodeHTML;
+exports.isPolyContains = isPolyContains;
+exports.isPolyContainsPt = isPolyContainsPt;
+exports.detectmob = detectmob;
+exports.merge = merge;
+exports.clearPushArray = clearPushArray;
+exports.checkType = checkType;
+exports.checkGeoJSON = checkGeoJSON;
+
+var _deepmerge = __webpack_require__(97);
+
+var _deepmerge2 = _interopRequireDefault(_deepmerge);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function typeOf(obj) {
+    var toString = Object.prototype.toString;
+    var map = {
+        '[object Boolean]': 'boolean',
+        '[object Number]': 'number',
+        '[object String]': 'string',
+        '[object Function]': 'function',
+        '[object Array]': 'array',
+        '[object Date]': 'date',
+        '[object RegExp]': 'regExp',
+        '[object Undefined]': 'undefined',
+        '[object Null]': 'null',
+        '[object Object]': 'object'
+    };
+    return map[toString.call(obj)];
+}
+function isNumber(num) {
+    return typeOf(num) == 'number';
+}
+function isBoolean(obj) {
+    return typeOf(obj) == 'boolean';
+}
+function isFunction(func) {
+    return typeOf(func) == 'function';
+}
+
+function isString(string) {
+    return typeOf(string) == 'string';
+}
+
+function isObject(object) {
+    return typeOf(object) == 'object';
+}
+function isArray(source) {
+    return typeOf(source) == 'array';
+}
+var isEmpty = exports.isEmpty = function isEmpty(val) {
+    return val == null || !(Object.keys(val) || val).length;
+};
+
+var isPromiseLike = exports.isPromiseLike = function isPromiseLike(obj) {
+    return obj !== null && ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
+};
+
+var extend = exports.extend = function extend(target, source) {
+
+    if (target && source && isObject(source)) {
+        for (var p in source) {
+            target[p] = source[p];
+        }
+
+        var prototype_fields = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf'];
+
+        for (var j = 0, key; j < prototype_fields.length; j++) {
+            key = prototype_fields[j];
+            if (Object.prototype.constructor.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }
+    return target;
+};
+function setDevicePixelRatio(context) {
+    var devicePixelRatio = window.devicePixelRatio;
+    context.canvas.width = context.canvas.width * devicePixelRatio;
+    context.canvas.height = context.canvas.height * devicePixelRatio;
+    context.canvas.style.width = context.canvas.width / devicePixelRatio + 'px';
+    context.canvas.style.height = context.canvas.height / devicePixelRatio + 'px';
+
+    context.scale(devicePixelRatio, devicePixelRatio);
+}
+function encodeHTML(source) {
+    return String(source).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function isPolyContains(lng, lat, pointLat, pointLng) {
+    var ret = false;
+    var latMin = 90.0;
+    var latMax = -90.0;
+    var lngMin = 180.0;
+    var lngMax = -180.0;
+    for (var i = 0; i < lat.length; i++) {
+        if (lat[i] > latMax) latMax = lat[i];
+        if (lat[i] < latMin) latMin = lat[i];
+        if (lng[i] > lngMax) lngMax = lng[i];
+        if (lng[i] < lngMin) lngMin = lng[i];
+    }
+    if (!(pointLat < latMin || pointLat > latMax || pointLng < lngMin || pointLng > lngMax)) {
+
+        for (var _i = 0; _i < lat.length; _i++) {
+            var j = (_i + 1) % lat.length;
+            if (lat[_i] < pointLat != lat[j] < pointLat && pointLng < (lng[j] - lng[_i]) * (pointLat - lat[_i]) / (lat[j] - lat[_i]) + lng[_i]) {
+                ret = !ret;
+            }
+        }
+    }
+    return ret;
+}
+function isPolyContainsPt(lng, lat, geos) {
+    var lats = [];
+    var lngs = [];
+    for (var j = 0, len = geos.length; j < len; j++) {
+        lats.push(parseFloat(geos[j][1]));
+        lngs.push(parseFloat(geos[j][0]));
+    }
+    return isPolyContains(lats, lngs, lng, lat);
+}
+
+function detectmob() {
+    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+var chunk = exports.chunk = function chunk(arr, size) {
+    return Array.from({
+        length: Math.ceil(arr.length / size)
+    }, function (v, i) {
+        return arr.slice(i * size, i * size + size);
+    });
+};
+
+function merge() {
+    var arr = Array.prototype.slice.call(arguments);
+    return _deepmerge2.default.all(arr, {
+        arrayMerge: function arrayMerge(destinationArray, sourceArray) {
+            if (sourceArray.length > 0) {
+                return sourceArray;
+            } else {
+                return destinationArray;
+            }
+        }
+    });
+}
+function clearPushArray(a, b) {
+    if (Array.isArray(b)) {
+        a.splice(0, a.length);
+        b.forEach(function (val) {
+            a.push(val);
+        });
+    } else if (b != null) {
+        a.splice(0, a.length, b);
+    } else {
+        a.splice(0, a.length);
+    }
+}
+function checkType(row, isCheckName, isCheckCount) {
+    var nameType = typeOf(row.name);
+    var countType = typeOf(row.count);
+    var geometryType = typeOf(row.geometry);
+    if (isCheckName) {
+        if (nameType == 'null' || nameType == 'undefined') {
+            return 'The property name cannot be null!';
+        }
+        if (nameType !== 'string') {
+            return 'The property name must be of type String!';
+        }
+    }
+    if (isCheckCount) {
+        if (countType == 'null' || countType == 'undefined') {
+            return 'The property count cannot be null!';
+        }
+        if (countType == 'string' && typeOf(parseFloat(row.count)) !== 'number') {
+            return 'The property count must be of type Number!';
+        }
+    }
+
+    if (geometryType == 'null' || geometryType == 'undefined') {
+        return 'The property geometry cannot be null!';
+    }
+    if (typeOf(row.geometry.type) !== 'string') {
+        return 'The property geometry.type must be of type String!';
+    }
+    if (!isArray(row.geometry.coordinates)) {
+        return 'The property geometry.coordinates must be of type Array!';
+    }
+}
+
+function checkGeoJSON(data, isCheckName, isCheckCount) {
+    if (!data) return;
+    if (!isArray(data)) {
+        throw new TypeError('inMap: data must be is Array<GEOJSON>');
+    }
+
+    for (var i = 0, len = data.length; i < len; i++) {
+        var ms = checkType(data[i], isCheckName, isCheckCount);
+        if (ms) {
+            throw new TypeError('inMap: data index Line ' + i + ', ' + ms + ' about geoJSON, visit http://inmap.talkingdata.com/#/docs/v2/Geojson');
+        }
+    }
+}
+
+/***/ }),
+
+/***/ 147:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88,7 +320,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _pointToPixel = __webpack_require__(36);
+var _pointToPixel = __webpack_require__(33);
 
 var GriddingOverlay = {
     toRecGrids: function toRecGrids(webObj) {
@@ -208,7 +440,7 @@ exports.default = GriddingOverlay;
 
 /***/ }),
 
-/***/ 159:
+/***/ 148:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -218,7 +450,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _pointToPixel = __webpack_require__(36);
+var _pointToPixel = __webpack_require__(33);
 
 var HeatOverlay = {
     pointsToPixels: function pointsToPixels(webObj) {
@@ -237,7 +469,7 @@ exports.default = HeatOverlay;
 
 /***/ }),
 
-/***/ 160:
+/***/ 149:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -247,7 +479,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _pointToPixel = __webpack_require__(36);
+var _pointToPixel = __webpack_require__(33);
 
 var HoneycombOverlay = {
     toRecGrids: function toRecGrids(webObj) {
@@ -374,7 +606,7 @@ exports.default = HoneycombOverlay;
 
 /***/ }),
 
-/***/ 161:
+/***/ 150:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -439,7 +671,7 @@ exports.default = LablEvading;
 
 /***/ }),
 
-/***/ 162:
+/***/ 151:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -449,9 +681,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _pointToPixel = __webpack_require__(36);
+var _pointToPixel = __webpack_require__(33);
 
-var _Curive = __webpack_require__(166);
+var _Curive = __webpack_require__(155);
 
 var LineStringOverlay = {
     transferCoordinate: function transferCoordinate(_coordinates, nwMc, zoomUnit) {
@@ -563,7 +795,7 @@ exports.default = LineStringOverlay;
 
 /***/ }),
 
-/***/ 163:
+/***/ 152:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -573,13 +805,13 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _pointToPixel = __webpack_require__(36);
+var _pointToPixel = __webpack_require__(33);
 
-var _Point = __webpack_require__(167);
+var _Point = __webpack_require__(156);
 
 var _Point2 = _interopRequireDefault(_Point);
 
-var _Polylabel = __webpack_require__(168);
+var _Polylabel = __webpack_require__(157);
 
 var _Polylabel2 = _interopRequireDefault(_Polylabel);
 
@@ -637,7 +869,7 @@ exports.default = PolygonOverlay;
 
 /***/ }),
 
-/***/ 164:
+/***/ 153:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -647,7 +879,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _pointToPixel = __webpack_require__(36);
+var _pointToPixel = __webpack_require__(33);
 
 var PolymeOverlay = {
     mergeCount: 0,
@@ -728,7 +960,7 @@ exports.default = PolymeOverlay;
 
 /***/ }),
 
-/***/ 165:
+/***/ 154:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -738,7 +970,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _pointToPixel = __webpack_require__(36);
+var _pointToPixel = __webpack_require__(33);
 
 var RectOverlay = {
     pointsToPixels: function pointsToPixels(webObj) {
@@ -761,7 +993,7 @@ exports.default = RectOverlay;
 
 /***/ }),
 
-/***/ 166:
+/***/ 155:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -871,7 +1103,7 @@ function getPointList(start, end, deltaAngle) {
 
 /***/ }),
 
-/***/ 167:
+/***/ 156:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -881,7 +1113,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Util = __webpack_require__(6);
+var _Util = __webpack_require__(11);
 
 function Point(lng, lat) {
     if (isNaN(lng)) {
@@ -911,7 +1143,7 @@ exports.default = Point;
 
 /***/ }),
 
-/***/ 168:
+/***/ 157:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -922,7 +1154,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = Polylabel;
 
-var _tinyqueue = __webpack_require__(188);
+var _tinyqueue = __webpack_require__(166);
 
 var _tinyqueue2 = _interopRequireDefault(_tinyqueue);
 
@@ -1060,7 +1292,7 @@ function Polylabel(polygon) {
 
 /***/ }),
 
-/***/ 188:
+/***/ 166:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1158,7 +1390,7 @@ TinyQueue.prototype = {
 
 /***/ }),
 
-/***/ 195:
+/***/ 173:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1169,35 +1401,35 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TDpost = undefined;
 
-var _HeatOverlay = __webpack_require__(159);
+var _HeatOverlay = __webpack_require__(148);
 
 var _HeatOverlay2 = _interopRequireDefault(_HeatOverlay);
 
-var _GriddingOverlay = __webpack_require__(158);
+var _GriddingOverlay = __webpack_require__(147);
 
 var _GriddingOverlay2 = _interopRequireDefault(_GriddingOverlay);
 
-var _PolygonOverlay = __webpack_require__(163);
+var _PolygonOverlay = __webpack_require__(152);
 
 var _PolygonOverlay2 = _interopRequireDefault(_PolygonOverlay);
 
-var _LineStringOverlay = __webpack_require__(162);
+var _LineStringOverlay = __webpack_require__(151);
 
 var _LineStringOverlay2 = _interopRequireDefault(_LineStringOverlay);
 
-var _HoneycombOverlay = __webpack_require__(160);
+var _HoneycombOverlay = __webpack_require__(149);
 
 var _HoneycombOverlay2 = _interopRequireDefault(_HoneycombOverlay);
 
-var _PolymeOverlay = __webpack_require__(164);
+var _PolymeOverlay = __webpack_require__(153);
 
 var _PolymeOverlay2 = _interopRequireDefault(_PolymeOverlay);
 
-var _LablEvading = __webpack_require__(161);
+var _LablEvading = __webpack_require__(150);
 
 var _LablEvading2 = _interopRequireDefault(_LablEvading);
 
-var _RectOverlay = __webpack_require__(165);
+var _RectOverlay = __webpack_require__(154);
 
 var _RectOverlay2 = _interopRequireDefault(_RectOverlay);
 
@@ -1265,7 +1497,7 @@ var TDpost = exports.TDpost = function TDpost(client) {
 
 /***/ }),
 
-/***/ 36:
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2128,11 +2360,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     }
   }]);
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(402)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(380)(module)))
 
 /***/ }),
 
-/***/ 402:
+/***/ 380:
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -2350,238 +2582,6 @@ var Label = function () {
 }();
 
 exports.default = Label;
-
-/***/ }),
-
-/***/ 6:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.chunk = exports.extend = exports.isPromiseLike = exports.isEmpty = undefined;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.typeOf = typeOf;
-exports.isNumber = isNumber;
-exports.isBoolean = isBoolean;
-exports.isFunction = isFunction;
-exports.isString = isString;
-exports.isObject = isObject;
-exports.isArray = isArray;
-exports.setDevicePixelRatio = setDevicePixelRatio;
-exports.encodeHTML = encodeHTML;
-exports.isPolyContains = isPolyContains;
-exports.isPolyContainsPt = isPolyContainsPt;
-exports.detectmob = detectmob;
-exports.merge = merge;
-exports.clearPushArray = clearPushArray;
-exports.checkType = checkType;
-exports.checkGeoJSON = checkGeoJSON;
-
-var _deepmerge = __webpack_require__(97);
-
-var _deepmerge2 = _interopRequireDefault(_deepmerge);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function typeOf(obj) {
-    var toString = Object.prototype.toString;
-    var map = {
-        '[object Boolean]': 'boolean',
-        '[object Number]': 'number',
-        '[object String]': 'string',
-        '[object Function]': 'function',
-        '[object Array]': 'array',
-        '[object Date]': 'date',
-        '[object RegExp]': 'regExp',
-        '[object Undefined]': 'undefined',
-        '[object Null]': 'null',
-        '[object Object]': 'object'
-    };
-    return map[toString.call(obj)];
-}
-function isNumber(num) {
-    return typeOf(num) == 'number';
-}
-function isBoolean(obj) {
-    return typeOf(obj) == 'boolean';
-}
-function isFunction(func) {
-    return typeOf(func) == 'function';
-}
-
-function isString(string) {
-    return typeOf(string) == 'string';
-}
-
-function isObject(object) {
-    return typeOf(object) == 'object';
-}
-function isArray(source) {
-    return typeOf(source) == 'array';
-}
-var isEmpty = exports.isEmpty = function isEmpty(val) {
-    return val == null || !(Object.keys(val) || val).length;
-};
-
-var isPromiseLike = exports.isPromiseLike = function isPromiseLike(obj) {
-    return obj !== null && ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
-};
-
-var extend = exports.extend = function extend(target, source) {
-
-    if (target && source && isObject(source)) {
-        for (var p in source) {
-            target[p] = source[p];
-        }
-
-        var prototype_fields = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf'];
-
-        for (var j = 0, key; j < prototype_fields.length; j++) {
-            key = prototype_fields[j];
-            if (Object.prototype.constructor.call(source, key)) {
-                target[key] = source[key];
-            }
-        }
-    }
-    return target;
-};
-function setDevicePixelRatio(context) {
-    var devicePixelRatio = window.devicePixelRatio;
-    context.canvas.width = context.canvas.width * devicePixelRatio;
-    context.canvas.height = context.canvas.height * devicePixelRatio;
-    context.canvas.style.width = context.canvas.width / devicePixelRatio + 'px';
-    context.canvas.style.height = context.canvas.height / devicePixelRatio + 'px';
-
-    context.scale(devicePixelRatio, devicePixelRatio);
-}
-function encodeHTML(source) {
-    return String(source).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-function isPolyContains(lng, lat, pointLat, pointLng) {
-    var ret = false;
-    var latMin = 90.0;
-    var latMax = -90.0;
-    var lngMin = 180.0;
-    var lngMax = -180.0;
-    for (var i = 0; i < lat.length; i++) {
-        if (lat[i] > latMax) latMax = lat[i];
-        if (lat[i] < latMin) latMin = lat[i];
-        if (lng[i] > lngMax) lngMax = lng[i];
-        if (lng[i] < lngMin) lngMin = lng[i];
-    }
-    if (!(pointLat < latMin || pointLat > latMax || pointLng < lngMin || pointLng > lngMax)) {
-
-        for (var _i = 0; _i < lat.length; _i++) {
-            var j = (_i + 1) % lat.length;
-            if (lat[_i] < pointLat != lat[j] < pointLat && pointLng < (lng[j] - lng[_i]) * (pointLat - lat[_i]) / (lat[j] - lat[_i]) + lng[_i]) {
-                ret = !ret;
-            }
-        }
-    }
-    return ret;
-}
-function isPolyContainsPt(lng, lat, geos) {
-    var lats = [];
-    var lngs = [];
-    for (var j = 0, len = geos.length; j < len; j++) {
-        lats.push(parseFloat(geos[j][1]));
-        lngs.push(parseFloat(geos[j][0]));
-    }
-    return isPolyContains(lats, lngs, lng, lat);
-}
-
-function detectmob() {
-    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-var chunk = exports.chunk = function chunk(arr, size) {
-    return Array.from({
-        length: Math.ceil(arr.length / size)
-    }, function (v, i) {
-        return arr.slice(i * size, i * size + size);
-    });
-};
-
-function merge() {
-    var arr = Array.prototype.slice.call(arguments);
-    return _deepmerge2.default.all(arr, {
-        arrayMerge: function arrayMerge(destinationArray, sourceArray) {
-            if (sourceArray.length > 0) {
-                return sourceArray;
-            } else {
-                return destinationArray;
-            }
-        }
-    });
-}
-function clearPushArray(a, b) {
-    if (Array.isArray(b)) {
-        a.splice(0, a.length);
-        b.forEach(function (val) {
-            a.push(val);
-        });
-    } else if (b != null) {
-        a.splice(0, a.length, b);
-    } else {
-        a.splice(0, a.length);
-    }
-}
-function checkType(row, isCheckName, isCheckCount) {
-    var nameType = typeOf(row.name);
-    var countType = typeOf(row.count);
-    var geometryType = typeOf(row.geometry);
-    if (isCheckName) {
-        if (nameType == 'null' || nameType == 'undefined') {
-            return 'The property name cannot be null!';
-        }
-        if (nameType !== 'string') {
-            return 'The property name must be of type String!';
-        }
-    }
-    if (isCheckCount) {
-        if (countType == 'null' || countType == 'undefined') {
-            return 'The property count cannot be null!';
-        }
-        if (countType == 'string' && typeOf(parseFloat(row.count)) !== 'number') {
-            return 'The property count must be of type Number!';
-        }
-    }
-
-    if (geometryType == 'null' || geometryType == 'undefined') {
-        return 'The property geometry cannot be null!';
-    }
-    if (typeOf(row.geometry.type) !== 'string') {
-        return 'The property geometry.type must be of type String!';
-    }
-    if (!isArray(row.geometry.coordinates)) {
-        return 'The property geometry.coordinates must be of type Array!';
-    }
-}
-
-function checkGeoJSON(data, isCheckName, isCheckCount) {
-    if (!data) return;
-    if (!isArray(data)) {
-        throw new TypeError('inMap: data must be is Array<GEOJSON>');
-    }
-
-    for (var i = 0, len = data.length; i < len; i++) {
-        var ms = checkType(data[i], isCheckName, isCheckCount);
-        if (ms) {
-            throw new TypeError('inMap: data index Line ' + i + ', ' + ms + ' about geoJSON, visit http://inmap.talkingdata.com/#/docs/v2/Geojson');
-        }
-    }
-}
 
 /***/ }),
 
