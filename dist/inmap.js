@@ -8417,6 +8417,13 @@ var PolygonOverlay = function (_Parameter) {
                     this._ctx.clip();
                     this._clearCanvas();
                 }
+                var borderStyle = style.borderStyle;
+                if (borderStyle === 'dashed') {
+                    this._ctx.setLineDash([style.borderWidth * 2, style.borderWidth]);
+                }
+                if (borderStyle === 'dotted') {
+                    this._ctx.setLineDash([style.borderWidth]);
+                }
                 this._ctx.strokeStyle = style.borderColor;
                 this._ctx.lineWidth = style.borderWidth;
                 this._ctx.stroke();

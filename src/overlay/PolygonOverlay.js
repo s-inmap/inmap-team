@@ -187,7 +187,7 @@ export default class PolygonOverlay extends Parameter {
     _findIndexSelectItem(item) {
         let index = -1;
         if (item) {
-            index = this._selectItem.findIndex(function (val) {
+            index = this._selectItem.findIndex(function(val) {
                 return val && val.name == item.name;
             });
         }
@@ -307,6 +307,13 @@ export default class PolygonOverlay extends Parameter {
                 this._drawData(pixelItem);
                 this._ctx.clip();
                 this._clearCanvas();
+            }
+            let borderStyle = style.borderStyle;
+            if (borderStyle === 'dashed') {
+                this._ctx.setLineDash([style.borderWidth * 2, style.borderWidth]);
+            }
+            if (borderStyle === 'dotted') {
+                this._ctx.setLineDash([style.borderWidth]);
             }
             this._ctx.strokeStyle = style.borderColor;
             this._ctx.lineWidth = style.borderWidth;
@@ -434,7 +441,7 @@ export default class PolygonOverlay extends Parameter {
         } else {
             this._map.setDefaultCursor('default');
         }
-        
+
         this._setTooltip(event);
     }
 }
