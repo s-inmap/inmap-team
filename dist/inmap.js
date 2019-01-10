@@ -8418,11 +8418,15 @@ var PolygonOverlay = function (_Parameter) {
                     this._clearCanvas();
                 }
                 var borderStyle = style.borderStyle;
-                if (borderStyle === 'dashed') {
+
+                if ((0, _Util.isString)(borderStyle) && borderStyle === 'dashed') {
                     this._ctx.setLineDash([style.borderWidth * 2, style.borderWidth]);
                 }
-                if (borderStyle === 'dotted') {
+                if ((0, _Util.isString)(borderStyle) && borderStyle === 'dotted') {
                     this._ctx.setLineDash([style.borderWidth]);
+                }
+                if ((0, _Util.isArray)(borderStyle)) {
+                    this._ctx.setLineDash(borderStyle);
                 }
                 this._ctx.strokeStyle = style.borderColor;
                 this._ctx.lineWidth = style.borderWidth;

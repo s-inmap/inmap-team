@@ -2,6 +2,8 @@ import Parameter from './base/Parameter.js';
 import Color from '../common/Color.js';
 import {
     clearPushArray,
+    isString,
+    isArray,
     isEmpty
 } from '../common/Util.js';
 import PolygonConfig from '../config/PolygonConfig.js';
@@ -309,11 +311,15 @@ export default class PolygonOverlay extends Parameter {
                 this._clearCanvas();
             }
             let borderStyle = style.borderStyle;
-            if (borderStyle === 'dashed') {
+
+            if (isString(borderStyle) && borderStyle === 'dashed') {
                 this._ctx.setLineDash([style.borderWidth * 2, style.borderWidth]);
             }
-            if (borderStyle === 'dotted') {
+            if (isString(borderStyle) && borderStyle === 'dotted') {
                 this._ctx.setLineDash([style.borderWidth]);
+            }
+            if (isArray(borderStyle)) {
+                this._ctx.setLineDash(borderStyle);
             }
             this._ctx.strokeStyle = style.borderColor;
             this._ctx.lineWidth = style.borderWidth;
