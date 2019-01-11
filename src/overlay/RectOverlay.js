@@ -5,6 +5,8 @@ import {
     detectmob,
     isEmpty,
     merge,
+    typeOf,
+    isEqual,
     clearPushArray
 } from '../common/Util.js';
 import RectConfig from '../config/RectConfig.js';
@@ -277,14 +279,12 @@ export default class RectOverlay extends Parameter {
             const item = grids[i];
             if (item) {
                 const count = item.count;
-                // console.log(item)
                 const _item = {
                     pixels: item.pixel,
                     count: count,
                     data: item
                 };
                 const color = this.getColor(_item);
-                // console.log(_item)
                 // const color = this.getColor(item);
                 this._ctx.fillStyle = color;
                 this._ctx.fillRect(item.pixel.swX, item.pixel.neY, item.pixel.neX - item.pixel.swX - style.padding, item.pixel.swY - item.pixel.neY - style.padding);
@@ -306,6 +306,67 @@ export default class RectOverlay extends Parameter {
         }
         return index;
     }
+    /**
+     * 根据用户配置，设置用户绘画样式
+     * @param {*} item 数据行
+     * @param {*} otherMode  是否返回选中数据集的样式
+     */
+    _setDrawStyle(item, otherMode, i) {
+        let normal = this._styleConfig.normal, //正常样式
+            mouseOverStyle = this._styleConfig.mouseOver, //悬浮样式
+            selectedStyle = this._styleConfig.selected; //选中样式
+        let result = merge({}, normal);
+        let count = parseFloat(item.count);
+        //区间样式
+        let splitList = this._styleConfig.splitList,
+            len = splitList.length;
+        if (len > 0 && typeOf(count) !== 'number') {
+            throw new TypeError(`inMap: data index Line ${i}, The property count must be of type Number! about geoJSON, visit http://inmap.talkingdata.com/#/docs/v2/Geojson`);
+        }
+
+        for (let i = 0; i < len; i++) {
+            let condition = splitList[i];
+            if (i == splitList.length - 1) {
+                if (condition.end == null) {
+                    if (count >= condition.start) {
+                        result = this._mergeCondition(result, condition);
+                        break;
+                    }
+                } else if (count >= condition.start && count <= condition.end) {
+                    result = this._mergeCondition(result, condition);
+                    break;
+                }
+            } else {
+                if (count >= condition.start && count < condition.end) {
+                    result = this._mergeCondition(result, condition);
+                    break;
+                }
+            }
+        }
+        result = merge(result, item.style || {});
+        if (mouseOverStyle && this._overItem && isEqual(this._overItem,item)) {
+            result = merge(result, mouseOverStyle, {
+                backgroundColor: mouseOverStyle.backgroundColor || this._brightness(result.backgroundColor, 0.1)
+            });
+        }
+        if (otherMode && selectedStyle && this._selectItemContains(item)) {
+            result = merge(result, selectedStyle);
+        }
+        //如果设置了shadowBlur的范围长度，并且也没有设置shadowColor，则shadowColor默认取backgroundColor值
+        if (result.shadowBlur != null && result.shadowColor == null) {
+            result['shadowColor'] = (new Color(result.backgroundColor)).getValue();
+        }
+        if (result.opacity) {
+            let color = new Color(result.backgroundColor);
+            result.backgroundColor = color.getRgbaValue(result.opacity);
+        }
+        if (result.borderOpacity) {
+            let color = new Color(result.borderColor);
+            result.borderColor = color.getRgbaValue(result.borderOpacity);
+        }
+        return result;
+    }
+
     _tMouseClick(event) {
         //未配置selected的情况下点击不会触发重绘
         if (JSON.stringify(this._styleConfig.selected) === '{}') {

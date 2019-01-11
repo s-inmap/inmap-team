@@ -243,7 +243,15 @@ export function checkGeoJSON(data, isCheckName, isCheckCount) {
         if (ms) {
             throw new TypeError(`inMap: data index Line ${i}, ${ms} about geoJSON, visit http://inmap.talkingdata.com/#/docs/v2/Geojson`);
         }
-
     }
+}
 
+//比较两个对象是否相等
+export function isEqual(obj1,obj2){
+    //只比较一个点的横纵坐标即可
+    if(obj1.data.neX === obj2.data.neX && obj1.data.neY === obj2.data.neY)
+    // if(obj1.data.count === obj2.data.count && obj1.data.neX === obj2.data.neX &&obj1.data.neY === obj2.data.neY &&obj1.data.swX === obj2.data.swX &&obj1.data.swY === obj2.data.swY)
+        return true
+    else 
+        return false
 }
