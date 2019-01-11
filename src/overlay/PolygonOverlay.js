@@ -2,6 +2,8 @@ import Parameter from './base/Parameter.js';
 import Color from '../common/Color.js';
 import {
     clearPushArray,
+    isString,
+    isArray,
     isEmpty
 } from '../common/Util.js';
 import PolygonConfig from '../config/PolygonConfig.js';
@@ -187,7 +189,7 @@ export default class PolygonOverlay extends Parameter {
     _findIndexSelectItem(item) {
         let index = -1;
         if (item) {
-            index = this._selectItem.findIndex(function (val) {
+            index = this._selectItem.findIndex(function(val) {
                 return val && val.name == item.name;
             });
         }
@@ -307,6 +309,17 @@ export default class PolygonOverlay extends Parameter {
                 this._drawData(pixelItem);
                 this._ctx.clip();
                 this._clearCanvas();
+            }
+            let borderStyle = style.borderStyle;
+
+            if (isString(borderStyle) && borderStyle === 'dashed') {
+                this._ctx.setLineDash([style.borderWidth * 2, style.borderWidth]);
+            }
+            if (isString(borderStyle) && borderStyle === 'dotted') {
+                this._ctx.setLineDash([style.borderWidth]);
+            }
+            if (isArray(borderStyle)) {
+                this._ctx.setLineDash(borderStyle);
             }
             this._ctx.strokeStyle = style.borderColor;
             this._ctx.lineWidth = style.borderWidth;
@@ -434,7 +447,7 @@ export default class PolygonOverlay extends Parameter {
         } else {
             this._map.setDefaultCursor('default');
         }
-        
+
         this._setTooltip(event);
     }
 }
