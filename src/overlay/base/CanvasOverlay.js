@@ -41,6 +41,7 @@ export default class CanvasOverlay extends BaseClass {
             top: 0
         };
         this._zIndex = !opts || opts.zIndex == null ? zIndex += 10 : opts.zIndex;
+        this._name = opts.name ? opts.name : '';
 
     }
     initialize(map) {
@@ -52,6 +53,7 @@ export default class CanvasOverlay extends BaseClass {
         this._container.style.cssText = `position:absolute;left:${this._margin.left}px;top:${this._margin.top}px;z-index:${this._zIndex};`;
         map.getPanes().mapPane.appendChild(this._container);
         this._setCanvasSize();
+        this._container.setAttribute('data-name', this._name);
         map.addEventListener('resize', this._tOnResize);
         map.addEventListener('moveend', this._tOnMoveend);
         map.addEventListener('moving', this._tOnMoving);
