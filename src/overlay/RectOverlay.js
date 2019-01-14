@@ -344,7 +344,9 @@ export default class RectOverlay extends Parameter {
             }
         }
         result = merge(result, item.style || {});
-        if (mouseOverStyle && this._overItem && isEqual(this._overItem,item)) {
+        // if (mouseOverStyle && this._overItem && isEqual(this._overItem,item)) {
+        // 解决开启tooltip情况下拖动地图时会有一个格子变色的问题
+        if (mouseOverStyle && JSON.stringify(mouseOverStyle) !== '{}' && this._overItem && isEqual(this._overItem,item)) {
             result = merge(result, mouseOverStyle, {
                 backgroundColor: mouseOverStyle.backgroundColor || this._brightness(result.backgroundColor, 0.1)
             });
