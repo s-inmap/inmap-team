@@ -38,13 +38,14 @@ import {
     }
 ]
   */
+
 const RectOverlay = {
     pointsToPixels(webObj) {
         webObj.request.data.points.forEach((val) => {
-        // console.time("转换坐标为像素");
-        // webObj.request.data.forEach((val) => {
-            var ne_pixel = pointToPixelWorker({ lng: val.neY || 0, lat: val.neX || 0 }, webObj.request.map);
-            var sw_pixel = pointToPixelWorker({ lng: val.swY || 0, lat: val.swX || 0 }, webObj.request.map);
+            // console.time("转换坐标为像素");
+            // webObj.request.data.forEach((val) => {
+            let ne_pixel = pointToPixelWorker({ lng: val.neY || 0, lat: val.neX || 0 }, webObj.request.map);
+            let sw_pixel = pointToPixelWorker({ lng: val.swY || 0, lat: val.swX || 0 }, webObj.request.map);
             val['pixel'] = {
                 'neX': ne_pixel.x,
                 'neY': ne_pixel.y,
@@ -59,7 +60,21 @@ const RectOverlay = {
         // console.log('webObj is ',webObj)
         // console.timeEnd("转换坐标为像素");
         return webObj
-    }
+    },
+    filterSelectd(obj) {
+        let data = obj.request.data;
+        let key = Object.keys(data.filterObj);
+        let selectItems = null;
+
+        data.some((item) => {
+            if (item && item.data[key[0]] === data.filterObj[key[0]]) {
+                selectItems = item;
+            }
+        });
+        data['selectItems'] = selectItems;
+
+        return obj;
+    },
 }
 
 export default RectOverlay;
