@@ -61,16 +61,16 @@ export default class Map {
         this._map = bmap;
 
 
-        bmap.addEventListener('moveend', () => {
-            if (Config.devtools) { //开发模式
-                this.printMapInfo();
-            }
-        });
-        bmap.addEventListener('zoomend', () => {
-            if (Config.devtools) { //开发模式
-                this.printMapInfo();
-            }
-        });
+        // bmap.addEventListener('moveend', () => {
+        //     if (Config.devtools) { //开发模式
+        //         this.printMapInfo();
+        //     }
+        // });
+        // bmap.addEventListener('zoomend', () => {
+        //     if (Config.devtools) { //开发模式
+        //         this.printMapInfo();
+        //     }
+        // });
 
     }
     printMapInfo() {

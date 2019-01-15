@@ -83,6 +83,7 @@ export default class RectOverlay extends Parameter {
             zoom: zoom
         };
         this._setState(State.computeBefore);
+        this._animationFlag = false;
         // this._postMessage('RectOverlay.pointsToPixels', this._getTransformData(), (points) => {
         this._postMessage('RectOverlay.pointsToPixels', params, (gridsObj) => {
             if (this._eventType == 'onmoving') {
@@ -91,6 +92,7 @@ export default class RectOverlay extends Parameter {
             let grids = gridsObj.points;
             this._setState(State.conputeAfter);
             // this._setWorkerData(points);
+            this._animationFlag = true;
             //清除
             this._clearCanvas();
             this._canvasResize();
@@ -231,7 +233,7 @@ export default class RectOverlay extends Parameter {
         }
         // }
         // else {
-        // 		split=this._styleConfig.splitList;	
+        //      split=this._styleConfig.splitList;  
         // }
 
         this._styleConfig.splitList = split;
@@ -346,7 +348,7 @@ export default class RectOverlay extends Parameter {
         result = merge(result, item.style || {});
         // if (mouseOverStyle && this._overItem && isEqual(this._overItem,item)) {
         // 解决开启tooltip情况下拖动地图时会有一个格子变色的问题
-        if (mouseOverStyle && JSON.stringify(mouseOverStyle) !== '{}' && this._overItem && isEqual(this._overItem,item)) {
+        if (mouseOverStyle && JSON.stringify(mouseOverStyle) !== '{}' && this._overItem && isEqual(this._overItem, item)) {
             result = merge(result, mouseOverStyle, {
                 backgroundColor: mouseOverStyle.backgroundColor || this._brightness(result.backgroundColor, 0.1)
             });
@@ -443,33 +445,52 @@ export default class RectOverlay extends Parameter {
     }
     /**
      * 设置选中
-     * @param {*} exp  表达式
+     * @param {*} Object 经纬度对象
+     * @param {*} zoom 需要放大的地图级别
      */
-    setSelectd(exp) {
+    setSelectd(filterObj, zoomValue = 16) {
         if (this._data.length > 0) {
-            const selectItems = this._workerData.grids.filter((item) => {
-                if (item) {
-                    return eval('item.data.' + exp);
-                }
-            });
-            const selectItem = selectItems[0] || {};
-            const item = this._selectItemContains(selectItem);
-            if (item) {
-                this._deleteSelectItem(selectItem); //二次点击取消选中
-            } else {
-                if (this._eventConfig.multiSelect) {
-                    if (item) {
-                        this._deleteSelectItem(selectItem); //二次点击取消选中
-                    } else {
-                        this._selectItem.push(selectItem);
-                    }
+            let point = new BMap.Point(filterObj['neY'], filterObj['neX']);
+            let center = this._map.getCenter();
+            let zoom = this._map.getZoom();
+            const time = 1000;
 
-                } else {
-                    this._selectItem = [selectItem];
-                }
+            if (zoom !== zoomValue && center.lng !== point.lng) {
+                this._map.centerAndZoom(point, zoomValue);
+                this._clearCanvas();
+                this._canvasResize();
+
+                setTimeout(() => {
+                    this.setSelectedMessage(filterObj);
+                }, time);
+                return;
             }
-            this.refresh();
+            if (zoom === zoomValue && center.lng !== point.lng) {
+                this._map.centerAndZoom(point, zoomValue);
+                this._clearCanvas();
+                this._canvasResize();
+
+                setTimeout(() => {
+                    this.setSelectedMessage(filterObj);
+                }, time);
+                return;
+            }
+            if (zoom === zoomValue && center.lng === point.lng) {
+                this.setSelectedMessage(filterObj);
+                return;
+            }
         }
+    }
+    setSelectedMessage(filterObj) {
+        let obj = this._workerData.grids;
+        obj.filterObj = filterObj;
+        this._postMessage('RectOverlay.filterSelectd', obj, (postObj) => {
+            let selectItem = postObj['selectItems'] || {};
+            this._selectItem.splice(0);
+            this._selectItem = [selectItem];
+
+            this.refresh();
+        });
     }
     setTooltipIsShow(val) {
         this.toolTip._opts.show = val

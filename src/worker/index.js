@@ -7,6 +7,7 @@ import PolymeOverlay from './transform/PolymeOverlay';
 import LablEvading from './transform/LablEvading';
 import RectOverlay from './transform/RectOverlay';
 
+
 let callbackList = {
     'HeatOverlay': HeatOverlay,
     'GriddingOverlay': GriddingOverlay,
