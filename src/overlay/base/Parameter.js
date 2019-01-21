@@ -399,6 +399,9 @@ export default class Parameter extends CanvasOverlay {
                 show: val
             }
         });
+        if (val === false) {
+            this.toolTip._dom.style.visibility = 'hidden';
+        }
         // this.toolTip._opts.show = val
     }
 }

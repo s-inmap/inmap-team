@@ -439,9 +439,11 @@ export default class PolygonOverlay extends Parameter {
             this._eventType = 'mousemove';
             if (!isEmpty(this._styleConfig.mouseOver)) {
                 this.refresh();
+                if (this._eventConfig.onMouseOver) {
+                    this._eventConfig.onMouseOver.call(this, this._overItem, event);
+                }
             }
         }
-
         if (temp) {
             this._map.setDefaultCursor('pointer');
         } else {

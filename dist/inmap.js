@@ -8517,9 +8517,11 @@ var PolygonOverlay = function (_Parameter) {
                 this._eventType = 'mousemove';
                 if (!(0, _Util.isEmpty)(this._styleConfig.mouseOver)) {
                     this.refresh();
+                    if (this._eventConfig.onMouseOver) {
+                        this._eventConfig.onMouseOver.call(this, this._overItem, event);
+                    }
                 }
             }
-
             if (temp) {
                 this._map.setDefaultCursor('pointer');
             } else {
@@ -9028,18 +9030,7 @@ var RectOverlay = function (_Parameter) {
                 var center = this._map.getCenter();
                 var zoom = this._map.getZoom();
                 var time = 1000;
-                console.log(zoom, zoomValue, center.lng, point.lng);
-                if (zoom !== zoomValue && center.lng !== point.lng) {
-                    this._map.centerAndZoom(point, zoomValue);
-                    this._clearCanvas();
-                    this._canvasResize();
-
-                    setTimeout(function () {
-                        _this3.setSelectedMessage(filterObj);
-                    }, time);
-                    return;
-                }
-                if (zoom === zoomValue && center.lng !== point.lng) {
+                if (zoom !== zoomValue || center.lng !== point.lng) {
                     this._map.centerAndZoom(point, zoomValue);
                     this._clearCanvas();
                     this._canvasResize();
