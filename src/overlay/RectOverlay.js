@@ -454,18 +454,7 @@ export default class RectOverlay extends Parameter {
             let center = this._map.getCenter();
             let zoom = this._map.getZoom();
             const time = 1000;
-
-            if (zoom !== zoomValue && center.lng !== point.lng) {
-                this._map.centerAndZoom(point, zoomValue);
-                this._clearCanvas();
-                this._canvasResize();
-
-                setTimeout(() => {
-                    this.setSelectedMessage(filterObj);
-                }, time);
-                return;
-            }
-            if (zoom === zoomValue && center.lng !== point.lng) {
+            if (zoom !== zoomValue || center.lng !== point.lng) {
                 this._map.centerAndZoom(point, zoomValue);
                 this._clearCanvas();
                 this._canvasResize();
