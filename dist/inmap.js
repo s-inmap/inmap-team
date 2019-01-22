@@ -9951,51 +9951,47 @@ var ToolTip = function () {
                 array.sort(function (a, b) {
                     return b._zIndex - a._zIndex;
                 });
-                array.map(function (x) {
-                    x.overlay.toolTip._dom.style.visibility = 'hidden';
-                });
                 multi = true;
             }
             if (overItem) {
-                var formatter = this._opts.formatter;
+                var formatter = void 0;
+                var _this = void 0,
+                    param = void 0,
+                    dom = void 0;
+                if (multi === true) {
+                    _this = array[0].overlay.toolTip;
+                    param = array[0].overlay._overItem;
+                    formatter = _this._opts.formatter;
+                    dom = _this._dom;
+                    array.map(function (x, y) {
+                        if (y !== 0) {
+                            x.overlay.toolTip._dom.style.visibility = 'hidden';
+                        }
+                    });
+                } else {
+                    _this = this;
+                    param = overItem;
+                    formatter = this._opts.formatter;
+                    dom = this._dom;
+                }
                 if ((0, _Util.isFunction)(formatter)) {
-                    this._dom.innerHTML = formatter(overItem, this._dom, function () {
+                    dom.innerHTML = formatter(param, dom, function () {
                         _this2.hide();
                     });
                 } else if ((0, _Util.isString)(formatter)) {
-                    this._dom.innerHTML = this._tooltipTemplate(overItem);
+                    dom.innerHTML = this._tooltipTemplate(param);
                 }
-                if (multi === true) {
-                    var _this = array[0].overlay.toolTip;
-                    if (overItem.geometry) {
-                        if ((0, _Util.isArray)(overItem.geometry.pixels)) {
-                            _this.show(event.offsetX, event.offsetY);
-                            return;
-                        } else {
-                            var pixel = overItem.geometry.pixel,
-                                x = pixel.x,
-                                y = pixel.y;
-                            _this.show(x, y);
-                            return;
-                        }
+                if (overItem.geometry) {
+                    if ((0, _Util.isArray)(overItem.geometry.pixels)) {
+                        _this.show(event.offsetX, event.offsetY);
                     } else {
-                        _this.show(overItem.pixels.neX, overItem.pixels.neY);
+                        var pixel = overItem.geometry.pixel,
+                            x = pixel.x,
+                            y = pixel.y;
+                        _this.show(x, y);
                     }
                 } else {
-                    if (overItem.geometry) {
-                        if ((0, _Util.isArray)(overItem.geometry.pixels)) {
-                            this.show(event.offsetX, event.offsetY);
-                            return;
-                        } else {
-                            var _pixel = overItem.geometry.pixel,
-                                _x = _pixel.x,
-                                _y = _pixel.y;
-                            this.show(_x, _y);
-                            return;
-                        }
-                    } else {
-                        this.show(overItem.pixels.neX, overItem.pixels.neY);
-                    }
+                    _this.show(overItem.pixels.neX, overItem.pixels.neY);
                 }
             } else {
                 this.hide();
