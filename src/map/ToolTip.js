@@ -101,8 +101,29 @@ export default class ToolTip {
         this._dom.classList.add(customClass);
         this._opts = result;
     }
-    render(event, overItem) {
+    render(event, overItem, map) {
         if (!this._opts.show) return;
+        //多个overlay共存，取zIndex值最高的
+        let array = [];
+        let overlays = map.getOverlays();
+        overlays.map(overlay => {
+            if (overlay._eventType === 'mousemove' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
+                array.push({
+                    overlay: overlay,
+                    _zIndex: overlay._zIndex
+                });
+            }
+        });
+        let multi = false;
+        if (array.length > 1) {
+            array.sort((a, b) => {
+                return b._zIndex - a._zIndex;
+            });
+            array.map(x => {
+                x.overlay.toolTip._dom.style.visibility = 'hidden';
+            });
+            multi = true;
+        }
         if (overItem) {
             let formatter = this._opts.formatter;
             if (isFunction(formatter)) {
@@ -113,17 +134,25 @@ export default class ToolTip {
             } else if (isString(formatter)) {
                 this._dom.innerHTML = this._tooltipTemplate(overItem);
             }
+            let _this;
+            if (multi === true) {
+                _this = array[0].overlay.toolTip;
+            } else {
+                _this = this;
+            }
             if (overItem.geometry) {
                 if (isArray(overItem.geometry.pixels)) {
-                    this.show(event.offsetX, event.offsetY);
+                    _this.show(event.offsetX, event.offsetY);
+                    return;
                 } else {
                     let pixel = overItem.geometry.pixel,
                         x = pixel.x,
                         y = pixel.y;
-                    this.show(x, y);
+                    _this.show(x, y);
+                    return;
                 }
             } else {
-                this.show(overItem.pixels.neX, overItem.pixels.neY);
+                _this.show(overItem.pixels.neX, overItem.pixels.neY);
             }
         } else {
             this.hide();

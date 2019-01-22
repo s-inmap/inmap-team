@@ -1970,7 +1970,7 @@ var Parameter = function (_CanvasOverlay) {
     }, {
         key: '_setTooltip',
         value: function _setTooltip(event) {
-            this.toolTip.render(event, this._overItem);
+            this.toolTip.render(event, this._overItem, this._map);
         }
     }, {
         key: '_Tclear',
@@ -2087,6 +2087,9 @@ var Parameter = function (_CanvasOverlay) {
                     show: val
                 }
             });
+            if (val === false) {
+                this.toolTip._dom.style.visibility = 'hidden';
+            }
         }
     }]);
 
@@ -9928,30 +9931,71 @@ var ToolTip = function () {
         }
     }, {
         key: 'render',
-        value: function render(event, overItem) {
-            var _this = this;
+        value: function render(event, overItem, map) {
+            var _this2 = this;
 
             if (!this._opts.show) return;
+
+            var array = [];
+            var overlays = map.getOverlays();
+            overlays.map(function (overlay) {
+                if (overlay._eventType === 'mousemove' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
+                    array.push({
+                        overlay: overlay,
+                        _zIndex: overlay._zIndex
+                    });
+                }
+            });
+            var multi = false;
+            if (array.length > 1) {
+                array.sort(function (a, b) {
+                    return b._zIndex - a._zIndex;
+                });
+                array.map(function (x) {
+                    x.overlay.toolTip._dom.style.visibility = 'hidden';
+                });
+                multi = true;
+            }
             if (overItem) {
                 var formatter = this._opts.formatter;
                 if ((0, _Util.isFunction)(formatter)) {
                     this._dom.innerHTML = formatter(overItem, this._dom, function () {
-                        _this.hide();
+                        _this2.hide();
                     });
                 } else if ((0, _Util.isString)(formatter)) {
                     this._dom.innerHTML = this._tooltipTemplate(overItem);
                 }
-                if (overItem.geometry) {
-                    if ((0, _Util.isArray)(overItem.geometry.pixels)) {
-                        this.show(event.offsetX, event.offsetY);
+                if (multi === true) {
+                    var _this = array[0].overlay.toolTip;
+                    if (overItem.geometry) {
+                        if ((0, _Util.isArray)(overItem.geometry.pixels)) {
+                            _this.show(event.offsetX, event.offsetY);
+                            return;
+                        } else {
+                            var pixel = overItem.geometry.pixel,
+                                x = pixel.x,
+                                y = pixel.y;
+                            _this.show(x, y);
+                            return;
+                        }
                     } else {
-                        var pixel = overItem.geometry.pixel,
-                            x = pixel.x,
-                            y = pixel.y;
-                        this.show(x, y);
+                        _this.show(overItem.pixels.neX, overItem.pixels.neY);
                     }
                 } else {
-                    this.show(overItem.pixels.neX, overItem.pixels.neY);
+                    if (overItem.geometry) {
+                        if ((0, _Util.isArray)(overItem.geometry.pixels)) {
+                            this.show(event.offsetX, event.offsetY);
+                            return;
+                        } else {
+                            var _pixel = overItem.geometry.pixel,
+                                _x = _pixel.x,
+                                _y = _pixel.y;
+                            this.show(_x, _y);
+                            return;
+                        }
+                    } else {
+                        this.show(overItem.pixels.neX, overItem.pixels.neY);
+                    }
                 }
             } else {
                 this.hide();
