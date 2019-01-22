@@ -119,37 +119,43 @@ export default class ToolTip {
             array.sort((a, b) => {
                 return b._zIndex - a._zIndex;
             });
-            array.map(x => {
-                x.overlay.toolTip._dom.style.visibility = 'hidden';
-            });
             multi = true;
         }
         if (overItem) {
-            let formatter = this._opts.formatter;
+            let formatter;
+            let _this, param, dom;
+            if (multi === true) {
+                _this = array[0].overlay.toolTip;
+                param = array[0].overlay._overItem;
+                formatter = _this._opts.formatter;
+                dom = _this._dom;
+                array.map((x, y) => {
+                    if (y !== 0) {
+                        x.overlay.toolTip._dom.style.visibility = 'hidden';
+                    }
+                });
+            } else {
+                _this = this;
+                param = overItem;
+                formatter = this._opts.formatter;
+                dom = this._dom;
+            }
             if (isFunction(formatter)) {
-                this._dom.innerHTML = formatter(overItem, this._dom, () => {
+                dom.innerHTML = formatter(param, dom, () => {
                     //回调函数
                     this.hide();
                 });
             } else if (isString(formatter)) {
-                this._dom.innerHTML = this._tooltipTemplate(overItem);
-            }
-            let _this;
-            if (multi === true) {
-                _this = array[0].overlay.toolTip;
-            } else {
-                _this = this;
+                dom.innerHTML = this._tooltipTemplate(param);
             }
             if (overItem.geometry) {
                 if (isArray(overItem.geometry.pixels)) {
                     _this.show(event.offsetX, event.offsetY);
-                    return;
                 } else {
                     let pixel = overItem.geometry.pixel,
                         x = pixel.x,
                         y = pixel.y;
                     _this.show(x, y);
-                    return;
                 }
             } else {
                 _this.show(overItem.pixels.neX, overItem.pixels.neY);
