@@ -107,6 +107,12 @@ export default class ToolTip {
         let array = [];
         let overlays = map.getOverlays();
         overlays.map(overlay => {
+            if (overlay._eventType === 'onmoveend' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
+                array.push({
+                    overlay: overlay,
+                    _zIndex: overlay._zIndex
+                });
+            }
             if (overlay._eventType === 'mousemove' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
                 array.push({
                     overlay: overlay,

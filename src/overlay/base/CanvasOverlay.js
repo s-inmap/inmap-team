@@ -226,7 +226,7 @@ export default class CanvasOverlay extends BaseClass {
             this.legend = null;
         }
         if (this.toolTip) {
-            // this.toolTip.hide();
+            this.toolTip.hide();
             this.toolTip.dispose();
             this.toolTip = null;
         }

@@ -2088,7 +2088,7 @@ var Parameter = function (_CanvasOverlay) {
                 }
             });
             if (val === false) {
-                this.toolTip._dom.style.visibility = 'hidden';
+                this.toolTip.hide();
             }
         }
     }]);
@@ -2977,6 +2977,7 @@ var CanvasOverlay = function (_BaseClass) {
                 this.legend = null;
             }
             if (this.toolTip) {
+                this.toolTip.hide();
                 this.toolTip.dispose();
                 this.toolTip = null;
             }
@@ -9939,6 +9940,12 @@ var ToolTip = function () {
             var array = [];
             var overlays = map.getOverlays();
             overlays.map(function (overlay) {
+                if (overlay._eventType === 'onmoveend' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
+                    array.push({
+                        overlay: overlay,
+                        _zIndex: overlay._zIndex
+                    });
+                }
                 if (overlay._eventType === 'mousemove' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
                     array.push({
                         overlay: overlay,
