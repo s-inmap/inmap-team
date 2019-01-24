@@ -1412,7 +1412,12 @@ var overlay = new inMap.PolygonOverlay({
     },
     data: cityData,
     event: {
-        onState(state) {}
+        onMouseOver(item, e) {
+            console.log(111,this,item, e)
+        },
+        onMouseMove(item, e) {
+            console.log(222,this,item, e)
+        },
     }
 });
 inmap.add(overlay);

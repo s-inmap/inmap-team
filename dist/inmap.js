@@ -8518,7 +8518,7 @@ var PolygonOverlay = function (_Parameter) {
                 if (temp) {
                     this._swopData(result.index, result.item);
                 }
-                this._eventType = 'mousemove';
+                this._eventType = 'mouseover';
                 if (!(0, _Util.isEmpty)(this._styleConfig.mouseOver)) {
                     this.refresh();
                     if (this._eventConfig.onMouseOver) {
@@ -8531,7 +8531,10 @@ var PolygonOverlay = function (_Parameter) {
             } else {
                 this._map.setDefaultCursor('default');
             }
-
+            if (this._overItem !== null && this._eventConfig.onMouseMove) {
+                this._eventType = 'mousemove';
+                this._eventConfig.onMouseMove.call(this, this._overItem, event);
+            }
             this._setTooltip(event);
         }
     }]);
