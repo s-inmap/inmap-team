@@ -95,6 +95,8 @@ exports.typeOf = typeOf;
 exports.isNumber = isNumber;
 exports.isBoolean = isBoolean;
 exports.isFunction = isFunction;
+exports.isAsync = isAsync;
+exports.isPromise = isPromise;
 exports.isString = isString;
 exports.isObject = isObject;
 exports.isArray = isArray;
@@ -127,7 +129,9 @@ function typeOf(obj) {
         '[object RegExp]': 'regExp',
         '[object Undefined]': 'undefined',
         '[object Null]': 'null',
-        '[object Object]': 'object'
+        '[object Object]': 'object',
+        '[object AsyncFunction]': 'async',
+        '[object Promise]': 'promise'
     };
     return map[toString.call(obj)];
 }
@@ -139,6 +143,14 @@ function isBoolean(obj) {
 }
 function isFunction(func) {
     return typeOf(func) == 'function';
+}
+
+function isAsync(func) {
+    return typeOf(func) === 'async';
+}
+
+function isPromise(func) {
+    return typeOf(func) === 'promise';
 }
 
 function isString(string) {

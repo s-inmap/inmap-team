@@ -40,6 +40,7 @@
     <script src="data/paichi.js"></script>
     <script src="data/zengyi.js"></script>
     <script src="../dist/inmap.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.js"></script>
 </head>
 
 <body>
@@ -118,6 +119,7 @@ function getZengyi() {
 
 
 console.log(inMap)
+
 function getMarkerClusterer() {
     let markerClusterer = new inMap.MarkerClusterer(map, {
         markers: markers,
@@ -172,34 +174,44 @@ function getOverlayData() {
 
 let overlay = null;
 
+function getScore() {
+    return axios({
+        url: '/dist/inmap.min.js',
+    })
+}
+
 function initOverlay(ary) {
     overlay = new inMap.PieOverlay({
         tooltip: {
             show: true,
-            formatter: function(params, dom, callback) {
+            formatter(params, dom, callback) {
                 // console.log(params, dom)
                 let myshop = params.value[0],
                     paichi = params.value[1],
                     zengyi = params.value[2];
-
-                return (`
-                <div class="mapJuHe">
-                    <div class="arraw"></div>
-                    <ul class="list">
-                        <li>
-                            <span>我的门店</span>
-                            <span>${myshop}</span>
-                        </li>
-                        <li>
-                            <span>排斥品牌</span>
-                            <span>${paichi}</span>
-                        </li>
-                        <li>
-                            <span>增益品牌</span>
-                            <span>${zengyi}</span>
-                        </li>
-                    </ul>
-                </div>`);
+                //支持返回promise
+                return new Promise((resolve, reject) => {
+                    let r = getScore(params);
+                    resolve(200);
+                });
+                // return (`
+                // <div class="mapJuHe">
+                //     <div class="arraw"></div>
+                //     <ul class="list">
+                //         <li>
+                //             <span>我的门店</span>
+                //             <span>${myshop}</span>
+                //         </li>
+                //         <li>
+                //             <span>排斥品牌</span>
+                //             <span>${paichi}</span>
+                //         </li>
+                //         <li>
+                //             <span>增益品牌</span>
+                //             <span>${zengyi}</span>
+                //         </li>
+                //     </ul>
+                // </div>`);
             },
             offsets: {
                 top: 5,
@@ -209,13 +221,13 @@ function initOverlay(ary) {
         style: {
             backgroundStyle: {
                 show: true,
-                radius: 24,
+                radius: 17,
                 bgColor: '#fff'
             },
             pieStyle: {
                 show: true,
-                radius: 18,
-                strokeWidth: 7,
+                radius: 13,
+                strokeWidth: 5,
                 colorList: ['#419BF9', '#A54BFF', '#F8B617', '#FF0000', '#95F0C6'],
             },
             textStyle: {
