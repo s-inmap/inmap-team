@@ -2,6 +2,8 @@ import {
     isString,
     isFunction,
     isArray,
+    isAsync,
+    isPromise,
     merge
 } from '../common/Util';
 export default class ToolTip {
@@ -89,7 +91,6 @@ export default class ToolTip {
             formatter,
             customClass
         } = result;
-
         if (isString(formatter)) { //编译字符串
             this._compileTooltipTemplate(result.formatter);
         }
@@ -146,11 +147,26 @@ export default class ToolTip {
                 formatter = this._opts.formatter;
                 dom = this._dom;
             }
-            if (isFunction(formatter)) {
-                dom.innerHTML = formatter(param, dom, () => {
+
+            if (isAsync(formatter)) {
+                formatter(param, dom, () => {
                     //回调函数
                     this.hide();
+                }).then((res) => {
+                    dom.innerHTML = res;
                 });
+            }
+            if (isFunction(formatter)) {
+                let x = formatter(param, dom, () => {
+                    this.hide();
+                });
+                if (isPromise(x)) {
+                    x.then((res) => {
+                        dom.innerHTML = res;
+                    });
+                } else {
+                    dom.innerHTML = x;
+                }
             } else if (isString(formatter)) {
                 dom.innerHTML = this._tooltipTemplate(param);
             }

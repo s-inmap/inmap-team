@@ -270,6 +270,8 @@ exports.typeOf = typeOf;
 exports.isNumber = isNumber;
 exports.isBoolean = isBoolean;
 exports.isFunction = isFunction;
+exports.isAsync = isAsync;
+exports.isPromise = isPromise;
 exports.isString = isString;
 exports.isObject = isObject;
 exports.isArray = isArray;
@@ -302,7 +304,9 @@ function typeOf(obj) {
         '[object RegExp]': 'regExp',
         '[object Undefined]': 'undefined',
         '[object Null]': 'null',
-        '[object Object]': 'object'
+        '[object Object]': 'object',
+        '[object AsyncFunction]': 'async',
+        '[object Promise]': 'promise'
     };
     return map[toString.call(obj)];
 }
@@ -314,6 +318,14 @@ function isBoolean(obj) {
 }
 function isFunction(func) {
     return typeOf(func) == 'function';
+}
+
+function isAsync(func) {
+    return typeOf(func) === 'async';
+}
+
+function isPromise(func) {
+    return typeOf(func) === 'promise';
 }
 
 function isString(string) {
@@ -9921,7 +9933,6 @@ var ToolTip = function () {
             var formatter = result.formatter,
                 customClass = result.customClass;
 
-
             if ((0, _Util.isString)(formatter)) {
                 this._compileTooltipTemplate(result.formatter);
             }
@@ -9984,10 +9995,25 @@ var ToolTip = function () {
                     formatter = this._opts.formatter;
                     dom = this._dom;
                 }
+
+                if ((0, _Util.isAsync)(formatter)) {
+                    formatter(param, dom, function () {
+                        _this2.hide();
+                    }).then(function (res) {
+                        dom.innerHTML = res;
+                    });
+                }
                 if ((0, _Util.isFunction)(formatter)) {
-                    dom.innerHTML = formatter(param, dom, function () {
+                    var x = formatter(param, dom, function () {
                         _this2.hide();
                     });
+                    if ((0, _Util.isPromise)(x)) {
+                        x.then(function (res) {
+                            dom.innerHTML = res;
+                        });
+                    } else {
+                        dom.innerHTML = x;
+                    }
                 } else if ((0, _Util.isString)(formatter)) {
                     dom.innerHTML = this._tooltipTemplate(param);
                 }
@@ -9996,9 +10022,9 @@ var ToolTip = function () {
                         _this.show(event.offsetX, event.offsetY);
                     } else {
                         var pixel = overItem.geometry.pixel,
-                            x = pixel.x,
+                            _x = pixel.x,
                             y = pixel.y;
-                        _this.show(x, y);
+                        _this.show(_x, y);
                     }
                 } else {
                     _this.show(overItem.pixels.neX, overItem.pixels.neY);
