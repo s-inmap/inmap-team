@@ -425,7 +425,7 @@ export default class RectOverlay extends Parameter {
             if (temp) {
                 this._swopData(result.index, result.item);
             }
-            this._eventType = 'mousemove';
+            this._eventType = 'mouseover';
             if (!isEmpty(this._styleConfig.mouseOver)) {
                 // console.log(!isEmpty(this._eventConfig.onMouseOver))
                 this.refresh();
@@ -439,6 +439,14 @@ export default class RectOverlay extends Parameter {
             this._map.setDefaultCursor('pointer');
         } else {
             this._map.setDefaultCursor('default');
+        }
+        if (this._overItem !== null && this._eventConfig.onMouseEnter) {
+            this._eventType = 'mouseenter';
+            this._eventConfig.onMouseEnter.call(this, this._overItem, event);
+        }
+        if (this._overItem === null && this._eventConfig.onMouseLeave) {
+            this._eventType = 'mouseleave';
+            this._eventConfig.onMouseLeave.call(this, this._overItem, event);
         }
         this._setTooltip(event);
 

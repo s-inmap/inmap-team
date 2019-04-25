@@ -449,9 +449,13 @@ export default class PolygonOverlay extends Parameter {
         } else {
             this._map.setDefaultCursor('default');
         }
-        if (this._overItem !== null && this._eventConfig.onMouseMove) {
-            this._eventType = 'mousemove';
-            this._eventConfig.onMouseMove.call(this, this._overItem, event);
+        if (this._overItem !== null && this._eventConfig.onMouseEnter) {
+            this._eventType = 'mouseenter';
+            this._eventConfig.onMouseEnter.call(this, this._overItem, event);
+        }
+        if (this._overItem === null && this._eventConfig.onMouseLeave) {
+            this._eventType = 'mouseleave';
+            this._eventConfig.onMouseLeave.call(this, this._overItem, event);
         }
         this._setTooltip(event);
     }
