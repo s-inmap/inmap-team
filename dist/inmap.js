@@ -6933,10 +6933,13 @@ var ImgOverlay = function (_Parameter) {
 
             if (temp != this._overItem) {
                 this._overItem = temp;
-                this._eventType = 'mousemove';
+                this._eventType = 'mouseover';
                 if (!(0, _Util.isEmpty)(this._styleConfig.mouseOver)) {
                     this.refresh();
                     this._drawMouseLayer();
+                    if (this._eventConfig.onMouseOver) {
+                        this._eventConfig.onMouseOver.call(this, this._overItem, event);
+                    }
                 }
                 this._setTooltip(event);
             }
@@ -6944,6 +6947,14 @@ var ImgOverlay = function (_Parameter) {
                 this._map.setDefaultCursor('pointer');
             } else {
                 this._map.setDefaultCursor('default');
+            }
+            if (this._overItem !== null && this._eventConfig.onMouseEnter) {
+                this._eventType = 'mouseenter';
+                this._eventConfig.onMouseEnter.call(this, this._overItem, event);
+            }
+            if (this._overItem === null && this._eventConfig.onMouseLeave) {
+                this._eventType = 'mouseleave';
+                this._eventConfig.onMouseLeave.call(this, this._overItem, event);
             }
         }
     }, {
@@ -7998,9 +8009,12 @@ var PointOverlay = function (_Parameter) {
 
             if (temp != this._overItem) {
                 this._overItem = temp;
-                this._eventType = 'mousemove';
+                this._eventType = 'mouseover';
                 if (!(0, _Util.isEmpty)(this._styleConfig.mouseOver)) {
                     this._drawMouseLayer();
+                    if (this._eventConfig.onMouseOver) {
+                        this._eventConfig.onMouseOver.call(this, this._overItem, event);
+                    }
                 }
                 this._setTooltip(event);
             }
@@ -8008,6 +8022,14 @@ var PointOverlay = function (_Parameter) {
                 this._map.setDefaultCursor('pointer');
             } else {
                 this._map.setDefaultCursor('default');
+            }
+            if (this._overItem !== null && this._eventConfig.onMouseEnter) {
+                this._eventType = 'mouseenter';
+                this._eventConfig.onMouseEnter.call(this, this._overItem, event);
+            }
+            if (this._overItem === null && this._eventConfig.onMouseLeave) {
+                this._eventType = 'mouseleave';
+                this._eventConfig.onMouseLeave.call(this, this._overItem, event);
             }
         }
     }, {
@@ -8543,9 +8565,13 @@ var PolygonOverlay = function (_Parameter) {
             } else {
                 this._map.setDefaultCursor('default');
             }
-            if (this._overItem !== null && this._eventConfig.onMouseMove) {
-                this._eventType = 'mousemove';
-                this._eventConfig.onMouseMove.call(this, this._overItem, event);
+            if (this._overItem !== null && this._eventConfig.onMouseEnter) {
+                this._eventType = 'mouseenter';
+                this._eventConfig.onMouseEnter.call(this, this._overItem, event);
+            }
+            if (this._overItem === null && this._eventConfig.onMouseLeave) {
+                this._eventType = 'mouseleave';
+                this._eventConfig.onMouseLeave.call(this, this._overItem, event);
             }
             this._setTooltip(event);
         }
@@ -9022,7 +9048,7 @@ var RectOverlay = function (_Parameter) {
                 if (temp) {
                     this._swopData(result.index, result.item);
                 }
-                this._eventType = 'mousemove';
+                this._eventType = 'mouseover';
                 if (!(0, _Util.isEmpty)(this._styleConfig.mouseOver)) {
                     this.refresh();
                     if (this._eventConfig.onMouseOver) {
@@ -9034,6 +9060,14 @@ var RectOverlay = function (_Parameter) {
                 this._map.setDefaultCursor('pointer');
             } else {
                 this._map.setDefaultCursor('default');
+            }
+            if (this._overItem !== null && this._eventConfig.onMouseEnter) {
+                this._eventType = 'mouseenter';
+                this._eventConfig.onMouseEnter.call(this, this._overItem, event);
+            }
+            if (this._overItem === null && this._eventConfig.onMouseLeave) {
+                this._eventType = 'mouseleave';
+                this._eventConfig.onMouseLeave.call(this, this._overItem, event);
             }
             this._setTooltip(event);
         }
@@ -9950,52 +9984,15 @@ var ToolTip = function () {
             var _this2 = this;
 
             if (!this._opts.show) return;
-
-            var array = [];
-            var overlays = map.getOverlays();
-            overlays.map(function (overlay) {
-                if (overlay._eventType === 'onmoveend' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
-                    array.push({
-                        overlay: overlay,
-                        _zIndex: overlay._zIndex
-                    });
-                }
-                if (overlay._eventType === 'mousemove' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
-                    array.push({
-                        overlay: overlay,
-                        _zIndex: overlay._zIndex
-                    });
-                }
-            });
-            var multi = false;
-            if (array.length > 1) {
-                array.sort(function (a, b) {
-                    return b._zIndex - a._zIndex;
-                });
-                multi = true;
-            }
             if (overItem) {
                 var formatter = void 0;
                 var _this = void 0,
                     param = void 0,
                     dom = void 0;
-                if (multi === true) {
-                    _this = array[0].overlay.toolTip;
-                    param = array[0].overlay._overItem;
-                    formatter = _this._opts.formatter;
-                    dom = _this._dom;
-                    array.map(function (x, y) {
-                        if (y !== 0) {
-                            x.overlay.toolTip._dom.style.visibility = 'hidden';
-                        }
-                    });
-                } else {
-                    _this = this;
-                    param = overItem;
-                    formatter = this._opts.formatter;
-                    dom = this._dom;
-                }
-
+                _this = this;
+                param = overItem;
+                formatter = this._opts.formatter;
+                dom = this._dom;
                 if ((0, _Util.isAsync)(formatter)) {
                     formatter(param, dom, function () {
                         _this2.hide();
