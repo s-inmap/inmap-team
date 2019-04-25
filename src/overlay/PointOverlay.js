@@ -438,9 +438,12 @@ export default class PointOverlay extends Parameter {
 
         if (temp != this._overItem) { //防止过度重新绘画
             this._overItem = temp;
-            this._eventType = 'mousemove';
+            this._eventType = 'mouseover';
             if (!isEmpty(this._styleConfig.mouseOver)) {
                 this._drawMouseLayer();
+                if (this._eventConfig.onMouseOver) {
+                    this._eventConfig.onMouseOver.call(this, this._overItem, event);
+                }
             }
             this._setTooltip(event);
         }
@@ -449,8 +452,14 @@ export default class PointOverlay extends Parameter {
         } else {
             this._map.setDefaultCursor('default');
         }
-
-
+        if (this._overItem !== null && this._eventConfig.onMouseEnter) {
+            this._eventType = 'mouseenter';
+            this._eventConfig.onMouseEnter.call(this, this._overItem, event);
+        }
+        if (this._overItem === null && this._eventConfig.onMouseLeave) {
+            this._eventType = 'mouseleave';
+            this._eventConfig.onMouseLeave.call(this, this._overItem, event);
+        }
     }
     _tMouseClick(event) {
         if (this._eventType == 'onmoving') return;

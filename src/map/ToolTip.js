@@ -104,50 +104,13 @@ export default class ToolTip {
     }
     render(event, overItem, map) {
         if (!this._opts.show) return;
-        //多个overlay共存，取zIndex值最高的
-        let array = [];
-        let overlays = map.getOverlays();
-        overlays.map(overlay => {
-            if (overlay._eventType === 'onmoveend' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
-                array.push({
-                    overlay: overlay,
-                    _zIndex: overlay._zIndex
-                });
-            }
-            if (overlay._eventType === 'mousemove' && overlay._overItem !== null && overlay.toolTip._opts.show === true) {
-                array.push({
-                    overlay: overlay,
-                    _zIndex: overlay._zIndex
-                });
-            }
-        });
-        let multi = false;
-        if (array.length > 1) {
-            array.sort((a, b) => {
-                return b._zIndex - a._zIndex;
-            });
-            multi = true;
-        }
         if (overItem) {
             let formatter;
             let _this, param, dom;
-            if (multi === true) {
-                _this = array[0].overlay.toolTip;
-                param = array[0].overlay._overItem;
-                formatter = _this._opts.formatter;
-                dom = _this._dom;
-                array.map((x, y) => {
-                    if (y !== 0) {
-                        x.overlay.toolTip._dom.style.visibility = 'hidden';
-                    }
-                });
-            } else {
-                _this = this;
-                param = overItem;
-                formatter = this._opts.formatter;
-                dom = this._dom;
-            }
-
+            _this = this;
+            param = overItem;
+            formatter = this._opts.formatter;
+            dom = this._dom;
             if (isAsync(formatter)) {
                 formatter(param, dom, () => {
                     //回调函数
