@@ -58,7 +58,7 @@
     .mapLabel {
         background: #fff;
         position: relative;
-        top: -50px;
+        /*top: -50px;*/
         width: 300px;
     }
     .mapLabel .header {
@@ -120,6 +120,20 @@
         top: 0;
         left: -16px;
         margin-top: 18px;
+    }
+    .arrow-right .mapLabel .arraw {
+        border: 8px solid transparent;
+        border-left-color: #fff;
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 0;
+        right: -16px;
+        margin-top: 18px;
+    }
+    .arrow-bottom-left .mapLabel .arraw {
+        top: auto;
+        bottom: 30px;
     }
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
@@ -1544,7 +1558,22 @@ function createImgOverlay(type) {
         tooltip: {
             show: true,
             customClass: "img",
-            formatter: function(params, dom) {
+            offsets: {
+                top: -50,
+                left: 12,
+                bottom: 30
+            },
+            async formatter(params, dom) {
+                let arrowBottom = ''
+                setTimeout(() => {
+                    let b = dom.getAttribute('data-bottom');
+                    console.log(dom, b)
+                    if (b !== null) {
+                        arrowBottom = 'margin-top:' + (b - 20) + 'px';
+                    } else {
+                        arrowBottom = 'margin-top:18px';
+                    }
+                }, 200)
                 if (type === 1) {
 
                     let message;
@@ -1556,7 +1585,7 @@ function createImgOverlay(type) {
 
                     return (`
                         <div class="mapLabel">
-                            <div class="arraw"></div>
+                            <div class="arraw" style="${arrowBottom}"></div>
                             <div class="edit"></div>
                             <div class="header">
                                 <div class="name">${params.name}</div>
@@ -1621,8 +1650,7 @@ function createImgOverlay(type) {
             onState: (state) => {
                 if (state == 3) {}
             },
-            onMouseOver: (item, event) => {
-            },
+            onMouseOver: (item, event) => {},
         }
     });
     inmap.add(overlay);
