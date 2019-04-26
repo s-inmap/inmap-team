@@ -37,17 +37,20 @@ export default class ToolTip {
     show(x, y) {
         let {
             left,
-            top
+            top,
+            bottom
         } = this._opts.offsets;
 
-        let pixelY = y + top;
+        // let pixelY = y + top;
 
         let leftX = this.getPixelX(x, left);
+
+        let topY = this.getPixelY(y, top, bottom);
 
         this._dom.style.cssText = `
             left:0;
             top:0;
-            transform:translate3d(${leftX}px, ${pixelY}px, 0px);
+            transform:translate3d(${leftX}px, ${topY}px, 0px);
             visibility: visible;
             display: block;
         `;
@@ -56,6 +59,7 @@ export default class ToolTip {
         //弹出框边缘智能控制
         let obj = this._dom.getBoundingClientRect(),
             domWidth = obj.width,
+            domHeight = obj.height,
             screenWidth = document.documentElement.clientWidth;
         if (pixelX > screenWidth - domWidth) {
             this._dom.classList.add('arrow-right');
@@ -65,6 +69,24 @@ export default class ToolTip {
             this._dom.classList.add('arrow-left');
             this._dom.classList.remove('arrow-right');
             return pixelX + offsetLeft;
+        }
+    }
+    getPixelY(pixelY, offsetTop, offsetBottom = 0) {
+        //弹出框边缘智能控制
+        let obj = this._dom.getBoundingClientRect(),
+            domHeight = obj.height,
+            screenHeight = document.documentElement.clientHeight;
+
+        if (pixelY > screenHeight - domHeight) {
+            let reset = domHeight - (screenHeight - pixelY);
+            let result = pixelY - reset - offsetBottom;
+            this._dom.classList.add('arrow-bottom');
+            this._dom.setAttribute('data-bottom', reset);
+            return result;
+        } else {
+            this._dom.classList.remove('arrow-bottom');
+            this._dom.removeAttribute('data-bottom');
+            return pixelY + offsetTop;
         }
     }
     showCenterText(text, x, y) {

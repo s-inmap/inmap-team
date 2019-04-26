@@ -9911,20 +9911,22 @@ var ToolTip = function () {
         value: function show(x, y) {
             var _opts$offsets = this._opts.offsets,
                 left = _opts$offsets.left,
-                top = _opts$offsets.top;
+                top = _opts$offsets.top,
+                bottom = _opts$offsets.bottom;
 
-
-            var pixelY = y + top;
 
             var leftX = this.getPixelX(x, left);
 
-            this._dom.style.cssText = '\n            left:0;\n            top:0;\n            transform:translate3d(' + leftX + 'px, ' + pixelY + 'px, 0px);\n            visibility: visible;\n            display: block;\n        ';
+            var topY = this.getPixelY(y, top, bottom);
+
+            this._dom.style.cssText = '\n            left:0;\n            top:0;\n            transform:translate3d(' + leftX + 'px, ' + topY + 'px, 0px);\n            visibility: visible;\n            display: block;\n        ';
         }
     }, {
         key: 'getPixelX',
         value: function getPixelX(pixelX, offsetLeft) {
             var obj = this._dom.getBoundingClientRect(),
                 domWidth = obj.width,
+                domHeight = obj.height,
                 screenWidth = document.documentElement.clientWidth;
             if (pixelX > screenWidth - domWidth) {
                 this._dom.classList.add('arrow-right');
@@ -9934,6 +9936,27 @@ var ToolTip = function () {
                 this._dom.classList.add('arrow-left');
                 this._dom.classList.remove('arrow-right');
                 return pixelX + offsetLeft;
+            }
+        }
+    }, {
+        key: 'getPixelY',
+        value: function getPixelY(pixelY, offsetTop) {
+            var offsetBottom = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+            var obj = this._dom.getBoundingClientRect(),
+                domHeight = obj.height,
+                screenHeight = document.documentElement.clientHeight;
+
+            if (pixelY > screenHeight - domHeight) {
+                var reset = domHeight - (screenHeight - pixelY);
+                var result = pixelY - reset - offsetBottom;
+                this._dom.classList.add('arrow-bottom');
+                this._dom.setAttribute('data-bottom', reset);
+                return result;
+            } else {
+                this._dom.classList.remove('arrow-bottom');
+                this._dom.removeAttribute('data-bottom');
+                return pixelY + offsetTop;
             }
         }
     }, {
@@ -10019,9 +10042,9 @@ var ToolTip = function () {
                         _this.show(event.offsetX, event.offsetY);
                     } else {
                         var pixel = overItem.geometry.pixel,
-                            _x = pixel.x,
+                            _x2 = pixel.x,
                             y = pixel.y;
-                        _this.show(_x, y);
+                        _this.show(_x2, y);
                     }
                 } else {
                     _this.show(overItem.pixels.neX, overItem.pixels.neY);
