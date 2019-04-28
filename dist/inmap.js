@@ -6619,11 +6619,6 @@ var ImgOverlay = function (_Parameter) {
         } else if (mouseOver.show === undefined || mouseOver.show === true) {
             _this._mouseOverShow = true;
         }
-        if (_this._mouseOverShow) {
-            _this._mouseLayer = new _CanvasOverlay2.default({
-                zIndex: _this._zIndex + 1
-            });
-        }
         return _this;
     }
 
@@ -6637,9 +6632,6 @@ var ImgOverlay = function (_Parameter) {
         value: function setZIndex(zIndex) {
             this._zIndex = zIndex;
             if (this._container) this._container.style.zIndex = this._zIndex;
-            if (this._mouseOverShow) {
-                this._mouseLayer.setZIndex(this._zIndex + 1);
-            }
         }
     }, {
         key: 'setOptionStyle',
@@ -6648,11 +6640,7 @@ var ImgOverlay = function (_Parameter) {
         }
     }, {
         key: '_parameterInit',
-        value: function _parameterInit() {
-            if (this._mouseOverShow) {
-                this._map.addOverlay(this._mouseLayer);
-            }
-        }
+        value: function _parameterInit() {}
     }, {
         key: '_setState',
         value: function _setState(val) {
@@ -6674,10 +6662,6 @@ var ImgOverlay = function (_Parameter) {
     }, {
         key: '_clearAll',
         value: function _clearAll() {
-            if (this._mouseOverShow) {
-                this._mouseLayer._clearCanvas();
-            }
-
             this._clearCanvas();
         }
     }, {
@@ -6764,9 +6748,6 @@ var ImgOverlay = function (_Parameter) {
         value: function refresh() {
             this._setState(_OnStateConfig2.default.drawBefore);
             this._clearCanvas();
-            if (this._mouseOverShow) {
-                this._mouseLayer._canvasResize();
-            }
             if (this._batchesData) {
                 this._batchesData.clear();
                 this._batchesData.action(this._workerData, this._loopDraw, this._ctx);
@@ -6906,18 +6887,13 @@ var ImgOverlay = function (_Parameter) {
         value: function _drawMouseLayer() {
             var overArr = this._overItem ? [this._overItem] : [];
             if (this._mouseOverShow) {
-                this._mouseLayer._clearCanvas();
-                this._loopDraw(this._mouseLayer._getContext(), this._selectItem.concat(overArr), true);
+                this._loopDraw(this._ctx, this._selectItem.concat(overArr), true);
             }
         }
     }, {
         key: '_Tdispose',
         value: function _Tdispose() {
             this._batchesData && this._batchesData.clear();
-            if (this._mouseOverShow) {
-                this._map.removeOverlay(this._mouseLayer);
-                this._mouseLayer.dispose();
-            }
         }
     }, {
         key: '_tMousemove',
@@ -7578,11 +7554,6 @@ var PointOverlay = function (_Parameter) {
         } else if (mouseOver.show === undefined || mouseOver.show === true) {
             _this._mouseOverShow = true;
         }
-        if (_this._mouseOverShow) {
-            _this._mouseLayer = new _CanvasOverlay2.default({
-                zIndex: _this._zIndex + 1
-            });
-        }
 
         _this._state = null;
         _this._mpp = {};
@@ -7603,9 +7574,6 @@ var PointOverlay = function (_Parameter) {
         value: function setZIndex(zIndex) {
             this._zIndex = zIndex;
             if (this._container) this._container.style.zIndex = this._zIndex;
-            if (this._mouseOverShow) {
-                this._mouseLayer.setZIndex(this._zIndex + 1);
-            }
         }
     }, {
         key: '_onOptionChange',
@@ -7620,9 +7588,6 @@ var PointOverlay = function (_Parameter) {
     }, {
         key: '_parameterInit',
         value: function _parameterInit() {
-            if (this._mouseOverShow) {
-                this._map.addOverlay(this._mouseLayer);
-            }
             this._initLegend();
         }
     }, {
@@ -7697,17 +7662,12 @@ var PointOverlay = function (_Parameter) {
         value: function _drawMouseLayer() {
             var overArr = this._overItem ? [this._overItem] : [];
             if (this._mouseOverShow) {
-                this._mouseLayer._clearCanvas();
-                this._loopDraw(this._mouseLayer._getContext(), this._selectItem.concat(overArr), true);
+                this._loopDraw(this._ctx, this._selectItem.concat(overArr), true);
             }
         }
     }, {
         key: '_clearAll',
         value: function _clearAll() {
-            if (this._mouseOverShow) {
-                this._mouseLayer._clearCanvas();
-            }
-
             this._clearCanvas();
         }
     }, {
@@ -7863,9 +7823,6 @@ var PointOverlay = function (_Parameter) {
             this._setState(_OnStateConfig2.default.drawBefore);
             this._clearCanvas();
 
-            if (this._mouseOverShow) {
-                this._mouseLayer._canvasResize();
-            }
             if (this._batchesData) {
                 this._batchesData.clear();
                 this._batchesData.action(this._workerData, this._loopDraw, this._ctx);
@@ -7989,10 +7946,6 @@ var PointOverlay = function (_Parameter) {
         key: '_Tdispose',
         value: function _Tdispose() {
             this._batchesData && this._batchesData.clear();
-            if (this._mouseOverShow) {
-                this._map.removeOverlay(this._mouseLayer);
-                this._mouseLayer.dispose();
-            }
         }
     }, {
         key: '_tMousemove',

@@ -347,6 +347,7 @@ function createDotOverlay() {
     // })
     // console.log(list[325])
     let overlay = new inMap.PointOverlay({
+        name: '散点',
         tooltip: {
             show: false,
             customClass: 'point',
@@ -388,11 +389,11 @@ function createImgOverlay(type) {
     hoverImg.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_hover.png';
 
     let overlay = new inMap.ImgOverlay({
+        name: '图片',
         tooltip: {
             show: true,
             customClass: "auto",
             formatter: function(params, dom) {
-                console.log(dom,params)
                 if (type === 1) {
 
                     let message;
@@ -516,17 +517,7 @@ function showTip() {
     });
 }
 
-function showR() {
-    removeYellow(imgoverlay);
-    imgoverlay = undefined;
-    paichi(listnew.data);
-}
-//删除黄色点
-function removeYellow(overlay) {
-    overlay.setTooltipIsShow(false);
-    inmap.remove(overlay.element);
-    inmap.remove(overlay);
-}
+
 let dotoverlay1,
     imgoverlay1;
 
@@ -598,7 +589,7 @@ function paichi(data) {
     // imgoverlay.element.hide();
     // imgoverlay.setTooltipIsShow(false);
 }
-paichi(list.data)
+// paichi(list.data)
 
 /*画圆*/
 const drawOption = {
@@ -630,4 +621,19 @@ function drawCircle(point, radius) {
 let point = drawLngLat('116.475959000000003', '39.9216699999999989');
 let circle = drawCircle(point, 500);
 inmap.add(circle);
+
+
+function showR() {
+    removeYellow(imgoverlay);
+    imgoverlay = undefined;
+    paichi(listnew.data);
+}
+//删除黄色点
+function removeYellow(overlay) {
+    if (overlay) {
+        overlay.setTooltipIsShow(false);
+        inmap.remove(overlay.element);
+        inmap.remove(overlay);
+    }
+}
 </script>

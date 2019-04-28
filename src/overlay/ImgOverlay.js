@@ -23,11 +23,6 @@ export default class ImgOverlay extends Parameter {
         } else if (mouseOver.show === undefined || mouseOver.show === true) {
             this._mouseOverShow = true;
         }
-        if (this._mouseOverShow) {
-            this._mouseLayer = new CanvasOverlay({
-                zIndex: this._zIndex + 1
-            });
-        }
     }
     _toDraw() {
         this._drawMap();
@@ -35,17 +30,11 @@ export default class ImgOverlay extends Parameter {
     setZIndex(zIndex) {
         this._zIndex = zIndex;
         if (this._container) this._container.style.zIndex = this._zIndex;
-        if (this._mouseOverShow) {
-            this._mouseLayer.setZIndex(this._zIndex + 1);
-        }
     }
     setOptionStyle(ops) {
         this._setStyle(this._option, ops);
     }
     _parameterInit() {
-        if (this._mouseOverShow) {
-            this._map.addOverlay(this._mouseLayer);
-        }
         // this._initLegend();
     }
     _setState(val) {
@@ -64,10 +53,6 @@ export default class ImgOverlay extends Parameter {
 
     }
     _clearAll() {
-        if (this._mouseOverShow) {
-            this._mouseLayer._clearCanvas();
-        }
-
         this._clearCanvas();
     }
     _drawMap() {
@@ -149,9 +134,6 @@ export default class ImgOverlay extends Parameter {
     refresh() {
         this._setState(State.drawBefore);
         this._clearCanvas();
-        if (this._mouseOverShow) {
-            this._mouseLayer._canvasResize();
-        }
         if (this._batchesData) {
             this._batchesData.clear();
             this._batchesData.action(this._workerData, this._loopDraw, this._ctx);
@@ -281,16 +263,11 @@ export default class ImgOverlay extends Parameter {
     _drawMouseLayer() {
         let overArr = this._overItem ? [this._overItem] : [];
         if (this._mouseOverShow) {
-            this._mouseLayer._clearCanvas();
-            this._loopDraw(this._mouseLayer._getContext(), this._selectItem.concat(overArr), true);
+            this._loopDraw(this._ctx, this._selectItem.concat(overArr), true);
         }
     }
     _Tdispose() {
         this._batchesData && this._batchesData.clear();
-        if (this._mouseOverShow) {
-            this._map.removeOverlay(this._mouseLayer);
-            this._mouseLayer.dispose();
-        }
     }
     _tMousemove(event) {
         if (this._eventType == 'onmoving') {
