@@ -9397,7 +9397,10 @@ exports.default = {
     },
     lock: false,
     data: [],
-
+    checkDataType: {
+        name: false,
+        count: false
+    },
     event: {
         multiSelect: false,
         onState: function onState() {},
