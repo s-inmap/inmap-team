@@ -417,6 +417,7 @@ export default class PointOverlay extends Parameter {
             this._overItem = temp;
             this._eventType = 'mouseover';
             if (!isEmpty(this._styleConfig.mouseOver)) {
+                this.refresh();
                 this._drawMouseLayer();
                 if (this._eventConfig.onMouseOver) {
                     this._eventConfig.onMouseOver.call(this, this._overItem, event);
