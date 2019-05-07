@@ -2,6 +2,8 @@ import {
     isString,
     isFunction,
     isArray,
+    isAsync,
+    isPromise,
     merge
 } from '../common/Util';
 export default class ToolTip {
@@ -35,17 +37,20 @@ export default class ToolTip {
     show(x, y) {
         let {
             left,
-            top
+            top,
+            bottom
         } = this._opts.offsets;
 
-        let pixelY = y + top;
+        // let pixelY = y + top;
 
         let leftX = this.getPixelX(x, left);
+
+        let topY = this.getPixelY(y, top, bottom);
 
         this._dom.style.cssText = `
             left:0;
             top:0;
-            transform:translate3d(${leftX}px, ${pixelY}px, 0px);
+            transform:translate3d(${leftX}px, ${topY}px, 0px);
             visibility: visible;
             display: block;
         `;
@@ -54,6 +59,7 @@ export default class ToolTip {
         //弹出框边缘智能控制
         let obj = this._dom.getBoundingClientRect(),
             domWidth = obj.width,
+            domHeight = obj.height,
             screenWidth = document.documentElement.clientWidth;
         if (pixelX > screenWidth - domWidth) {
             this._dom.classList.add('arrow-right');
@@ -63,6 +69,24 @@ export default class ToolTip {
             this._dom.classList.add('arrow-left');
             this._dom.classList.remove('arrow-right');
             return pixelX + offsetLeft;
+        }
+    }
+    getPixelY(pixelY, offsetTop, offsetBottom = 0) {
+        //弹出框边缘智能控制
+        let obj = this._dom.getBoundingClientRect(),
+            domHeight = obj.height,
+            screenHeight = document.documentElement.clientHeight;
+
+        if (pixelY > screenHeight - domHeight) {
+            let reset = domHeight - (screenHeight - pixelY);
+            let result = pixelY - reset - offsetBottom;
+            this._dom.classList.add('arrow-bottom');
+            this._dom.setAttribute('data-bottom', reset);
+            return result;
+        } else {
+            this._dom.classList.remove('arrow-bottom');
+            this._dom.removeAttribute('data-bottom');
+            return pixelY + offsetTop;
         }
     }
     showCenterText(text, x, y) {
@@ -89,7 +113,6 @@ export default class ToolTip {
             formatter,
             customClass
         } = result;
-
         if (isString(formatter)) { //编译字符串
             this._compileTooltipTemplate(result.formatter);
         }
@@ -101,29 +124,48 @@ export default class ToolTip {
         this._dom.classList.add(customClass);
         this._opts = result;
     }
-    render(event, overItem) {
+    render(event, overItem, map) {
         if (!this._opts.show) return;
         if (overItem) {
-            let formatter = this._opts.formatter;
-            if (isFunction(formatter)) {
-                this._dom.innerHTML = formatter(overItem, this._dom, () => {
+            let formatter;
+            let _this, param, dom;
+            _this = this;
+            param = overItem;
+            formatter = this._opts.formatter;
+            dom = this._dom;
+            if (isAsync(formatter)) {
+                formatter(param, dom, () => {
                     //回调函数
                     this.hide();
+                }).then((res) => {
+                    dom.innerHTML = res;
                 });
+            }
+            if (isFunction(formatter)) {
+                let x = formatter(param, dom, () => {
+                    this.hide();
+                });
+                if (isPromise(x)) {
+                    x.then((res) => {
+                        dom.innerHTML = res;
+                    });
+                } else {
+                    dom.innerHTML = x;
+                }
             } else if (isString(formatter)) {
-                this._dom.innerHTML = this._tooltipTemplate(overItem);
+                dom.innerHTML = this._tooltipTemplate(param);
             }
             if (overItem.geometry) {
                 if (isArray(overItem.geometry.pixels)) {
-                    this.show(event.offsetX, event.offsetY);
+                    _this.show(event.offsetX, event.offsetY);
                 } else {
                     let pixel = overItem.geometry.pixel,
                         x = pixel.x,
                         y = pixel.y;
-                    this.show(x, y);
+                    _this.show(x, y);
                 }
             } else {
-                this.show(overItem.pixels.neX, overItem.pixels.neY);
+                _this.show(overItem.pixels.neX, overItem.pixels.neY);
             }
         } else {
             this.hide();

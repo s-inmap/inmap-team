@@ -12,7 +12,9 @@ export function typeOf(obj) {
         '[object RegExp]': 'regExp',
         '[object Undefined]': 'undefined',
         '[object Null]': 'null',
-        '[object Object]': 'object'
+        '[object Object]': 'object',
+        '[object AsyncFunction]': 'async',
+        '[object Promise]': 'promise'
     };
     return map[toString.call(obj)];
 }
@@ -29,6 +31,24 @@ export function isBoolean(obj) {
  */
 export function isFunction(func) {
     return typeOf(func) == 'function';
+}
+
+/**
+ * 是否是异步函数
+ * @param {Mix}
+ * @returns {Boolean}
+ */
+export function isAsync(func) {
+    return typeOf(func) === 'async';
+}
+
+/**
+ * 是否是异步Promise函数
+ * @param {Mix}
+ * @returns {Boolean}
+ */
+export function isPromise(func) {
+    return typeOf(func) === 'promise';
 }
 
 /**
@@ -63,7 +83,7 @@ export const isPromiseLike = obj =>
     (typeof obj === 'object' || typeof obj === 'function') &&
     typeof obj.then === 'function';
 
-export const extend = function (target, source) {
+export const extend = function(target, source) {
 
     if (target && source && isObject(source)) {
         for (let p in source) {
@@ -176,7 +196,7 @@ export const chunk = (arr, size) =>
 export function merge() {
     let arr = Array.prototype.slice.call(arguments);
     return deepmerge.all(arr, {
-        arrayMerge: function (destinationArray, sourceArray) {
+        arrayMerge: function(destinationArray, sourceArray) {
             if (sourceArray.length > 0) {
                 return sourceArray;
             } else {
@@ -188,7 +208,7 @@ export function merge() {
 export function clearPushArray(a, b) {
     if (Array.isArray(b)) {
         a.splice(0, a.length);
-        b.forEach(function (val) {
+        b.forEach(function(val) {
             a.push(val);
         });
     } else if (b != null) {
@@ -217,7 +237,7 @@ export function checkType(row, isCheckName, isCheckCount) {
             return 'The property count must be of type Number!';
         }
 
-        
+
     }
 
     if (geometryType == 'null' || geometryType == 'undefined') {
@@ -247,11 +267,11 @@ export function checkGeoJSON(data, isCheckName, isCheckCount) {
 }
 
 //比较两个对象是否相等
-export function isEqual(obj1,obj2){
+export function isEqual(obj1, obj2) {
     //只比较一个点的横纵坐标即可
-    if(obj1.data.neX === obj2.data.neX && obj1.data.neY === obj2.data.neY)
-    // if(obj1.data.count === obj2.data.count && obj1.data.neX === obj2.data.neX &&obj1.data.neY === obj2.data.neY &&obj1.data.swX === obj2.data.swX &&obj1.data.swY === obj2.data.swY)
+    if (obj1.data.neX === obj2.data.neX && obj1.data.neY === obj2.data.neY)
+        // if(obj1.data.count === obj2.data.count && obj1.data.neX === obj2.data.neX &&obj1.data.neY === obj2.data.neY &&obj1.data.swX === obj2.data.swX &&obj1.data.swY === obj2.data.swY)
         return true
-    else 
+    else
         return false
 }
