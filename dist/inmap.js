@@ -8529,6 +8529,70 @@ var PolygonOverlay = function (_Parameter) {
             }
             this._setTooltip(event);
         }
+    }, {
+        key: '_setDrawStyle',
+        value: function _setDrawStyle(item, otherMode, i) {
+            var normal = this._styleConfig.normal,
+                mouseOverStyle = this._styleConfig.mouseOver,
+                selectedStyle = this._styleConfig.selected;
+            var result = (0, _Util.merge)({}, normal);
+            var count = parseFloat(item.count);
+
+            var splitList = this._styleConfig.splitList,
+                len = splitList.length;
+            if (len > 0 && (0, _Util.typeOf)(count) !== 'number') {
+                throw new TypeError('inMap: data index Line ' + i + ', The property count must be of type Number! about geoJSON, visit http://inmap.talkingdata.com/#/docs/v2/Geojson');
+            }
+
+            for (var _i3 = 0; _i3 < len; _i3++) {
+                var condition = splitList[_i3];
+                if (_i3 == splitList.length - 1) {
+                    if (condition.end == null) {
+                        if (count >= condition.start) {
+                            result = this._mergeCondition(result, condition);
+                            break;
+                        }
+                    } else if (count >= condition.start && count <= condition.end) {
+                        result = this._mergeCondition(result, condition);
+                        break;
+                    }
+                } else {
+                    if (count >= condition.start && count < condition.end) {
+                        result = this._mergeCondition(result, condition);
+                        break;
+                    }
+                }
+            }
+            result = (0, _Util.merge)(result, item.style || {});
+
+            if (item.normalColor) result.backgroundColor = item.normalColor;
+            if (mouseOverStyle) {
+                if (this._overItem == item) {
+                    result = (0, _Util.merge)(result, mouseOverStyle, {
+                        backgroundColor: mouseOverStyle.backgroundColor || this._brightness(result.backgroundColor, 0.1)
+                    });
+                    if (item.mouseOverColor) result.backgroundColor = item.mouseOverColor;
+                }
+            }
+
+            if (otherMode && selectedStyle && this._selectItemContains(item)) {
+                result = (0, _Util.merge)(result, selectedStyle);
+            }
+
+            if (result.shadowBlur != null && result.shadowColor == null) {
+                result['shadowColor'] = new _Color2.default(result.backgroundColor).getValue();
+            }
+            if (result.opacity) {
+                var color = new _Color2.default(result.backgroundColor);
+                result.backgroundColor = color.getRgbaValue(result.opacity);
+            }
+            if (result.borderOpacity) {
+                var _color = new _Color2.default(result.borderColor);
+                result.borderColor = _color.getRgbaValue(result.borderOpacity);
+            }
+
+            return result;
+        }
     }]);
 
     return PolygonOverlay;
@@ -15916,8 +15980,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/_css-loader@0.23.1@css-loader/index.js!../../node_modules/_less-loader@2.2.3@less-loader/index.js!./map.less", function() {
-			var newContent = require("!!../../node_modules/_css-loader@0.23.1@css-loader/index.js!../../node_modules/_less-loader@2.2.3@less-loader/index.js!./map.less");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/less-loader/index.js!./map.less", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/less-loader/index.js!./map.less");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
