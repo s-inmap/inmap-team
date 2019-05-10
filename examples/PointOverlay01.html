@@ -53,7 +53,7 @@ points.map(item => {
     item.geometry = {
         "type": "Point",
         "coordinates": [String(item.lng), String(item.lat)]
-    }
+    },
 })
 var overlay = new inMap.PointOverlay({
     tooltip: {
