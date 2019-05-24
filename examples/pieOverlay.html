@@ -51,7 +51,7 @@
 <script>
 let inmap = new inMap.Map({
     id: 'allmap',
-    skin: "Blueness",
+    skin: "",
     center: [116.407395, 39.904211],
     zoom: {
         value: 12,
@@ -222,7 +222,11 @@ function initOverlay(ary) {
             backgroundStyle: {
                 show: true,
                 radius: 17,
-                bgColor: '#fff'
+                bgColor: '#fff',
+                shadowColor: 'rgba(0,0,0,0.14)',
+                shadowBlur: 2,
+                shadowOffsetX: 2,
+                shadowOffsetY: 2,
             },
             pieStyle: {
                 show: true,
