@@ -32,6 +32,9 @@
 
 <body>
     <div id="allmap"></div>
+    <div style="position: absolute;right:0;top:0">
+        <button onclick="changeName()">改变canvas名字</button>
+    </div>
 </body>
 
 </html>
@@ -53,9 +56,10 @@ points.map(item => {
     item.geometry = {
         "type": "Point",
         "coordinates": [String(item.lng), String(item.lat)]
-    },
+    }
 })
-var overlay = new inMap.PointOverlay({
+let config = {
+    name: 'xxxxxxx',
     tooltip: {
         show: true,
         formatter: function(params) {
@@ -99,6 +103,16 @@ var overlay = new inMap.PointOverlay({
             //能获取当前点的信息
         }
     }
-});
+};
+var overlay = new inMap.PointOverlay(config);
 inmap.add(overlay);
+
+function changeName() {
+    console.log(config);
+    let a = Object.assign(config,{
+        name:'adf'
+    })
+    console.log(a);
+    overlay.setOptionStyle(a);
+}
 </script>
