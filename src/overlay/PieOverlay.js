@@ -320,6 +320,10 @@ export default class PieOverlay extends Parameter {
     _drawCircleBackground(ctx, x, y, style) {
         ctx.beginPath();
         ctx.fillStyle = style.bgColor;
+        ctx.shadowColor = style.shadowColor || '';
+        ctx.shadowBlur = style.shadowBlur || '';
+        ctx.shadowOffsetX = style.shadowOffsetX || '';
+        ctx.shadowOffsetY = style.shadowOffsetY || '';
         ctx.arc(x, y, style.radius, 0, 2 * Math.PI, false);
         ctx.fill();
         ctx.closePath();

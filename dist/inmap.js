@@ -7336,6 +7336,10 @@ var PieOverlay = function (_Parameter) {
         value: function _drawCircleBackground(ctx, x, y, style) {
             ctx.beginPath();
             ctx.fillStyle = style.bgColor;
+            ctx.shadowColor = style.shadowColor || '';
+            ctx.shadowBlur = style.shadowBlur || '';
+            ctx.shadowOffsetX = style.shadowOffsetX || '';
+            ctx.shadowOffsetY = style.shadowOffsetY || '';
             ctx.arc(x, y, style.radius, 0, 2 * Math.PI, false);
             ctx.fill();
             ctx.closePath();
@@ -15980,8 +15984,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/less-loader/index.js!./map.less", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/less-loader/index.js!./map.less");
+		module.hot.accept("!!../../node_modules/_css-loader@0.23.1@css-loader/index.js!../../node_modules/_less-loader@2.2.3@less-loader/index.js!./map.less", function() {
+			var newContent = require("!!../../node_modules/_css-loader@0.23.1@css-loader/index.js!../../node_modules/_less-loader@2.2.3@less-loader/index.js!./map.less");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
