@@ -1750,6 +1750,7 @@ var Parameter = function (_CanvasOverlay) {
         _this._baseConfig = baseConfig;
         _this._selectItem = [];
         _this._overItem = null;
+        _this._container = null;
         _this._setStyle(baseConfig, ops);
         return _this;
     }
@@ -1770,6 +1771,10 @@ var Parameter = function (_CanvasOverlay) {
             this._legendConfig = option.legend;
             this._eventConfig = option.event;
             this._styleConfig = option.style;
+            this._name = option.name;
+            if (this._container) {
+                this._container.setAttribute('data-name', this._name);
+            }
             if (ops.data !== undefined) {
                 this.setData(ops.data);
             } else {

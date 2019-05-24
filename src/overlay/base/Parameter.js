@@ -23,6 +23,7 @@ export default class Parameter extends CanvasOverlay {
         this._baseConfig = baseConfig;
         this._selectItem = []; //选中
         this._overItem = null; //悬浮
+        this._container = null;
         this._setStyle(baseConfig, ops);
     }
     _setStyle(config, ops) {
@@ -39,6 +40,10 @@ export default class Parameter extends CanvasOverlay {
         this._legendConfig = option.legend;
         this._eventConfig = option.event;
         this._styleConfig = option.style;
+        this._name = option.name;
+        if (this._container) {
+            this._container.setAttribute('data-name', this._name);
+        }
         if (ops.data !== undefined) {
             this.setData(ops.data);
         } else {
