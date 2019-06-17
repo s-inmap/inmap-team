@@ -10063,14 +10063,14 @@ var ToolTip = function () {
                 if ((0, _Util.isAsync)(formatter)) {
                     formatter(param, dom, function () {
                         _this2.hide();
-                    }).then(function (res) {
+                    }, event).then(function (res) {
                         dom.innerHTML = res;
                     });
                 }
                 if ((0, _Util.isFunction)(formatter)) {
                     var x = formatter(param, dom, function () {
                         _this2.hide();
-                    });
+                    }, event);
                     if ((0, _Util.isPromise)(x)) {
                         x.then(function (res) {
                             dom.innerHTML = res;

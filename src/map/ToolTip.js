@@ -137,14 +137,14 @@ export default class ToolTip {
                 formatter(param, dom, () => {
                     //回调函数
                     this.hide();
-                }).then((res) => {
+                }, event).then((res) => {
                     dom.innerHTML = res;
                 });
             }
             if (isFunction(formatter)) {
                 let x = formatter(param, dom, () => {
                     this.hide();
-                });
+                }, event);
                 if (isPromise(x)) {
                     x.then((res) => {
                         dom.innerHTML = res;
