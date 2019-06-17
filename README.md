@@ -8,11 +8,11 @@
 ``` bash
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=[申请的AK]"></script>
 
-<script type="text/javascript" src="https://smartdata.b0.upaiyun.com/thinkmark/inmap_grey.min.js"></script>
+<script type="text/javascript" src="http://www.wulihub.com.cn/go/JPVkkW/inmap_grey.min.js"></script>
 ```
 
 ## 下载包文件
-请把包文件下载下来，应用到自己的项目中。[inmap](https://smartdata.b0.upaiyun.com/thinkmark/inmap_grey.min.js ':include :type=code text')
+请把包文件下载下来，应用到自己的项目中。[inmap](http://www.wulihub.com.cn/go/JPVkkW/inmap_grey.min.js ':include :type=code text')
 
 ## 文档
 https://s-inmap.github.io/inmap-team-doc/#/
