@@ -24,6 +24,7 @@
         count: false
     },
     event: {
+        emitEvent: false,
          onDragStart:function(){},
          onDragging:function(){},
          onDragEnd:function(){

@@ -16,7 +16,11 @@ export default {
             font: '18px Arial',
             color: 'yellow',
             shadowColor: 'yellow',
-            shadowBlur: 10
+            shadowBlur: 10,
+            offsets: {
+                top: 0,
+                left: 0
+            }
         },
         splitList: [],
         colors: []
@@ -28,8 +32,10 @@ export default {
     },
     selected: [], //设置选中
     event: {
+        emitEvent: true,
         multiSelect: false, //是否支持多选
         onMouseClick() {},
+        onMouseOver() {},
         onState() {
 
         }

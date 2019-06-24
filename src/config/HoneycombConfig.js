@@ -50,8 +50,10 @@ export default {
         count: true
     },
     event: {
+        emitEvent: true,
         multiSelect: false,
         onMouseClick(){},
+        onMouseOver() {},
         onState() {}
     }
 };
