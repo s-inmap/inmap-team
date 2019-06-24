@@ -1,8 +1,8 @@
-import Parameter from './base/Parameter.js';
+import MiddleOverlay from './base/MiddleOverlay.js';
 import GriddingConfig from './../config/GriddingConfig.js';
 import State from './../config/OnStateConfig';
 
-export default class GriddingOverlay extends Parameter {
+export default class GriddingOverlay extends MiddleOverlay {
     constructor(ops) {
         super(GriddingConfig, ops);
         this._state = null;
@@ -13,13 +13,13 @@ export default class GriddingOverlay extends Parameter {
     _parameterInit() {
 
     }
-    setOptionStyle(ops) {
-        this._setStyle(this._option, ops);
+    setOptionStyle(ops, callback) {
+        this._setStyle(this._option, ops, callback);
     }
 
     _setState(val) {
         this._state = val;
-        this._eventConfig.onState.call(this, this._state);
+        this._eventConfig.onState(this._state, this);
     }
     draw() {
         this._toDraw();
@@ -29,8 +29,8 @@ export default class GriddingOverlay extends Parameter {
         this._drawRec();
         this._setState(State.drawAfter);
     }
-    _toDraw() {
-        this._drawMap();
+    _toDraw(callback) {
+        this._drawMap(callback);
     }
     _onOptionChange() {
         this._map && this._createColorSplit();
@@ -57,7 +57,7 @@ export default class GriddingOverlay extends Parameter {
         let dpx = Math.abs(this._map.pointToPixel(mapCenter).y - this._map.pointToPixel(cpt).y);
         return this._map.getDistance(mapCenter, cpt) / dpx;
     }
-    _drawMap() {
+    _drawMap(callback) {
         this._clearData();
         let {
             normal,
@@ -114,6 +114,7 @@ export default class GriddingOverlay extends Parameter {
             }
             this.refresh();
             gridsObj = null;
+            callback && callback(this);
         });
     }
 
@@ -124,7 +125,7 @@ export default class GriddingOverlay extends Parameter {
     _findIndexSelectItem(item) {
         let index = -1;
         if (item) {
-            index = this._selectItem.findIndex(function(val) {
+            index = this._selectItem.findIndex(function (val) {
                 return val && val.x == item.x && val.y == item.y;
             });
         }
