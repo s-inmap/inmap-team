@@ -32,7 +32,8 @@
                  },
              },
              event: {
-                 onMouseClick: function () {}
+                 onMouseClick: function () {},
+                 onMouseOver() {},
              }
          },
          line: { //线的配置
@@ -42,7 +43,7 @@
                      borderWidth: 1,
                      // shadowColor: 'rgba(255, 250, 50, 1)',
                      // shadowBlur: 20,
-                     lineCurive: 'curve'
+                     lineOrCurive: 'curve'
                  }
              }
          },

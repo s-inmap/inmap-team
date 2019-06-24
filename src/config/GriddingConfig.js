@@ -51,7 +51,10 @@ export default {
         count: true
     },
     event: {
+        //true为不允许穿透，false为允许
+        emitEvent: true,
         multiSelect: false,
+        onMouseOver() {},
         onMouseClick() {},
         onState() {}
     }
