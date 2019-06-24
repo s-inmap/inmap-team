@@ -1,20 +1,20 @@
-import Parameter from './base/Parameter.js';
+import MiddleOverlay from './base/MiddleOverlay.js';
 import HoneycombConfig from './../config/HoneycombConfig.js';
 import State from './../config/OnStateConfig';
 
-export default class HoneycombOverlay extends Parameter {
+export default class HoneycombOverlay extends MiddleOverlay {
     constructor(ops) {
         super(HoneycombConfig, ops);
         this._state = null;
         this._mpp = {};
         this._drawSize = 0;
     }
-    setOptionStyle(ops) {
-        this._setStyle(this._option, ops);
+    setOptionStyle(ops, callback) {
+        this._setStyle(this._option, ops, callback);
     }
     _setState(val) {
         this._state = val;
-        this._eventConfig.onState.call(this, this._state);
+        this._eventConfig.onState(this._state, this);
     }
     draw() {
         this._toDraw();
@@ -24,8 +24,8 @@ export default class HoneycombOverlay extends Parameter {
         this._drawRec();
         this._setState(State.drawAfter);
     }
-    _toDraw() {
-        this._drawMap();
+    _toDraw(callback) {
+        this._drawMap(callback);
     }
     _onOptionChange() {
         this._map && this._createColorSplit();
@@ -44,7 +44,7 @@ export default class HoneycombOverlay extends Parameter {
         }
     }
     /**
-     * 获得每个像素对应多少米	
+     * 获得每个像素对应多少米  
      */
     _getMpp() {
         let mapCenter = this._map.getCenter();
@@ -53,7 +53,7 @@ export default class HoneycombOverlay extends Parameter {
         let dpx = Math.abs(this._map.pointToPixel(mapCenter).y - this._map.pointToPixel(cpt).y);
         return this._map.getDistance(mapCenter, cpt) / dpx;
     }
-    _drawMap() {
+    _drawMap(callback) {
         this._clearData();
         let {
             normal,
@@ -110,7 +110,7 @@ export default class HoneycombOverlay extends Parameter {
             }
             this.refresh();
             gridsObj = null;
-
+            callback && callback(this);
         });
     }
     _createColorSplit() {
@@ -180,14 +180,7 @@ export default class HoneycombOverlay extends Parameter {
         return index;
     }
     _getStyle(item, i) {
-        if (item.count == 0) {
-            return {
-                backgroundColor: 'rgba(255,255,255,0)'
-            };
-        } else {
-            return this._setDrawStyle(item, true, i);
-        }
-
+        return this._setDrawStyle(item, true, i);
     }
     _getTarget(mouseX, mouseY) {
         let gridStep = this._drawSize;

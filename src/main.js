@@ -1,18 +1,21 @@
 import './lib/require-babel-polyfill.js';
 
 // import LabelOverlay from './overlay/LabelOverlay';
-import PointOverlay from './overlay/PointOverlay';
+// import PointOverlay from './overlay/PointOverlay';
+import SSPointOverlay from './overlay/Interface/SSPointOverlay';
 import PieOverlay from './overlay/PieOverlay';
 
 // import GriddingOverlay from './overlay/GriddingOverlay';
-import PolygonOverlay from './overlay/PolygonOverlay';
+// import PolygonOverlay from './overlay/PolygonOverlay';
+import SSPolygonOverlay from './overlay/Interface/SSPolygonOverlay';
 import RectOverlay from './overlay/RectOverlay';
 
 // import HeatOverlay from './overlay/HeatOverlay';
 // import LineStringOverlay from './overlay/LineStringOverlay';
 
 // import HoneycombOverlay from './overlay/HoneycombOverlay';
-import ImgOverlay from './overlay/ImgOverlay';
+// import ImgOverlay from './overlay/ImgOverlay';
+import SSImgOverlay from './overlay/Interface/SSImgOverlay';
 // import MoveLineOverlay from './overlay/MoveLineOverlay';
 // import PointAnimationOverlay from './overlay/PointAnimationOverlay';
 // import LineStringAnimationOverlay from './overlay/LineStringAnimationOverlay';
@@ -31,16 +34,19 @@ const inMap = {
     utils,
     Map,
     // LabelOverlay,
-    PointOverlay,
+    // PointOverlay,
+    SSPointOverlay,
     PieOverlay,
     // GriddingOverlay,
-    PolygonOverlay,
+    // PolygonOverlay,
+    SSPolygonOverlay,
     RectOverlay,
     // PolygonEditorOverlay,
     // HeatOverlay,
     // LineStringOverlay,
     // HoneycombOverlay,
-    ImgOverlay,
+    // ImgOverlay,
+    SSImgOverlay,
     // MoveLineOverlay,
     // PointAnimationOverlay,
     // LineStringAnimationOverlay,
@@ -54,16 +60,19 @@ export {
     utils,
     Map,
     // LabelOverlay,
-    PointOverlay,
+    // PointOverlay,
+    SSPointOverlay,
     PieOverlay,
     // GriddingOverlay,
-    PolygonOverlay,
+    // PolygonOverlay,
+    SSPolygonOverlay,
     RectOverlay,
     // PolygonEditorOverlay,
     // HeatOverlay,
     // LineStringOverlay,
     // HoneycombOverlay,
-    ImgOverlay,
+    // ImgOverlay,
+    SSImgOverlay,
     // MoveLineOverlay,
     // PointAnimationOverlay,
     // LineStringAnimationOverlay,

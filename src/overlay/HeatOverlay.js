@@ -16,11 +16,11 @@ export default class HeatOverlay extends CanvasOverlay {
         this._delteOption();
         this._state = null;
     }
-    setOptionStyle(ops) {
-        this._setStyle(this._option, ops);
+    setOptionStyle(ops, callback) {
+        this._setStyle(this._option, ops, callback);
     }
-    _toDraw() {
-        this._drawMap();
+    _toDraw(callback) {
+        this._drawMap(callback);
     }
     getRenderData() {
         return this._workerData;
@@ -29,7 +29,7 @@ export default class HeatOverlay extends CanvasOverlay {
         return this._workerData.length > 0 ? this._workerData : this._data;
     }
     _setStyle(config, ops) {
-        if (!ops) return;
+        ops = ops || {};
         let option = merge(config, ops);
         this._option = option;
         this._styleConfig = option.style;
@@ -47,7 +47,7 @@ export default class HeatOverlay extends CanvasOverlay {
     _checkGeoJSON(data) {
         checkGeoJSON(data, this._option.checkDataType.name, this._option.checkDataType.count);
     }
-    setData(points) {
+    setData(points, callback) {
         if (points) {
             this._data = points;
             this._checkGeoJSON(points);
@@ -55,11 +55,11 @@ export default class HeatOverlay extends CanvasOverlay {
             this._data = [];
         }
         clearPushArray(this._workerData, []);
-        this._map && this._drawMap();
+        this._map && this._drawMap(callback);
     }
     _setState(val) {
         this._state = val;
-        this._eventConfig.onState.call(this, this._state);
+        this._eventConfig.onState(this._state, this);
     }
     /**
      * 屏蔽参数
@@ -73,13 +73,31 @@ export default class HeatOverlay extends CanvasOverlay {
         };
     }
     _getMax() {
-        let normal = this._styleConfig;
-        normal.maxValue = 0;
-        for (let i = 0, len = this._data.length; i < len; i++) {
-            if (this._data[i].count > normal.maxValue) {
-                normal.maxValue = this._data[i].count;
+        if (this._workerData.length == 0) {
+            return 0;
+        }
+        let maxValue = 0;
+        for (let i = 0, len = this._workerData.length; i < len; i++) {
+            if (this._workerData[i].count > maxValue) {
+                maxValue = this._workerData[i].count;
             }
         }
+
+        return maxValue;
+    }
+    _getMin() {
+        if (this._workerData.length == 0) {
+            return 0;
+        }
+
+        let minValue = 0;
+        for (let i = 0, len = this._workerData.length; i < len; i++) {
+            if (this._workerData[i].count < minValue) {
+                minValue = this._workerData[i].count;
+            }
+        }
+
+        return minValue;
     }
     _translation(distanceX, distanceY) {
         for (let i = 0; i < this._workerData.length; i++) {
@@ -96,7 +114,7 @@ export default class HeatOverlay extends CanvasOverlay {
         this._data = []; //优化
         clearPushArray(this._workerData, val);
     }
-    _drawMap() {
+    _drawMap(callback) {
         this._setState(State.computeBefore);
 
         this._postMessage('HeatOverlay.pointsToPixels', this._getTransformData(), (pixels, margin) => {
@@ -111,16 +129,23 @@ export default class HeatOverlay extends CanvasOverlay {
 
             margin = null;
             pixels = null;
-
+            callback && callback(this);
         });
     }
     refresh() {
         this._clearCanvas();
+
         let normal = this._styleConfig;
         let mapSize = this._map.getSize();
-        if (normal.maxValue == 0) {
-            this._getMax();
+        let maxValue = normal.maxValue;
+        if (normal.maxValue == null) {
+            maxValue = this._getMax();
         }
+        let minValue = normal.minValue;
+        if (normal.minValue == null) {
+            minValue = this._getMin();
+        }
+
         if (mapSize.width <= 0) {
             return;
         }
@@ -130,7 +155,7 @@ export default class HeatOverlay extends CanvasOverlay {
             let item = this._workerData[i];
             let pixel = item.geometry.pixel;
             if (pixel.x > -normal.radius && pixel.y > -normal.radius && pixel.x < mapSize.width + normal.radius && pixel.y < mapSize.height + normal.radius) {
-                let opacity = (item.count - normal.minValue) / (normal.maxValue - normal.minValue);
+                let opacity = (item.count - minValue) / (maxValue - minValue);
                 opacity = opacity > 1 ? 1 : opacity;
                 this._drawPoint(pixel.x, pixel.y, normal.radius, opacity);
             }
@@ -138,7 +163,7 @@ export default class HeatOverlay extends CanvasOverlay {
         }
 
         let palette = this._palette;
-        let img = ctx.getImageData(0, 0, mapSize.width, mapSize.height);
+        let img = ctx.getImageData(0, 0, mapSize.width * this._devicePixelRatio, mapSize.height * this._devicePixelRatio);
         let imgData = img.data;
 
         let max_opacity = normal.maxOpacity * 255;
@@ -174,7 +199,7 @@ export default class HeatOverlay extends CanvasOverlay {
             }
         }
 
-        ctx.putImageData(img, 0, 0, 0, 0, mapSize.width, mapSize.height);
+        ctx.putImageData(img, 0, 0, 0, 0, mapSize.width * this._devicePixelRatio, mapSize.height * this._devicePixelRatio);
     }
     _drawPoint(x, y, radius, opacity) {
         let ctx = this._ctx;

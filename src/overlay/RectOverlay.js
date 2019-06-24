@@ -1,4 +1,4 @@
-import Parameter from './base/Parameter.js';
+import MiddleOverlay from './base/MiddleOverlay.js';
 import Color from '../common/Color.js';
 import {
     isArray,
@@ -13,7 +13,7 @@ import RectConfig from '../config/RectConfig.js';
 import State from '../config/OnStateConfig.js';
 
 
-export default class RectOverlay extends Parameter {
+export default class RectOverlay extends MiddleOverlay {
     constructor(ops) {
         super(RectConfig, ops);
         this._state = null;

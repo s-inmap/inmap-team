@@ -26,7 +26,7 @@ export default class Parameter extends CanvasOverlay {
         this._container = null;
         this._setStyle(baseConfig, ops);
     }
-    _setStyle(config, ops) {
+    _setStyle(config, ops, callback) {
         if (!ops) return;
 
         let option = merge(config, ops);
@@ -45,22 +45,23 @@ export default class Parameter extends CanvasOverlay {
             this._container.setAttribute('data-name', this._name);
         }
         if (ops.data !== undefined) {
-            this.setData(ops.data);
+            this.setData(ops.data, callback);
         } else {
             this._onOptionChange();
             this._map && this.refresh();
+            callback && callback(this); 
         }
         delete this._option.data;
         this._selectItem = option.selected || [];
         this._tMapStyle(option.skin);
         this.toolTip && this.toolTip.setOption(this._tooltipConfig);
-
+        this.emitEvent = this._eventConfig.emitEvent;
     }
     _checkGeoJSON(data) {
         let isCheckCount = this._styleConfig.colors.length > 0 || this._styleConfig.splitList.length > 0;
         checkGeoJSON(data, this._option.checkDataType.name, isCheckCount);
     }
-    setData(points) {
+    setData(points, callback) {
         if (points) {
             this._checkGeoJSON(points);
             this._data = points;
@@ -71,7 +72,7 @@ export default class Parameter extends CanvasOverlay {
         this._clearData();
         this._cancerSelectd();
         this._onDataChange();
-        this._map && this._toDraw();
+        this._map && this._toDraw(callback);
     }
     _onOptionChange() {
         /**抽象方法，样式发生变化会触发 */
@@ -195,13 +196,13 @@ export default class Parameter extends CanvasOverlay {
         if (result.shadowBlur != null && result.shadowColor == null) {
             result['shadowColor'] = (new Color(result.backgroundColor)).getValue();
         }
-        if (result.opacity) {
+        if (result.opacity != null) {
             let color = new Color(result.backgroundColor);
-            result.backgroundColor = color.getRgbaValue(result.opacity);
+            result.backgroundColor = color.getRgbaValue(result.opacity || 0);
         }
-        if (result.borderOpacity) {
+        if (result.borderOpacity != null) {
             let color = new Color(result.borderColor);
-            result.borderColor = color.getRgbaValue(result.borderOpacity);
+            result.borderColor = color.getRgbaValue(result.borderOpacity || 0);
         }
         return result;
     }
@@ -285,13 +286,18 @@ export default class Parameter extends CanvasOverlay {
      */
     _setlegend(legendConfig, list) {
         if (!this._map) return;
-        let option = {};
-        //legendConfig.list has a higher priority than list
-        if (!(legendConfig.list && legendConfig.list.length > 0)) {
-            option = merge(legendConfig, {
-                list: list
-            });
+        let option = {
 
+        };
+        if ((legendConfig.list && legendConfig.list.length > 0)) {
+            option = {
+                ...legendConfig
+            };
+        } else {
+            option = {
+                ...legendConfig,
+                list
+            };
         }
         this.legend.setOption(option);
     }
@@ -307,48 +313,16 @@ export default class Parameter extends CanvasOverlay {
             this._workerData[index] = this._workerData[this._workerData.length - 1];
             this._workerData[this._workerData.length - 1] = item;
         }
-        // console.log('in _swopData is ', this._workerData)
-    }
-    _tMouseleave() {
-        // console.log('_tMouseleave')
-        this.tooltip.hide();
     }
     _tMousemove(event) {
         if (this._eventType == 'onmoving') {
             return;
         }
-        if (!this._tooltipConfig.show && isEmpty(this._styleConfig.mouseOver)) {
-            return;
-        }
-
-        //核心逻辑是同一pixel下找到一次就不会再找
-        // if(EV.getEV() === null){
-        //     EV.setEV(event)
-        // }
-        // else{
-        //     if(event.pixel.x === EV.getEV().pixel.x && event.pixel.y === EV.getEV().pixel.y){
-        //         if(EV.getIsFind())
-        //             return
-        //     }
-        //     else{
-        //         EV.setEV(event)
-        //         EV.setIsFind(false)
-        //     }
-        // }
 
         let result = this._getTarget(event.pixel.x, event.pixel.y);
         let temp = result.item;
 
-        // if(EV.getIsFind()){
-        //     return
-        // }
-        // if(temp){
-        //     EV.setIsFind(true)
-        // }
         if (temp != this._overItem) { //防止过度重新绘画
-            if (temp && this._overItem) {
-                return;
-            }
             this._overItem = temp;
             if (temp) {
                 this._swopData(result.index, result.item);
@@ -357,14 +331,16 @@ export default class Parameter extends CanvasOverlay {
             if (!isEmpty(this._styleConfig.mouseOver)) {
                 this.refresh();
             }
-            this._setTooltip(event);
         }
-
         if (temp) {
             this._map.setDefaultCursor('pointer');
+            this._eventConfig.onMouseOver(temp, event, this);
         } else {
             this._map.setDefaultCursor('default');
         }
+
+        this._setTooltip(event);
+        return result;
     }
     _tMouseClick(event) {
         if (this._eventType == 'onmoving') return;
@@ -395,18 +371,8 @@ export default class Parameter extends CanvasOverlay {
             this._overItem = item;
             this._setTooltip(event);
         }
+        return result;
 
-
-    }
-    setTooltipIsShow(val) {
-        this.setOptionStyle({
-            tooltip: {
-                show: val
-            }
-        });
-        if (val === false) {
-            this.toolTip.hide();
-        }
-        // this.toolTip._opts.show = val
+        
     }
 }

@@ -3,7 +3,7 @@
  */
 import CanvasOverlay from './base/CanvasOverlay.js';
 import Label from './../worker/helper/Label';
-import Parameter from './base/Parameter';
+import MiddleOverlay from './base/MiddleOverlay';
 import {
     isEmpty,
     detectmob,
@@ -13,7 +13,7 @@ import PointConfig from '../config/PointConfig';
 import State from './../config/OnStateConfig';
 
 let isMobile = detectmob();
-export default class PieOverlay extends Parameter {
+export default class PieOverlay extends MiddleOverlay {
     constructor(opts) {
         super(PointConfig, opts);
         this._loopDraw = this._loopDraw.bind(this);
