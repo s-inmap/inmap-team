@@ -22,17 +22,17 @@ export default class RectOverlay extends MiddleOverlay {
         this._state = val;
         this._eventConfig.onState.call(this, this._state);
     }
-    draw() {
-        this._toDraw();
+    draw(callback) {
+        this._toDraw(callback);
     }
-    _toDraw() {
-        this._drawMap();
+    _toDraw(callback) {
+        this._drawMap(callback);
     }
     TInit() {
 
     }
-    setOptionStyle(ops) {
-        this._setStyle(this._baseConfig, ops);
+    setOptionStyle(ops, callback) {
+        this._setStyle(this._baseConfig, ops, callback);
         this.TInit();
         this.refresh();
     }
@@ -104,7 +104,7 @@ export default class RectOverlay extends MiddleOverlay {
             this.createColorSplit(grids);
             this.drawRec(size, zoomUnit, grids);
             this._setState(State.drawAfter);
-
+            callback && callback(this);
 
         });
     }
