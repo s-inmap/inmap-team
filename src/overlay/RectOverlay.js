@@ -39,7 +39,7 @@ export default class RectOverlay extends MiddleOverlay {
     refresh() {
         this._drawMap();
     }
-    setPoints(points) {
+    setPoints(points,callback) {
         if (points) {
             if (!isArray(points)) {
                 throw new TypeError('inMap: data must be a Array');
@@ -49,9 +49,9 @@ export default class RectOverlay extends MiddleOverlay {
             this._data = [];
         }
         clearPushArray(this._workerData);
-        this._map && this._drawMap();
+        this._map && this._drawMap(callback);
     }
-    _drawMap() {
+    _drawMap(callback) {
         // this._clearData();
         if (this.lock) {
             return;
