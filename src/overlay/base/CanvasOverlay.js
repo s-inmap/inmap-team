@@ -72,7 +72,6 @@ export default class CanvasOverlay extends BaseClass {
 
     }
     _tBindEvent() {
-        debugger
         const map = this._map;
 
         map.addEventListener('resize', this._tOnResize);
@@ -106,7 +105,6 @@ export default class CanvasOverlay extends BaseClass {
         });
     }
     _tMouseout() {
-        console.log('_tMouseout')
         this.toolTip && this.toolTip.hide();
     }
     _tOnResize(event) {
