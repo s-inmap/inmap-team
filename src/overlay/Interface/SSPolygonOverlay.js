@@ -1,4 +1,5 @@
 import PolygonOverlay from '../PolygonOverlay.js';
+import Color from '../../common/Color.js';
 import {
     isString,
     isArray,
