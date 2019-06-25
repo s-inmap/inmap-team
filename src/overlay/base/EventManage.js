@@ -10,6 +10,7 @@ class EventManage {
         this.layers = [];
     }
     register(map, layer) {
+        debugger
         if (this.map != map) {
             this.map = map;
             this.bindEvent();

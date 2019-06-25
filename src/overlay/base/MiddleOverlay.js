@@ -23,7 +23,6 @@ export default class MiddleOverlay extends Parameter {
         this.tooltip.hide();
     }
     _tMousemove(event) {
-        console.log('father _tMousemove')
         if (this._eventType == 'onmoving') {
             return;
         }

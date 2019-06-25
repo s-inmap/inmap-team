@@ -52,6 +52,7 @@ export default {
         count: false
     },
     event: {
+        emitEvent: true,
         multiSelect: false,
         onState() {},
         onMouseClick() {},
