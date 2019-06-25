@@ -48,7 +48,7 @@ class EventManage {
             if (layer && layer._map) {
                 if (eventName == '_tMousemove' || eventName == '_tMouseClick') {
                     if (!lock) {
-                        let reuslt = layer[eventName](e);
+                        let reuslt = layer[eventName] && layer[eventName](e);
                         if (reuslt && reuslt.item) {
                             lock = true;
                         }
