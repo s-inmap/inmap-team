@@ -24,7 +24,6 @@ export default class SSPointOverlay extends PointOverlay {
         return this._map.getDistance(mapCenter, cpt) / dpx;
     }
     _tMousemove(event) {
-
         if (this._eventType == 'onmoving') {
             return;
         }
