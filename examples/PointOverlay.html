@@ -23,6 +23,12 @@
             margin-left: 5px;
             font-size: 14px;
         }
+        .tool {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
     <script src="data/data.js"></script>
@@ -31,6 +37,10 @@
 
 <body>
     <div id="allmap"></div>
+    <div class='tool'>
+        <button onclick='show()'>open</button>
+        <button onclick='hide()'>close</button>
+    </div>
 </body>
 
 </html>
@@ -113,14 +123,22 @@
         }),
         event: {
             onState(state) {
-                console.log(state);
+                // console.log(state);
             },
             // multiSelect: true,
             onMouseClick: function (item, event) {
-                console.log(item);
+                // console.log(item);
                 //能获取当前点的信息
             }
         }
     });
     inmap.add(overlay);
+
+    function show(){
+        overlay.show();
+    }
+
+    function hide(){
+        overlay.hide();
+    }
 </script>

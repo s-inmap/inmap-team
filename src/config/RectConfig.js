@@ -45,7 +45,7 @@ export default {
         }
 
     },
-    lock: false, //默认mouseMove加载缓存数据,true则时时请求
+    // lock: false, //默认mouseMove加载缓存数据,true则时时请求
     data: [],
     checkDataType: {
         name: false,
