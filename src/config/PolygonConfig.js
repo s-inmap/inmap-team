@@ -30,14 +30,14 @@
                  font: '13px Arial'
              },
          },
-         mouseOver: {
-            shadowColor: 'rgba(0, 0, 0, 1)',
-            shadowBlur: 10,
-            borderWidth: 1.5,
-            label: {
-                color: 'rgba(0, 0, 0, 1)'
-            }
-        },
+         // mouseOver: {
+         //     shadowColor: 'rgba(0, 0, 0, 1)',
+         //     shadowBlur: 10,
+         //     borderWidth: 1.5,
+         //     label: {
+         //         color: 'rgba(0, 0, 0, 1)'
+         //     }
+         // },
          colors: [
 
          ],
@@ -50,10 +50,10 @@
          count: true
      },
      event: {
-        emitEvent: true,
+         emitEvent: true,
          multiSelect: false, //是否支持多选
          onMouseClick() {},
-         onMouseOver() { }, 
+         onMouseOver() {},
          onState() {
 
          }

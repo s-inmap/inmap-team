@@ -1542,16 +1542,17 @@ function createDotOverlay() {
     inmap.add(overlay);
     return overlay;
 }
+let s = 'http://www.wulihub.com.cn/go/JPVkkW/';
 
 function createImgOverlay(type) {
     let img = new Image();
     if (type === 1) {
-        img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_mine.png';
+        img.src = s + 'dot_mine.png';
     } else {
-        img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_pc.png';
+        img.src = s + 'dot_pc.png';
     }
     let hoverImg = new Image();
-    hoverImg.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_hover.png';
+    hoverImg.src = s + 'dot_hover.png';
 
     let overlay = new inMap.SSImgOverlay({
         name: 'img类',
