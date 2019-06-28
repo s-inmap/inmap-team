@@ -16,7 +16,7 @@ const option = {
     umdNamedDefine: true,
     filename: '[name].js'
   },
-  // devtool:'eval-source-map',
+  devtool:'eval-source-map',
   module: {
     rules: [{
         test: /\.js$/,

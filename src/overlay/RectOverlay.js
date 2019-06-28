@@ -22,8 +22,8 @@ export default class RectOverlay extends MiddleOverlay {
         this._state = val;
         this._eventConfig.onState.call(this, this._state);
     }
-    draw(callback) {
-        this._toDraw(callback);
+    draw() {
+        this._toDraw();
     }
     _toDraw(callback) {
         this._drawMap(callback);
