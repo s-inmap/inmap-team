@@ -2,6 +2,9 @@
  * 点的绘制
  */
 import PointOverlay from '../PointOverlay';
+import {
+    isEmpty
+} from '../../common/Util.js';
 import State from '../../config/OnStateConfig';
 export default class SSPointOverlay extends PointOverlay {
     constructor(opts) {
