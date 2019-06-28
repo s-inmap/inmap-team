@@ -122,8 +122,8 @@ var inmap = new inMap.Map({
 var map = inmap.getMap();
 
 function createDotOverlay() {
-    let overlay = new inMap.PointOverlay({
-        name:'蓝色圈图',
+    let overlay = new inMap.SSPointOverlay({
+        name: '蓝色圈图',
         tooltip: {
             // show:true
         },
@@ -148,16 +148,17 @@ function createDotOverlay() {
     inmap.add(overlay);
     return overlay;
 }
+let s = 'http://www.wulihub.com.cn/go/JPVkkW/';
 
 function createImgOverlay(type) {
     let img = new Image();
     if (type === 1) {
-        img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_mine.png';
+        img.src = s + 'dot_mine.png';
     } else {
-        img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_pc.png';
+        img.src = s + 'dot_pc.png';
     }
-    var overlay = new inMap.ImgOverlay({
-        name:'蓝色点图',
+    var overlay = new inMap.SSImgOverlay({
+        name: '蓝色点图',
         tooltip: {
             show: false,
             customClass: "imgauto",
@@ -241,6 +242,7 @@ function showTip() {
         }
     })
 }
+
 function hideTip() {
     let list = map.getOverlays();
     let arr = [];

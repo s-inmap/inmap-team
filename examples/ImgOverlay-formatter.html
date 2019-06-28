@@ -346,7 +346,7 @@ function createDotOverlay() {
     //     }
     // })
     // console.log(list[325])
-    let overlay = new inMap.PointOverlay({
+    let overlay = new inMap.SSPointOverlay({
         name: '散点',
         tooltip: {
             show: false,
@@ -377,19 +377,20 @@ function createDotOverlay() {
     inmap.add(overlay);
     return overlay;
 }
+let s = 'http://www.wulihub.com.cn/go/JPVkkW/';
 
 function createImgOverlay(type) {
     let img = new Image();
     if (type === 1) {
-        img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_mine.png';
+        img.src = s + 'dot_mine.png';
     } else {
-        img.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_pc.png';
+        img.src = s + 'dot_pc.png';
     }
     let hoverImg = new Image();
-    hoverImg.src = icon = 'https://smartdata.b0.upaiyun.com/thinkmark/dot_hover.png';
+    hoverImg.src = s + 'dot_hover.png';
 
-    let overlay = new inMap.ImgOverlay({
-        name: '图片',
+    let overlay = new inMap.SSImgOverlay({
+        name: type === 1 ? '我的门店图片' : '排斥图片',
         tooltip: {
             show: true,
             customClass: "auto",
