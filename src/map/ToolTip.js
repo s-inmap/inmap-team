@@ -157,14 +157,17 @@ export default class ToolTip {
             }
             if (overItem.geometry) {
                 if (isArray(overItem.geometry.pixels)) {
+                    //自定义PolygonOverlay Tooltip
                     _this.show(event.offsetX, event.offsetY);
                 } else {
+                    //自定义PointOverlay Tooltip
                     let pixel = overItem.geometry.pixel,
                         x = pixel.x,
                         y = pixel.y;
                     _this.show(x, y);
                 }
             } else {
+                //自定义RectOverlay Tooltip
                 _this.show(overItem.pixels.neX, overItem.pixels.neY);
             }
         } else {
