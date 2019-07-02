@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PolygonOverlay-tooltip</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+    body,
+    html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+
+    #allmap {
+        width: 100%;
+        height: 100%;
+    }
+    .inmap-tooltip.poly {
+        border: 0;
+    }
+    .inmap-tooltip.rect {
+        border: 0;
+    }
+    .inmap-tooltip.img {
+        border: 0;
+    }
+    .ml_tooltip {
+        width: 280px;
+        height: 84px;
+        padding: 15px;
+        background-image: linear-gradient(42deg, #3848C3 0%, #3562D7 44%, #1D78F3 100%);
+        border-radius: 2px 2px 0 0;
+        color: #fff;
+    }
+    .ml_tooltip .top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+    .ml_tooltip .top .score {
+        font-size: 20px;
+    }
+    .ml_tooltip .top .name {
+        font-size: 13px;
+    }
+    .ml_tooltip .top .rank {
+        text-align: right;
+    }
+    .ml_tooltip .top .addr {
+        font-size: 14px;
+    }
+    .ml_tooltip .top .score {
+        font-size: 20px;
+    }
+    .mapLabel {
+        background: #fff;
+        position: relative;
+        /*top: -50px;*/
+        width: 300px;
+    }
+    .mapLabel .header {
+        /*width: 100%;*/
+        height: 56px;
+        padding: 0 18px;
+        background: #F8F8F9;
+        border-radius: 2px;
+        border-bottom: 1px solid var(--color-gray);
+    }
+    .mapLabel .header .name {
+        font-size: 14px;
+        line-height: 22px;
+        white-space: nowrap;
+        width: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--color-title);
+        padding-top: 6px;
+        padding-right: 18px;
+    }
+    .mapLabel .header .type {
+        font-size: 12px;
+        line-height: 20px;
+        white-space: nowrap;
+        color: var(--color-icon);
+    }
+    .mapLabel .content {
+        padding: 16px;
+        max-height: 200px;
+    }
+    .mapLabel .content .box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--color-detail);
+        border-bottom: 1px solid var(--color-gray);
+        line-height: 28px;
+    }
+    .mapLabel .content .addr {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        span:last-child {
+            display: block;
+            width: 220px;
+            line-height: 20px;
+            text-align: right;
+            white-space: normal;
+        }
+    }
+    .arrow-left .mapLabel .arraw {
+        border: 8px solid transparent;
+        border-right-color: #fff;
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 0;
+        left: -16px;
+        margin-top: 18px;
+    }
+    .arrow-right .mapLabel .arraw {
+        border: 8px solid transparent;
+        border-left-color: #fff;
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 0;
+        right: -16px;
+        margin-top: 18px;
+    }
+    .arrow-bottom-left .mapLabel .arraw {
+        top: auto;
+        bottom: 30px;
+    }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
+    <!-- <script src="./data/geojson.js"></script> -->
+    <script src="data/street.js"></script>
+    <script src="data/streethot.js"></script>
+    <script src="../dist/inmap.js"></script>
+</head>
+
+<body>
+    <div id="allmap"></div>
+</body>
+
+</html>
+<script>
+var inmap = new inMap.Map({
+    id: 'allmap',
+    skin: "",
+    // center: ["114.16248337214269", "22.559515429553684"],
+    center: ["116.407395", "39.904211"],
+    zoom: {
+        value: 12,
+        show: true,
+        max: 22
+    }
+});
+
+
+function transformStreetCanvasData(data) {
+    //一个街道多个围栏按多个围栏处理，名称相同增加下标
+    //全市街道数据转换成inmap渲染数据
+    let keys = Object.keys(data);
+    let deep = [];
+
+    keys.map(streetId => {
+        let polygon = Object.keys(data[streetId].polygon);
+        if (polygon.length === 1) {
+            let all = [];
+            let transformable, pId, area;
+            polygon.map(polygonId => {
+                let ary = [];
+                let id = data[streetId].polygon[polygonId];
+                // console.log(key==='5033')
+                id['coordinates'].map(x => {
+                    ary.push([x.lng, x.lat]);
+                });
+                all.push(ary);
+                transformable = id['transformable'];
+                pId = polygonId;
+                area = id['area'];
+            });
+            deep.push({
+                count: 6,
+                geometry: {
+                    'type': 'Polygon',
+                    'coordinates': all
+                },
+                street_id: streetId,
+                polygonId: pId,
+                transformable: transformable,
+                center: data[streetId].center,
+                name: data[streetId].name,
+                subName: data[streetId].name,
+                area: area
+            });
+        }
+        if (polygon.length !== 1) {
+            let transformable, area;
+            polygon.map(polygonId => {
+                let ary = [];
+                let id = data[streetId].polygon[polygonId];
+                id['coordinates'].map(x => {
+                    ary.push([x.lng, x.lat]);
+                });
+
+                transformable = id['transformable'];
+                area = id['area'];
+
+                deep.push({
+                    count: 6,
+                    geometry: {
+                        'type': 'Polygon',
+                        'coordinates': [ary]
+                    },
+                    street_id: streetId,
+                    polygonId: polygonId,
+                    transformable: transformable,
+                    center: data[streetId].center,
+                    name: data[streetId].name + polygonId, //inmap要求name唯一
+                    subName: data[streetId].name, //Tooltip展示的名字，允许街道重名
+                    area: area
+                });
+            });
+        }
+    });
+    return deep;
+};
+
+let hot = streethot.data.datas;
+let streetFence = transformStreetCanvasData(street.data);
+
+
+let newArray = [];
+streetFence.map(x => {
+    hot.map(y => {
+        let street = y.street.split('_');
+        if (x.street_id === street[0]) {
+            let obj = {
+                type: '客流量',
+                geometry: x.geometry,
+                center: x.center,
+                street_id: x.street_id,
+                polygonId: x.polygonId,
+                transformable: x.transformable,
+                count: y.num,
+                name: x.name,
+                subName: x.subName,
+                area: x.area,
+                score: '--'
+            };
+            if (y.normalColor)
+                obj['normalColor'] = y.normalColor;
+            if (y.mouseOverColor)
+                obj['mouseOverColor'] = y.mouseOverColor;
+            newArray.push(obj);
+        }
+    });
+});
+
+const passengerColorList = [
+    'rgba(251,245,220,0.5)',
+    'rgba(255,237,161,0.5)',
+    'rgba(249,228,124,0.5)',
+    'rgba(254,199,93,0.5)',
+    'rgba(255,166,47,0.5)',
+    'rgba(249,130,44,0.5)',
+    'rgba(243,73,45,0.5)',
+    'rgba(216,14,16,0.5)',
+    'rgba(179,0,36,0.5)',
+    'rgba(114,0,34,0.5)',
+    'rgba(76,0,34,0.5)'
+]
+console.log(streethot)
+let splitList = streethot.data.splitList.map((item, index) => {
+    item['backgroundColor'] = passengerColorList[index];
+    item['borderColor'] = 'rgba(255, 255, 255, 1)';
+    return item;
+});
+
+function getConfig(data, selectedData = [], borderColor = 'rgba(255,255,255,1)') {
+    return {
+        name: '街道热力围栏',
+        tooltip: {
+            show: true,
+            customClass: 'mapJh',
+            offsets: {
+                top: -28,
+                left: 20,
+                bottom: 60
+            },
+            formatter: (params, dom, callback, event) => {
+                return params.name;
+            }
+        },
+        style: {
+            normal: {
+                borderWidth: 0.5,
+                opacity: 0.5,
+                borderOpacity: 0.5
+            },
+            mouseOver: {
+                borderWidth: 1,
+                borderOpacity: 1,
+                opacity: 0.7,
+                borderColor: 'rgba(255,255,255,0.80)'
+            },
+            selected: {
+                borderWidth: '1',
+                borderColor: borderColor
+            },
+            splitList: splitList
+        },
+        data: data,
+        selected: [],
+        /*event: {
+            onState: (state) => {
+                if (state === 3) {
+
+                }
+            },
+            onMouseOver(item, e) {
+                // if (_this.dropdown.polygonManager !== null || _this.dropdown.circleListener !== null || _this.dropdown.walkListener !== null) {
+                //     this.setTooltipIsShow(false);
+                // }
+                // if (_this.dropdown.polygonManager === null && _this.dropdown.circleListener === null && _this.dropdown.walkListener === null) {
+                //     this.setTooltipIsShow(true);
+                // }
+            },
+            // onMouseMove(item, e) {
+            //     if (_this.dropdown.polygonManager !== null || _this.dropdown.circleListener !== null || _this.dropdown.walkListener !== null) {
+            //         this.setTooltipIsShow(false);
+            //     }
+            //     if (_this.dropdown.polygonManager === null && _this.dropdown.circleListener === null && _this.dropdown.walkListener === null) {
+            //         this.setTooltipIsShow(true);
+            //     }
+            // }
+        }*/
+    }
+};
+let options = getConfig(newArray);
+
+let o = new inMap.SSPolygonOverlay(options);
+console.log(o)
+o.setZIndex(105);
+
+o.type = '街道';
+
+inmap.add(o);
+</script>
