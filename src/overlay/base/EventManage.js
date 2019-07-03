@@ -52,13 +52,16 @@ class EventManage {
                         if (reuslt && reuslt.item) {
                             lock = true;
                         }
-                    } else {
-                        layer['_tMouseout'](e);
-                    }
+                    } 
+                    // else {
+                    //     layer['_tMouseout'](e);
+                    // }
 
-                } else {
-                    layer[eventName](e);
-                }
+                } 
+
+                // else {
+                //     layer[eventName](e);
+                // }
 
             } else {
 
