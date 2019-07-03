@@ -45,7 +45,7 @@ export default {
         count: false
     },
     event: {
-        emitEvent: true,
+        emitEvent: false,
         multiSelect: false, //是否支持多选
         onMouseClick() {},
         onMouseOver() {},
