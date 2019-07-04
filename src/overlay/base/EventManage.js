@@ -52,17 +52,17 @@ class EventManage {
                         if (reuslt && reuslt.item) {
                             lock = true;
                         }
-                    } 
+                    }
                     // else {
                     //     layer['_tMouseout'](e);
                     // }
-
-                } 
-
+                }
+                if (e.screenX === 0 && e.screenY === 0) {
+                    layer[eventName](e);
+                }
                 // else {
                 //     layer[eventName](e);
                 // }
-
             } else {
 
                 this.layers.splice(index, 1);

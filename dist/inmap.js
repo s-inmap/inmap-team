@@ -10822,6 +10822,9 @@ var EventManage = function () {
                             }
                         }
                     }
+                    if (e.screenX === 0 && e.screenY === 0) {
+                        layer[eventName](e);
+                    }
                 } else {
 
                     this.layers.splice(index, 1);
