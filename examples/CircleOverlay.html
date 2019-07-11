@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CircleOverlay</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+    body,
+    html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+
+    #allmap {
+        width: 100%;
+        height: 100%;
+    }
+
+    p {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+
+    .mapLabel {
+        padding: 8px 12px;
+        background: #fff;
+        /*position: relative;*/
+    }
+    .mapLabel .name {
+        /*display: inline-block;
+        width: 100%;
+        line-height: 20px;
+        font-size: 12px;
+        color: var(--color-title);
+        font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;*/
+    }
+    .mapLabel .arraw {
+        /* border: 8px solid transparent;
+        border-right-color: #fff;
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 50%;
+        left: -16px;
+        margin-top: -10px;*/
+    }
+    .mapLabel .storeinfo {
+        /*color: var(--color-detail);
+        white-space: nowrap;*/
+    }
+    .mapLabel .storeinfo em {
+        /*color: #ED4014;
+        font-size: 14px;
+        padding: 0 4px;*/
+    }
+
+    .mapLabel .storeinfo ul li {
+        /*height: 30px;
+        line-height: 30px;*/
+    }
+    .mapLabel .storeinfo ul li span {
+        /*width: 56px;
+        display: inline-block;
+        text-align: right;
+        margin-right: 40px;*/
+    }
+    .mapLabel .storeinfo li.address {
+        /*line-height: 18px;
+        padding: 4px 0;*/
+    }
+    .mapLabel .storeinfo .search {
+        span {
+            /*margin-right: 10px;*/
+        }
+    }
+    .mapLabel .storeinfo .toLocation {
+        /*font-size: 12px;
+        border-radius: 4px;
+        margin-top: 8px;
+        padding: 4px 15px 4px 15px;
+        width: 100%;
+        margin-bottom: 10px;*/
+    }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
+    <script src="data/data3.js"></script>
+    <script src="data/data4.js"></script>
+    <script src="../dist/inmap.js"></script>
+    <!-- <script type="text/javascript" src="http://unpkg.com/inmap/dist/inmap.min.js"></script> -->
+    <!-- <script src="https://smartdata.b0.upaiyun.com/thinkmark/inmap_g_v2.min.js"></script> -->
+</head>
+
+<body>
+    <div id="allmap"></div>
+    <div style="position: absolute;right:0;top:0">
+        <button onclick="show()">显示Overlay</button>
+        <button onclick="hide()">隐藏Overlay</button>
+        <button onclick="showTip()">显示tooltip</button>
+        <button onclick="hideTip()">隱藏tooltip</button>
+        <button onclick="showRange()">显示辐射范围</button>
+        <button onclick="hideRange()">隱藏辐射范围</button>
+        <button onclick="changeRange()">更改辐射范围</button>
+    </div>
+</body>
+
+</html>
+<script>
+var inmap = new inMap.Map({
+    id: 'allmap',
+    skin: "Blueness",
+    center: [116.407395, 39.904211],
+    zoom: {
+        value: 12,
+        show: true,
+        max: 18,
+        min: 5
+    },
+})
+var map = inmap.getMap();
+let s = 'http://www.wulihub.com.cn/go/JPVkkW/';
+
+function createCircleOverlay() {
+    let img = new Image();
+    img.src = s + 'dot_mine.png';
+
+    let hoverImg = new Image();
+    hoverImg.src = s + 'dot_hover.png';
+
+    let overlay = new inMap.CircleOverlay({
+        name: '蓝色圈图',
+        tooltip: {
+            show: true,
+            customClass: "img",
+            offsets: {
+                top: -50,
+                left: 12,
+                bottom: 30
+            },
+            async formatter(params, dom) {
+                let arrowBottom = ''
+                setTimeout(() => {
+                    let b = dom.getAttribute('data-bottom');
+                    // console.log(dom, b)
+                    if (b !== null) {
+                        arrowBottom = 'margin-top:' + (b - 20) + 'px';
+                    } else {
+                        arrowBottom = 'margin-top:18px';
+                    }
+                }, 200)
+
+                let message;
+                if (params.incomeMonthly == '0') {
+                    message = '月流水未上传';
+                } else {
+                    message = '月流水<em>' + params.incomeMonthly + '</em>元';
+                }
+
+                return (`
+                        <div class="mapLabel">
+                            <div class="arraw" style="${arrowBottom}"></div>
+                            <div class="edit"></div>
+                            <div class="header">
+                                <div class="name">${params.name}</div>
+                                <div class="type">我的门店</div>
+                            </div>
+                            <div class="content">
+                                <div class="box addr">
+                                    <span>地址</span>
+                                    <span>${params.address}</span>
+                                </div>
+                                <div class="box">
+                                    <span>月营业额</span>
+                                    <span>${message}</span>
+                                </div>
+                                <div class="box">
+                                    <span>面积</span>
+                                    <span>${params.area}</span>
+                                </div>
+                                <div class="box">
+                                    <span>租金</span>
+                                    <span>${params.rent}</span>
+                                </div>
+                                <div class="box">
+                                    <span>经营状况</span>
+                                    <span>${params.situation}</span>
+                                </div>
+                            </div>
+                        </div>`);
+
+            },
+        },
+        style: {
+            normal: {
+                rangeShow: true,
+                icon: img,
+                width: 24,
+                height: 24,
+                offsets: {
+                    top: "-90%",
+                    left: "-40%",
+                },
+                backgroundColor: 'rgba(129, 186, 246, 0.10)',
+                borderColor: "rgba(45, 140, 240, 0.60)",
+                borderWidth: 1,
+                unit: 'm',
+                size: 500
+            },
+            mouseOver: {
+                icon: hoverImg,
+                width: 24,
+                height: 24,
+                offsets: {
+                    top: "-90%",
+                    left: "-40%",
+                },
+                backgroundColor: 'rgba(56,72,195,0)'
+            },
+        },
+        event: {
+            onState: (state) => {}
+        }
+    });
+    //去掉点击事件
+    overlay.type = 'CIRCLEOVERLAY';
+    inmap.add(overlay);
+    overlay.hide()
+    overlay.setTooltipIsShow(false);
+    return overlay;
+}
+
+
+function show() {
+    // console.log('show')
+    let list = map.getOverlays();
+    let arr = [];
+    list.map((overlay, index) => {
+        if (overlay.type === 'CIRCLEOVERLAY') {
+            overlay.show();
+            overlay.setTooltipIsShow(true);
+        }
+    })
+}
+
+function hide() {
+    // console.log('hide')
+    let list = map.getOverlays();
+    let arr = [];
+    list.map((overlay, index) => {
+        if (overlay.type === 'CIRCLEOVERLAY') {
+            overlay.hide();
+            overlay.setTooltipIsShow(false);
+        }
+    })
+}
+
+function showTip() {
+    let list = map.getOverlays();
+    let arr = [];
+    list.map((overlay, index) => {
+        if (overlay.type === 'CIRCLEOVERLAY') {
+            overlay.setTooltipIsShow(true)
+        }
+    })
+}
+
+function hideTip() {
+    let list = map.getOverlays();
+    let arr = [];
+    list.map((overlay, index) => {
+        if (overlay.type === 'CIRCLEOVERLAY') {
+            overlay.setTooltipIsShow(false)
+        }
+    })
+}
+
+function showRange() {
+    overlay1.setRangeIsShow(true);
+}
+
+function hideRange() {
+    overlay1.setRangeIsShow(false);
+}
+
+function changeRange() {
+    overlay1.setRange({
+        unit: 'm',
+        size: 1000
+    });
+}
+let points1 = data.data.storeList;
+points1.map(item => {
+    item.count = 6;
+    item.geometry = {
+        "type": "Point",
+        "coordinates": [String(item.lng), String(item.lat)]
+    }
+})
+let overlay1 = createCircleOverlay();
+overlay1.setData(points1);
+overlay1.setZIndex(600);
+
+//排斥点
+// let points2 = list.data;
+// // console.log(points2);
+
+// points2.map((item, index) => {
+//     let oldData = item.stores;
+//     oldData.map(item => {
+//         item.count = 6;
+//         item.geometry = {
+//             "type": "Point",
+//             "coordinates": [String(item.lng), String(item.lat)]
+//         }
+//     })
+//     let dotoverlay = createCircleOverlay()
+//     dotoverlay.setData(oldData);
+//     dotoverlay.setZIndex(600);
+
+//     let imgoverlay = createImgOverlay()
+//     imgoverlay.type = 4;
+//     imgoverlay.setData(oldData);
+//     imgoverlay.setZIndex(699);
+
+//     imgoverlay.element = dotoverlay;
+//     imgoverlay.hide();
+//     imgoverlay.element.hide();
+//     imgoverlay._tooltipConfig.show = false;
+// })
+
+/*画圆*/
+const drawOption = {
+    fillColor: '#FF0000',
+    fillOpacity: 0.1,
+    strokeStyle: 'solid',
+    strokeColor: "#FF0000",
+    strokeWeight: 1,
+    enableClicking: true
+}
+
+function drawLngLat(lng, lat) {
+    return new BMap.Point(lng, lat);
+}
+
+function drawCircle(point, radius) {
+    var opts = {};
+
+    opts.fillColor = drawOption.fillColor;
+    opts.fillOpacity = drawOption.fillOpacity;
+    opts.strokeStyle = drawOption.strokeStyle;
+    opts.strokeColor = drawOption.strokeColor;
+    opts.strokeWeight = drawOption.strokeWeight;
+    opts.enableClicking = drawOption.enableClicking;
+
+
+    return new BMap.Circle(point, radius, opts);
+}
+let point = drawLngLat('116.475959000000003', '39.9216699999999989');
+let circle = drawCircle(point, 500);
+inmap.add(circle);
+</script>
