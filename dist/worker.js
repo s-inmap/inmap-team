@@ -73,12 +73,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 183);
+/******/ 	return __webpack_require__(__webpack_require__.s = 184);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 100:
+/***/ 101:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -183,7 +183,7 @@ module.exports = deepmerge_1;
 
 /***/ }),
 
-/***/ 152:
+/***/ 154:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -313,7 +313,7 @@ exports.default = GriddingOverlay;
 
 /***/ }),
 
-/***/ 153:
+/***/ 155:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -342,7 +342,7 @@ exports.default = HeatOverlay;
 
 /***/ }),
 
-/***/ 154:
+/***/ 156:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -354,7 +354,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _pointToPixel = __webpack_require__(34);
 
-var _Util = __webpack_require__(9);
+var _Util = __webpack_require__(8);
 
 var HoneycombOverlay = {
     toRecGrids: function toRecGrids(webObj) {
@@ -477,7 +477,7 @@ exports.default = HoneycombOverlay;
 
 /***/ }),
 
-/***/ 155:
+/***/ 157:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -542,7 +542,7 @@ exports.default = LablEvading;
 
 /***/ }),
 
-/***/ 156:
+/***/ 158:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -554,7 +554,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _pointToPixel = __webpack_require__(34);
 
-var _Curive = __webpack_require__(160);
+var _Curive = __webpack_require__(162);
 
 var LineStringOverlay = {
     transferCoordinate: function transferCoordinate(_coordinates, nwMc, zoomUnit) {
@@ -667,7 +667,7 @@ exports.default = LineStringOverlay;
 
 /***/ }),
 
-/***/ 157:
+/***/ 159:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -679,11 +679,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _pointToPixel = __webpack_require__(34);
 
-var _Point = __webpack_require__(161);
+var _Point = __webpack_require__(163);
 
 var _Point2 = _interopRequireDefault(_Point);
 
-var _Polylabel = __webpack_require__(162);
+var _Polylabel = __webpack_require__(164);
 
 var _Polylabel2 = _interopRequireDefault(_Polylabel);
 
@@ -760,7 +760,7 @@ exports.default = PolygonOverlay;
 
 /***/ }),
 
-/***/ 158:
+/***/ 160:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -851,7 +851,7 @@ exports.default = PolymeOverlay;
 
 /***/ }),
 
-/***/ 159:
+/***/ 161:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -898,7 +898,7 @@ exports.default = RectOverlay;
 
 /***/ }),
 
-/***/ 160:
+/***/ 162:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1008,7 +1008,7 @@ function getPointList(start, end, deltaAngle) {
 
 /***/ }),
 
-/***/ 161:
+/***/ 163:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1018,7 +1018,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Util = __webpack_require__(9);
+var _Util = __webpack_require__(8);
 
 function Point(lng, lat) {
     if (isNaN(lng)) {
@@ -1048,7 +1048,7 @@ exports.default = Point;
 
 /***/ }),
 
-/***/ 162:
+/***/ 164:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1059,7 +1059,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = Polylabel;
 
-var _tinyqueue = __webpack_require__(171);
+var _tinyqueue = __webpack_require__(172);
 
 var _tinyqueue2 = _interopRequireDefault(_tinyqueue);
 
@@ -1197,7 +1197,7 @@ function Polylabel(polygon) {
 
 /***/ }),
 
-/***/ 171:
+/***/ 172:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1295,7 +1295,7 @@ TinyQueue.prototype = {
 
 /***/ }),
 
-/***/ 183:
+/***/ 184:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1306,35 +1306,35 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TDpost = undefined;
 
-var _HeatOverlay = __webpack_require__(153);
+var _HeatOverlay = __webpack_require__(155);
 
 var _HeatOverlay2 = _interopRequireDefault(_HeatOverlay);
 
-var _GriddingOverlay = __webpack_require__(152);
+var _GriddingOverlay = __webpack_require__(154);
 
 var _GriddingOverlay2 = _interopRequireDefault(_GriddingOverlay);
 
-var _PolygonOverlay = __webpack_require__(157);
+var _PolygonOverlay = __webpack_require__(159);
 
 var _PolygonOverlay2 = _interopRequireDefault(_PolygonOverlay);
 
-var _LineStringOverlay = __webpack_require__(156);
+var _LineStringOverlay = __webpack_require__(158);
 
 var _LineStringOverlay2 = _interopRequireDefault(_LineStringOverlay);
 
-var _HoneycombOverlay = __webpack_require__(154);
+var _HoneycombOverlay = __webpack_require__(156);
 
 var _HoneycombOverlay2 = _interopRequireDefault(_HoneycombOverlay);
 
-var _PolymeOverlay = __webpack_require__(158);
+var _PolymeOverlay = __webpack_require__(160);
 
 var _PolymeOverlay2 = _interopRequireDefault(_PolymeOverlay);
 
-var _LablEvading = __webpack_require__(155);
+var _LablEvading = __webpack_require__(157);
 
 var _LablEvading2 = _interopRequireDefault(_LablEvading);
 
-var _RectOverlay = __webpack_require__(159);
+var _RectOverlay = __webpack_require__(161);
 
 var _RectOverlay2 = _interopRequireDefault(_RectOverlay);
 
@@ -2265,11 +2265,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     }
   }]);
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(390)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(391)(module)))
 
 /***/ }),
 
-/***/ 390:
+/***/ 391:
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -2490,7 +2490,7 @@ exports.default = Label;
 
 /***/ }),
 
-/***/ 9:
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2523,7 +2523,7 @@ exports.checkType = checkType;
 exports.checkGeoJSON = checkGeoJSON;
 exports.isEqual = isEqual;
 
-var _deepmerge = __webpack_require__(100);
+var _deepmerge = __webpack_require__(101);
 
 var _deepmerge2 = _interopRequireDefault(_deepmerge);
 

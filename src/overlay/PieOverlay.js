@@ -1,6 +1,3 @@
-/*
- * 点的绘制
- */
 import CanvasOverlay from './base/CanvasOverlay.js';
 import Label from './../worker/helper/Label';
 import MiddleOverlay from './base/MiddleOverlay';
