@@ -69,20 +69,6 @@ export default class SSImgOverlay extends ImgOverlay {
 
 
     }
-    refresh() {
-        this._setState(State.drawBefore);
-        this._clearCanvas();
-        if (this._batchesData) {
-            this._batchesData.clear();
-            this._batchesData.action(this._workerData, this._loopDraw, this._ctx);
-
-        } else {
-            this._loopDraw(this._ctx, this._workerData, false);
-        }
-        this._loopDraw(this._ctx, this._workerData, false);
-        this._drawMouseLayer();
-        this._setState(State.drawAfter);
-    }
     _setDrawStyle(item, i, otherMode) {
         let normal = this._styleConfig.normal, //正常样式
             mouseOverStyle = this._styleConfig.mouseOver;
@@ -149,9 +135,6 @@ export default class SSImgOverlay extends ImgOverlay {
         if (this._mouseOverShow) {
             this._loopDraw(this._ctx, this._selectItem.concat(overArr), true);
         }
-    }
-    _Tdispose() {
-        this._batchesData && this._batchesData.clear();
     }
     _tMousemove(event) {
         if (this._eventType == 'onmoving') {
