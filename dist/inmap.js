@@ -7133,21 +7133,6 @@ var SSImgOverlay = function (_ImgOverlay) {
             };
         }
     }, {
-        key: 'refresh',
-        value: function refresh() {
-            this._setState(_OnStateConfig2.default.drawBefore);
-            this._clearCanvas();
-            if (this._batchesData) {
-                this._batchesData.clear();
-                this._batchesData.action(this._workerData, this._loopDraw, this._ctx);
-            } else {
-                this._loopDraw(this._ctx, this._workerData, false);
-            }
-            this._loopDraw(this._ctx, this._workerData, false);
-            this._drawMouseLayer();
-            this._setState(_OnStateConfig2.default.drawAfter);
-        }
-    }, {
         key: '_setDrawStyle',
         value: function _setDrawStyle(item, i, otherMode) {
             var normal = this._styleConfig.normal,
@@ -7224,11 +7209,6 @@ var SSImgOverlay = function (_ImgOverlay) {
             if (this._mouseOverShow) {
                 this._loopDraw(this._ctx, this._selectItem.concat(overArr), true);
             }
-        }
-    }, {
-        key: '_Tdispose',
-        value: function _Tdispose() {
-            this._batchesData && this._batchesData.clear();
         }
     }, {
         key: '_tMousemove',
