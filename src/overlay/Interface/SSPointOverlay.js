@@ -97,5 +97,5 @@ export default class SSPointOverlay extends PointOverlay {
             this._eventConfig.onMouseLeave.call(this, this._overItem, event);
         }
     }
-
+    _tMouseClick(event) {}
 }

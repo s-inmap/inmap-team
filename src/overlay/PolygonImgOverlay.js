@@ -454,4 +454,5 @@ export default class PolygonImgOverlay extends MiddleOverlay {
             this._eventConfig.onMouseLeave.call(this, this._overItem, event);
         }
     }
+    _tMouseClick(event) {}
 }
