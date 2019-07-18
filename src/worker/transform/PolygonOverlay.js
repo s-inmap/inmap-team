@@ -4,6 +4,7 @@ import {
 
 import Point from './../../common/Point';
 import Polylabel from '../../common/Polylabel';
+
 function getGeoCenter(geo) {
     let minX = geo[0][0];
     let minY = geo[0][1];
@@ -40,7 +41,7 @@ function transfrom(coordinates, map, pixels, labelPixels, enable, centerType) {
     }
 }
 const PolygonOverlay = {
-    calculatePixel: function (webObj) {
+    calculatePixel: function(webObj) {
         let {
             data,
             enable,
@@ -63,6 +64,49 @@ const PolygonOverlay = {
                 }
             } else {
                 transfrom(coordinates, map, pixels, labelPixels, enable, centerType);
+            }
+
+            data[j].geometry['pixels'] = pixels;
+            data[j].geometry['labelPixels'] = labelPixels;
+        }
+        webObj.request.data = data;
+        return webObj;
+    },
+    centerToPixels: function(webObj) {
+        let {
+            data,
+            enable,
+            centerType,
+            customZoom
+        } = webObj.request.data;
+        let map = webObj.request.map;
+        if (customZoom != null) map.zoom = customZoom;
+        for (let j = 0; j < data.length; j++) {
+            let geometry = data[j].geometry;
+            let point = data[j].center;
+            let type = geometry.type;
+            let coordinates = geometry.coordinates;
+            let pixels = [],
+                labelPixels = [];
+            if (type == 'MultiPolygon') {
+                for (let k = 0; k < coordinates.length; k++) {
+                    let p = [];
+                    transfrom(coordinates[k], map, p, labelPixels, enable, centerType);
+                    pixels.push(p);
+                }
+            } else {
+                transfrom(coordinates, map, pixels, labelPixels, enable, centerType);
+            }
+
+            //中心点坐标
+            if (point) {
+                data[j].geometry['center'] = pointToPixelWorker({
+                    lng: point[0],
+                    lat: point[1]
+                }, map);
+                point = null;
+            } else {
+                throw new TypeError(`You must add "center" attribute as the PolygonImgOverlay's center.`);
             }
 
             data[j].geometry['pixels'] = pixels;

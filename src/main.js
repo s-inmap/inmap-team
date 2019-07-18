@@ -10,6 +10,7 @@ import PieOverlay from './overlay/PieOverlay';
 import SSPolygonOverlay from './overlay/Interface/SSPolygonOverlay';
 import RectOverlay from './overlay/RectOverlay';
 import CircleOverlay from './overlay/CircleOverlay';
+import PolygonImgOverlay from './overlay/PolygonImgOverlay';
 
 // import HeatOverlay from './overlay/HeatOverlay';
 // import LineStringOverlay from './overlay/LineStringOverlay';
@@ -43,6 +44,7 @@ const inMap = {
     SSPolygonOverlay,
     RectOverlay,
     CircleOverlay,
+    PolygonImgOverlay,
     // PolygonEditorOverlay,
     // HeatOverlay,
     // LineStringOverlay,
@@ -70,6 +72,7 @@ export {
     SSPolygonOverlay,
     RectOverlay,
     CircleOverlay,
+    PolygonImgOverlay,
     // PolygonEditorOverlay,
     // HeatOverlay,
     // LineStringOverlay,
