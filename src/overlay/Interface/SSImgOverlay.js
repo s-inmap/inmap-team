@@ -172,5 +172,6 @@ export default class SSImgOverlay extends ImgOverlay {
             this._eventConfig.onMouseLeave.call(this, this._overItem, event);
         }
     }
+    _tMouseClick(event) {}
     
 }
