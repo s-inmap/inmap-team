@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PolygonImgOverlay</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+    body,
+    html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+
+    #allmap {
+        width: 100%;
+        height: 100%;
+    }
+    .inmap-tooltip.poly {
+        border: 0;
+    }
+    .inmap-tooltip.rect {
+        border: 0;
+    }
+    .inmap-tooltip.img {
+        border: 0;
+    }
+    .ml_tooltip {
+        width: 280px;
+        height: 84px;
+        padding: 15px;
+        background-image: linear-gradient(42deg, #3848C3 0%, #3562D7 44%, #1D78F3 100%);
+        border-radius: 2px 2px 0 0;
+        color: #fff;
+    }
+    .ml_tooltip .top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+    .ml_tooltip .top .score {
+        font-size: 20px;
+    }
+    .ml_tooltip .top .name {
+        font-size: 13px;
+    }
+    .ml_tooltip .top .rank {
+        text-align: right;
+    }
+    .ml_tooltip .top .addr {
+        font-size: 14px;
+    }
+    .ml_tooltip .top .score {
+        font-size: 20px;
+    }
+    .mapLabel {
+        background: #fff;
+        position: relative;
+        /*top: -50px;*/
+        width: 300px;
+    }
+    .mapLabel .header {
+        /*width: 100%;*/
+        height: 56px;
+        padding: 0 18px;
+        background: #F8F8F9;
+        border-radius: 2px;
+        border-bottom: 1px solid var(--color-gray);
+    }
+    .mapLabel .header .name {
+        font-size: 14px;
+        line-height: 22px;
+        white-space: nowrap;
+        width: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--color-title);
+        padding-top: 6px;
+        padding-right: 18px;
+    }
+    .mapLabel .header .type {
+        font-size: 12px;
+        line-height: 20px;
+        white-space: nowrap;
+        color: var(--color-icon);
+    }
+    .mapLabel .content {
+        padding: 16px;
+        max-height: 200px;
+    }
+    .mapLabel .content .box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--color-detail);
+        border-bottom: 1px solid var(--color-gray);
+        line-height: 28px;
+    }
+    .mapLabel .content .addr {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        span:last-child {
+            display: block;
+            width: 220px;
+            line-height: 20px;
+            text-align: right;
+            white-space: normal;
+        }
+    }
+    .arrow-left .mapLabel .arraw {
+        border: 8px solid transparent;
+        border-right-color: #fff;
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 0;
+        left: -16px;
+        margin-top: 18px;
+    }
+    .arrow-right .mapLabel .arraw {
+        border: 8px solid transparent;
+        border-left-color: #fff;
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 0;
+        right: -16px;
+        margin-top: 18px;
+    }
+    .arrow-bottom-left .mapLabel .arraw {
+        top: auto;
+        bottom: 30px;
+    }
+    </style>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
+    <!-- <script src="./data/geojson.js"></script> -->
+    <script src="data/mall.js"></script>
+    <script src="../dist/inmap.js"></script>
+</head>
+
+<body>
+    <div id="allmap"></div>
+</body>
+
+</html>
+<script>
+var inmap = new inMap.Map({
+    id: 'allmap',
+    skin: "",
+    // center: ["114.16248337214269", "22.559515429553684"],
+    center: ["116.3309772867709", "39.972206408900014"],
+    zoom: {
+        value: 16,
+        show: true,
+        max: 22
+    }
+});
+console.log(malldata)
+
+function transformStreetCanvasData2(data) {
+    //商场模式数据转换成inmap渲染数据
+    let keys = Object.keys(data);
+    let deep = [];
+
+    keys.map(key => {
+        let all = [];
+
+        data[key]['polygon'].map(m => {
+            let ary = [];
+            // console.log(key==='5033')
+            m.map(x => {
+                ary.push([x.lng, x.lat]);
+            });
+            all.push([ary]);
+        });
+        deep.push({
+            count: 6,
+            geometry: {
+                'type': 'MultiPolygon',
+                'coordinates': all
+            },
+            id: key,
+            center: data[key].center,
+            name: data[key].name
+        });
+    });
+    return deep;
+};
+
+let data = transformStreetCanvasData2(malldata.data);
+console.log(data)
+
+let s = 'http://www.wulihub.com.cn/go/JPVkkW/';
+let img = new Image();
+img.src = s + 'dot_mine.png';
+
+let hoverImg = new Image();
+hoverImg.src = s + 'dot_hover.png';
+
+let PolygonOverlay = new inMap.PolygonImgOverlay({
+    name: '北京商场围栏',
+    tooltip: {
+        show: true,
+        customClass: "poly",
+        formatter: (params, dom, callback) => {
+            return (`
+            <div class="ml_tooltip">
+                <div class="top">
+                    <div class="level">
+                        <div class="name">${params.name}</div>
+                        <div>当前区域</div>
+                    </div>
+                    <div class="rank">
+                        <div>${params.count}</div>
+                        <div>网格数</div>
+                    </div>
+                </div>
+            </div>`);
+        }
+    },
+    style: {
+        normal: {
+            icon: img,
+            width: 24,
+            height: 24,
+            offsets: {
+                top: "-90%",
+                left: "-40%",
+            },
+            borderWidth: 1,
+            backgroundColor: "rgba(0,255,129,0.15)",
+            borderColor: '#00b337'
+        },
+        mouseOver: {
+            icon: hoverImg,
+            width: 24,
+            height: 24,
+            offsets: {
+                top: "-90%",
+                left: "-40%",
+            },
+            borderWidth: 2,
+            backgroundColor: "rgba(0,255,129,0.35)",
+            borderColor: '#000000'
+        },
+    },
+    data: data,
+    event: {
+        onMouseOver(item, e) {
+            // console.log(111,this,item, e)
+            // this.setTooltipIsShow(true)
+        },
+        onMouseEnter(item, e) {
+            // console.log(222,this,item, e)
+            // this.setTooltipIsShow(true)
+        },
+    }
+});
+inmap.add(PolygonOverlay);
+PolygonOverlay.setZIndex(100);
+</script>
