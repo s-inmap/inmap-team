@@ -29,7 +29,7 @@ export default class SSImgOverlay extends ImgOverlay {
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.geometry.pixel;
-            let style = this._setDrawStyle(item, i, false);
+            let style = this._setDrawStyle(item, false, i);
             let img;
             if (isString(img)) {
                 img = this._cacheImg[style.icon];
@@ -69,7 +69,7 @@ export default class SSImgOverlay extends ImgOverlay {
 
 
     }
-    _setDrawStyle(item, i, otherMode) {
+    _setDrawStyle(item, otherMode, i) {
         let normal = this._styleConfig.normal, //正常样式
             mouseOverStyle = this._styleConfig.mouseOver;
         let result;
@@ -115,7 +115,7 @@ export default class SSImgOverlay extends ImgOverlay {
         for (let i = 0, len = pixels.length; i < len; i++) {
             let item = pixels[i];
             let pixel = item.geometry.pixel;
-            let style = this._setDrawStyle(item, i, otherMode);
+            let style = this._setDrawStyle(item, otherMode, i);
             if (pixel.x > -style.width && pixel.y > -style.height && pixel.x < mapSize.width + style.width && pixel.y < mapSize.height + style.height) {
                 this._loadImg(style.icon, (img) => {
                     if (style.width && style.height) {
@@ -173,5 +173,5 @@ export default class SSImgOverlay extends ImgOverlay {
         }
     }
     _tMouseClick(event) {}
-    
+
 }

@@ -108,61 +108,6 @@ export default class RectOverlay extends MiddleOverlay {
 
         });
     }
-    /**
-     * 根据用户配置，设置用户绘画样式
-     * @param {*} item 
-     */
-    setDrawStyle(item) {
-        let normal = this._styleConfig.normal, //正常样式
-            mouseOverStyle = this._styleConfig.mouseOver, //悬浮样式
-            selectedStyle = this._styleConfig.selected; //选中样式
-        let result = {};
-        result = merge(result, normal);
-        //区间样式
-        let splitList = this._styleConfig.splitList;
-        for (let i = 0; i < splitList.length; i++) {
-            let condition = splitList[i];
-            if (i == splitList.length - 1) {
-                if (condition.end == null) {
-                    if (item.count >= condition.start) {
-                        result = this._mergeCondition(result, condition);
-                        break;
-                    }
-                } else if (item.count >= condition.start && item.count <= condition.end) {
-                    result = this._mergeCondition(result, condition);
-                    break;
-                }
-            } else {
-                if (item.count >= condition.start && item.count < condition.end) {
-                    result = this._mergeCondition(result, condition);
-                    break;
-                }
-            }
-        }
-        result = merge(result, item.style || {});
-
-        if (mouseOverStyle && this._overItem && (JSON.stringify(this._overItem) == JSON.stringify(item))) {
-            result = merge(result, mouseOverStyle, {
-                backgroundColor: mouseOverStyle.backgroundColor || this.brightness(result.backgroundColor, 0.1)
-            });
-        }
-        if (selectedStyle && this._selectItemContains(item)) {
-            result = merge(result, selectedStyle);
-        }
-        //如果设置了shadowBlur的范围长度，并且也没有设置shadowColor，则shadowColor默认取backgroundColor值
-        if (result.shadowBlur != null && result.shadowColor == null) {
-            result['shadowColor'] = (new Color(result.backgroundColor)).getStyle();
-        }
-        if (result.opacity) {
-            let color = new Color(result.backgroundColor);
-            result.backgroundColor = color.getRgbaStyle(result.opacity);
-        }
-        if (result.borderOpacity) {
-            let color = new Color(result.borderColor);
-            result.borderColor = color.getRgbaStyle(result.borderOpacity);
-        }
-        return result;
-    }
     _getTarget(x, y) {
         let data = this._workerData;
 
