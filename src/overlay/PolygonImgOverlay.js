@@ -152,7 +152,8 @@ export default class PolygonImgOverlay extends MiddleOverlay {
     }
     _setDrawStyle(item, otherMode, i) {
         let normal = this._styleConfig.normal, //正常样式
-            mouseOverStyle = this._styleConfig.mouseOver;
+            mouseOverStyle = this._styleConfig.mouseOver,
+            selectedStyle = this._styleConfig.selected; //选中样式
         let result;
         if (otherMode) {
             result = merge({}, mouseOverStyle);
@@ -168,6 +169,7 @@ export default class PolygonImgOverlay extends MiddleOverlay {
         if (len > 0 && typeOf(count) !== 'number') {
             throw new TypeError(`inMap: data index Line ${i}, The property count must be of type Number! about geoJSON, visit http://inmap.talkingdata.com/#/docs/v2/Geojson`);
         }
+
         for (let i = 0; i < len; i++) {
             let condition = splitList[i];
             if (condition.end == null) {
@@ -188,16 +190,18 @@ export default class PolygonImgOverlay extends MiddleOverlay {
                 break;
             }
         }
-
+        if (otherMode && selectedStyle && this._selectItemContains(item)) {
+            result = merge(result, selectedStyle);
+        }
         return result;
     }
     _findIndexSelectItem(item) {
         let index = -1;
         if (item) {
             index = this._selectItem.findIndex(function(val) {
-                let itemCoordinates = item.geometry.coordinates;
-                let valCoordinates = val.geometry.coordinates;
-                return val && itemCoordinates[0] == valCoordinates[0] && itemCoordinates[1] == valCoordinates[1] && val.count == item.count;
+                let itemCenter = item.center;
+                let valCenter = val.center;
+                return val && itemCenter[0] == valCenter[0] && itemCenter[1] == valCenter[1];
             });
         }
         return index;
@@ -405,12 +409,14 @@ export default class PolygonImgOverlay extends MiddleOverlay {
     _drawMousePolygon() {
         let overArr = this._overItem ? [this._overItem] : [];
         if (this._mouseOverShow) {
+            // this._selectItem.splice(0);
             this._drawPolygon(this._selectItem.concat(overArr), true);
         }
     }
     _drawMouseLayer() {
         let overArr = this._overItem ? [this._overItem] : [];
         if (this._mouseOverShow) {
+            // this._selectItem.splice(0);
             this._loopDraw(this._ctx, this._selectItem.concat(overArr), true);
         }
     }
@@ -455,4 +461,41 @@ export default class PolygonImgOverlay extends MiddleOverlay {
         }
     }
     _tMouseClick(event) {}
+    /**
+     * 设置选中
+     * @param {Array} 经纬度数组
+     * @param {Number} zoom 需要放大的地图级别
+     */
+    setSelectd(lnglat, zoomValue = 16) {
+        let point = new BMap.Point(lnglat[0], lnglat[1]);
+        let center = this._map.getCenter();
+        let zoom = this._map.getZoom();
+        if (zoom !== zoomValue || center.lng !== point.lng) {
+            this._map.centerAndZoom(point, zoomValue);
+            this._clearCanvas();
+            this._canvasResize();
+
+            setTimeout(() => {
+                this.setSelectedMessage(lnglat);
+            }, 1000);
+            return;
+        } else {
+            this.setSelectedMessage(lnglat);
+            return;
+        }
+    }
+    setSelectedMessage(lnglat) {
+        let parameter = {
+            data: this._getTransformData(),
+            filterData: lnglat
+        };
+        this._postMessage('PolygonOverlay.setSelected', parameter, (postObj) => {
+            let selectItem = postObj['selectItems'] || {};
+            this._selectItem.splice(0);
+            this._selectItem = [selectItem];
+
+            this.refresh();
+            this._drawMouseLayer();
+        });
+    }
 }
