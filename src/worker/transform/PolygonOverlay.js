@@ -114,6 +114,20 @@ const PolygonOverlay = {
         }
         webObj.request.data = data;
         return webObj;
+    },
+    setSelected: function(webObj) {
+        let {
+            data,
+            filterData
+        } = webObj.request.data;
+        let selectItems = null;
+        data.some((item) => {
+            if (item && item.center[0] === filterData[0]) {
+                selectItems = item;
+            }
+        });
+        webObj.request.data['selectItems'] = selectItems;
+        return webObj;
     }
 
 };

@@ -135,6 +135,12 @@
         top: auto;
         bottom: 30px;
     }
+    .tool {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 100;
+    }
     </style>
     <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=U3q69k0Dv0GCYNiiZeHPf7BS"></script>
     <!-- <script src="./data/geojson.js"></script> -->
@@ -143,6 +149,9 @@
 </head>
 
 <body>
+    <div class='tool'>
+        <button onclick='setSelectd()'>setSelectd</button>
+    </div>
     <div id="allmap"></div>
 </body>
 
@@ -154,7 +163,7 @@ var inmap = new inMap.Map({
     // center: ["114.16248337214269", "22.559515429553684"],
     center: ["116.3309772867709", "39.972206408900014"],
     zoom: {
-        value: 16,
+        value: 12,
         show: true,
         max: 22
     }
@@ -262,4 +271,9 @@ let PolygonOverlay = new inMap.PolygonImgOverlay({
 });
 inmap.add(PolygonOverlay);
 PolygonOverlay.setZIndex(100);
+
+function setSelectd(){
+    let center = [116.33241452690892,39.97210699633034];
+    PolygonOverlay.setSelectd(center, 16);
+}
 </script>
