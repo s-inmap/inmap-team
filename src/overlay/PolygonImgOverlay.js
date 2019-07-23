@@ -493,9 +493,10 @@ export default class PolygonImgOverlay extends MiddleOverlay {
             let selectItem = postObj['selectItems'] || {};
             this._selectItem.splice(0);
             this._selectItem = [selectItem];
-
-            this.refresh();
+            
+            this.refresh(); 
             this._drawMouseLayer();
+            this._selectItem.splice(0);
         });
     }
 }
