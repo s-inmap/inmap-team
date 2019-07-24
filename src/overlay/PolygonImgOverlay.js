@@ -495,6 +495,7 @@ export default class PolygonImgOverlay extends MiddleOverlay {
             this._selectItem = [selectItem];
             
             this.refresh(); 
+            this._drawMousePolygon();
             this._drawMouseLayer();
             this._selectItem.splice(0);
         });

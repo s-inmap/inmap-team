@@ -8808,6 +8808,7 @@ var PolygonImgOverlay = function (_MiddleOverlay) {
                 _this5._selectItem = [selectItem];
 
                 _this5.refresh();
+                _this5._drawMousePolygon();
                 _this5._drawMouseLayer();
                 _this5._selectItem.splice(0);
             });
